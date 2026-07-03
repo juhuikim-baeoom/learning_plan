@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학습설계 툴 — 시연 최종판</title>
+<style>
+  :root{
+    --navy:#1b2a4a; --blue:#2f5fe0; --blue-soft:#eaf0ff; --blue-line:#c9d6ff;
+    --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
+    --bg:#ffffff; --bg-soft:#f4f6fb; --card:#fff; --red:#e23b4e; --red-soft:#fdf1f2;
+    --green:#1a9c6b; --green-soft:#e7f5ef; --amber:#b07c10; --amber-soft:#fdf3dc;
+    --violet:#7c4fe0; --violet-soft:#f1ebfd;
+    --radius:14px; --shadow:0 2px 14px rgba(27,42,74,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 20px 80px;}
+  .wrap.wide{max-width:1320px;}
+  .note{display:inline-flex;align-items:center;gap:6px;background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;margin:6px 0;}
+  .note::before{content:"기획";background:#f5b942;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .page-head h1{font-size:21px;font-weight:800;letter-spacing:-.5px;}
+  .page-head .sub{font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;}
+  .toggles{display:flex;gap:10px;flex-wrap:wrap;}
+  .view-toggle{display:flex;background:#fff;border:1px solid var(--line);border-radius:24px;padding:3px;}
+  .view-toggle button{border:none;background:transparent;font-size:12.5px;font-weight:700;color:var(--gray);padding:8px 16px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .view-toggle button.active{background:var(--blue);color:#fff;}
+  .view-toggle.mode button.active{background:var(--violet);}
+
+  /* 재설계 안내 바 */
+  .redesign-bar{background:var(--violet-soft);border:1.5px solid #d8c8f7;border-radius:var(--radius);padding:13px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .redesign-bar .rt{flex:1;font-size:12.5px;font-weight:600;color:var(--violet);min-width:200px;}
+  .redesign-bar button{border:1.5px solid var(--violet);border-radius:9px;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;font-family:inherit;}
+  .rb-load{background:var(--violet);color:#fff;}
+  .rb-new{background:#fff;color:var(--violet);}
+
+  .builder{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .panel h3{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+  .stu-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .stu-row:last-child{border-bottom:none;}
+  .stu-row .k{color:var(--gray);}
+  .stu-row .v{font-weight:600;text-align:right;}
+  .type-badge{display:inline-block;background:var(--amber-soft);color:var(--amber);font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;}
+  .file-chip{display:flex;align-items:center;gap:8px;background:var(--blue-soft);border:1px solid var(--blue-line);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--blue);margin-top:10px;cursor:pointer;}
+  .file-chip::before{content:"📄";}
+  .upload-box{margin-top:12px;border:1.5px dashed var(--blue-line);background:#f8faff;border-radius:12px;padding:14px;text-align:center;}
+  .upload-box .ut{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .upload-box .ud{font-size:10.5px;color:var(--gray-light);margin-bottom:10px;line-height:1.5;}
+  .upload-box .ubtns{display:flex;gap:6px;}
+  .upload-box button{flex:1;border-radius:8px;font-size:11px;font-weight:700;padding:8px 4px;cursor:pointer;font-family:inherit;border:1.5px solid var(--blue-line);}
+  .btn-tmpl-dl{background:#fff;color:var(--blue);}
+  .btn-upload{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .upload-done{font-size:10.5px;color:var(--green);font-weight:700;margin-top:8px;}
+  .tmpl-tabs{display:flex;gap:4px;margin-bottom:10px;}
+  .tmpl-tab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:7px 4px;cursor:pointer;font-family:inherit;color:var(--gray);text-align:center;}
+  .tmpl-tab.act{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .tmpl-item{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12px;margin-bottom:6px;cursor:pointer;}
+  .tmpl-item:hover{border-color:var(--blue-line);}
+  .tmpl-item .tn{font-weight:700;}
+  .tmpl-item .tm{font-size:10.5px;color:var(--gray-light);margin-top:2px;}
+  .tmpl-item .tb{display:inline-block;font-size:9.5px;font-weight:800;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px;}
+  .tb.sys{background:var(--blue-soft);color:var(--blue);}
+  .tb.team{background:var(--green-soft);color:var(--green);}
+  .tb.mine{background:var(--violet-soft);color:var(--violet);}
+  .cert-row{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:12px;}
+  .cert-row .cn{flex:1;font-weight:600;}
+  .cert-row .cc{font-weight:800;color:var(--green);white-space:nowrap;}
+  .btn-mini{border:1.5px dashed var(--blue-line);background:var(--blue-soft);color:var(--blue);border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:inherit;}
+
+  .summary{background:linear-gradient(135deg,#2f5fe0,#1b2a4a);color:#fff;border-radius:var(--radius);padding:16px 18px;}
+  .summary.deg{background:linear-gradient(135deg,#7c4fe0,#3b2a6e);}
+  .summary .t{font-size:11px;opacity:.75;margin-bottom:6px;}
+  .summary .big{font-size:15px;font-weight:800;line-height:1.5;}
+  .summary .big em{font-style:normal;font-size:22px;}
+  .summary .price{font-size:13px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.2);}
+  .summary .price s{opacity:.6;font-size:12px;}
+  .summary .dur{font-size:12px;margin-top:6px;opacity:.85;}
+  .summary .valid{font-size:10.5px;margin-top:8px;opacity:.7;}
+  .gauge{margin-top:10px;}
+  .gauge .g-row{margin-bottom:8px;}
+  .gauge .g-lab{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
+  .gauge .g-bar{height:8px;background:rgba(255,255,255,.18);border-radius:6px;overflow:hidden;display:flex;}
+  .gauge .g-fill-rec{background:#9ef0c8;height:100%;}
+  .gauge .g-fill-plan{background:#ffd87a;height:100%;}
+  .gauge .legend{display:flex;gap:12px;font-size:10px;margin-top:6px;opacity:.85;}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px;}
+
+  .builder-main{display:flex;flex-direction:column;gap:14px;}
+  /* 상태 뱃지 바 */
+  .status-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:11px 16px;}
+  .st-badge{font-size:11px;font-weight:800;border-radius:8px;padding:4px 11px;}
+  .st-badge.draft{background:var(--amber-soft);color:var(--amber);}
+  .st-badge.ver{background:var(--violet-soft);color:var(--violet);}
+  .status-bar .sv{font-size:11.5px;color:var(--gray-light);}
+
+  .sem-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+  .sem-card.over{background:var(--red-soft);border-color:#f3b8c0;}
+  .sem-card.recog-area{background:#f7fbf9;border-color:#cfe8db;}
+  .rg-head{font-size:11.5px;font-weight:800;color:var(--green);margin:12px 0 6px;}
+  .rg-head:first-child{margin-top:0;}
+  .btn-revert{border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:10.5px;font-weight:700;padding:5px 9px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .btn-revert:hover{border-color:var(--blue-line);color:var(--blue);}
+  .sem-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+  .sem-head h3{font-size:15px;font-weight:800;}
+  .sem-head h3 span{font-weight:400;font-size:12px;color:var(--gray);}
+  .sem-head .right{display:flex;align-items:center;gap:8px;}
+  .sem-head .cnt{font-size:12px;color:var(--gray);}
+  .over-warn{background:#fff;border:1px solid var(--red);color:var(--red);font-size:11px;font-weight:800;border-radius:8px;padding:4px 10px;}
+  .btn-del-sem{border:1.5px solid var(--line);background:#fff;color:var(--gray-light);border-radius:8px;font-size:11px;padding:4px 9px;cursor:pointer;font-family:inherit;}
+  .empty-sem{font-size:12px;color:var(--gray-light);text-align:center;padding:14px;border:1.5px dashed var(--line);border-radius:10px;}
+  .subj{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:8px;background:#fff;}
+  .subj .name{flex:1;font-size:13.5px;font-weight:600;min-width:110px;}
+  .subj .meta{font-size:10.5px;color:var(--gray-light);white-space:nowrap;}
+  .credit-input{width:42px;border:1.5px solid var(--line);border-radius:7px;padding:4px 2px;font-size:11.5px;font-family:inherit;text-align:center;font-weight:700;}
+  .credit-input:focus{border-color:var(--blue);outline:none;}
+  .area-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;white-space:nowrap;}
+  .area-tag.major{background:var(--blue-soft);color:var(--blue);}
+  .area-tag.major2{background:#e0ecff;color:#1656c9;}
+  .area-tag.gen{background:#f0f1f4;color:var(--gray);}
+  .area-tag.free{background:#fbf0e3;color:#9a6a16;}
+  /* B안: 인정 완료 과목 회색 placeholder */
+  .subj.ghost{background:#f4f6f9;border-color:#e6e9f0;border-style:dashed;}
+  .subj.ghost .name{color:var(--gray-light);text-decoration:line-through;}
+  .gcheck{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:var(--green);color:#fff;font-size:11px;font-weight:800;flex-shrink:0;}
+  .ghost-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--green-soft);color:var(--green);white-space:nowrap;}
+  .prereq-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:var(--amber-soft);color:var(--amber);white-space:nowrap;}
+  .src-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:#e3ecff;color:#1d4ed8;white-space:nowrap;}
+  .subj.st-done{background:#f6f7f9;}
+  .subj.st-done .name{color:var(--gray-light);text-decoration:line-through;}
+  .subj.st-cert{background:var(--green-soft);border-color:#bfe3d3;}
+  .subj.st-cert .name{color:var(--green);text-decoration:line-through;}
+  .chips{display:flex;gap:4px;}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:5px 8px;cursor:pointer;font-family:inherit;color:var(--gray);white-space:nowrap;}
+  .chip.on-need{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .chip.on-done{background:var(--gray);border-color:var(--gray);color:#fff;}
+  .chip.on-cert{background:var(--green);border-color:var(--green);color:#fff;}
+  .mv{border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11px;padding:5px 7px;cursor:pointer;font-family:inherit;color:var(--gray-light);}
+  .prereq-warn-bar{background:var(--red-soft);color:var(--red);font-size:11.5px;font-weight:700;border-radius:9px;padding:8px 12px;margin-top:8px;border:1px solid #f3b8c0;}
+  .sem-actions{display:flex;gap:6px;margin-top:10px;}
+  .btn-add-subj,.btn-add-set{flex:1;border:1.5px dashed var(--line);background:#fafbfd;color:var(--gray);border-radius:9px;font-size:11.5px;font-weight:700;padding:8px;cursor:pointer;font-family:inherit;}
+  .btn-add-subj:hover{border-color:var(--blue-line);color:var(--blue);}
+  .btn-add-set:hover{border-color:#d8c8f7;color:var(--violet);}
+  .btn-add-sem{border:2px dashed var(--blue-line);background:var(--blue-soft);color:var(--blue);border-radius:var(--radius);padding:13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
+  .comment-card textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;min-height:64px;resize:vertical;}
+  .editor-hint{font-size:11px;color:var(--gray-light);margin-top:6px;}
+  .save-row{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+  .btn-draft{flex:1;min-width:130px;background:var(--amber-soft);color:var(--amber);border:1.5px solid #f0dba8;border-radius:12px;padding:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn-save{flex:1.6;min-width:180px;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:14px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn-mytmpl{flex:1;min-width:130px;background:var(--violet-soft);color:var(--violet);border:1.5px solid #d8c8f7;border-radius:12px;padding:14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .btn-preview{flex:1;min-width:130px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+
+  /* 검증 모달 */
+  .modal{display:none;position:fixed;inset:0;background:rgba(27,42,74,.45);z-index:60;align-items:center;justify-content:center;}
+  .modal.open{display:flex;}
+  .modal-box{background:#fff;border-radius:18px;padding:24px;width:420px;max-height:84vh;overflow-y:auto;}
+  .modal-box h4{font-size:16px;font-weight:800;margin-bottom:4px;}
+  .modal-box .md{font-size:11.5px;color:var(--gray);margin-bottom:14px;}
+  .law-ver{background:#f8f9fc;border-radius:9px;padding:8px 12px;font-size:11px;color:var(--gray);margin-bottom:12px;}
+  .vcheck{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:7px;font-size:13px;font-weight:600;}
+  .vcheck .ic{font-size:15px;}
+  .vcheck.ok{border-color:#bfe3d3;background:var(--green-soft);}
+  .vcheck.ok .ic{color:var(--green);}
+  .vcheck.bad{border-color:#f3b8c0;background:var(--red-soft);}
+  .vcheck.bad .ic{color:var(--red);}
+  .vcheck .vd{flex:1;}
+  .vcheck .vs{font-size:11px;color:var(--gray);font-weight:500;}
+  .modal-actions{display:flex;gap:8px;margin-top:14px;}
+  .modal-actions button{flex:1;border-radius:11px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .ma-send{background:var(--blue);color:#fff;border:none;}
+  .ma-send:disabled{background:#c4cbd8;cursor:not-allowed;}
+  .ma-close{background:#fff;border:1.5px solid var(--line);color:var(--gray);}
+  .force-line{font-size:11px;color:var(--gray-light);text-align:center;margin-top:10px;text-decoration:underline;cursor:pointer;}
+
+  .set-pop{display:none;position:fixed;inset:0;background:rgba(27,42,74,.4);z-index:50;align-items:center;justify-content:center;}
+  .set-pop.open{display:flex;}
+  .set-box{background:#fff;border-radius:16px;padding:22px;width:340px;}
+  .set-box h4{font-size:15px;font-weight:800;margin-bottom:4px;}
+  .set-box .sd{font-size:11.5px;color:var(--gray);margin-bottom:14px;}
+  .set-item{border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:8px;cursor:pointer;}
+  .set-item:hover{border-color:var(--violet);background:var(--violet-soft);}
+  .set-item .sn{font-size:13px;font-weight:700;}
+  .set-item .sm{font-size:11px;color:var(--gray-light);margin-top:2px;}
+  .set-close{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
+
+  /* 학생 화면 */
+  .student-view{display:none;flex-direction:column;align-items:center;gap:14px;}
+  .dev-toggle{display:flex;background:#fff;border:1px solid var(--line);border-radius:24px;padding:3px;}
+  .dev-toggle button{border:none;background:transparent;font-size:12px;font-weight:700;color:var(--gray);padding:7px 16px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .dev-toggle button.active{background:var(--navy);color:#fff;}
+  /* 학생 PC 레이아웃 */
+  .stu-pc{display:none;width:100%;max-width:1040px;background:var(--bg-soft);}
+  .stu-pc.show{display:block;}
+  .stu-pc-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;display:flex;gap:18px;margin-bottom:14px;}
+  .stu-pc-tab{font-size:14px;font-weight:800;color:var(--gray-light);cursor:pointer;padding:4px 2px;border-bottom:2.5px solid transparent;}
+  .stu-pc-tab.act{color:var(--blue);border-bottom-color:var(--blue);}
+  .stu-pc-grid{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start;}
+  .stu-pc-main>*, .stu-pc-side>*{margin-bottom:14px;}
+  .stu-pc .hero-box{margin-bottom:0;}
+  .stu-pc .phone-like{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .stu-pc .s-sem h4{font-size:14px;}
+  .stu-pc .s-subj{font-size:13px;}
+  .stu-pc-side .price-block,.stu-pc-side .coupon-bar,.stu-pc-side .valid-bar{margin-bottom:12px;}
+  .stu-pc-side{position:sticky;top:16px;}
+  @media(max-width:860px){.stu-pc-grid{grid-template-columns:1fr;}.stu-pc-side{position:static;}}
+  .phone{width:386px;background:#fff;border:10px solid #1a1d24;border-radius:36px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);}
+  .phone-head{display:flex;border-bottom:1px solid var(--line);}
+  .ph-tab{flex:1;text-align:center;font-size:12.5px;font-weight:700;padding:13px 4px;cursor:pointer;color:var(--gray-light);border-bottom:2.5px solid transparent;}
+  .ph-tab.act{color:var(--blue);border-bottom-color:var(--blue);}
+  .phone-body{padding:16px;max-height:640px;overflow-y:auto;}
+  .hero-box{background:linear-gradient(135deg,#2f5fe0,#1e3a8a);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px;}
+  .hero-box.deg{background:linear-gradient(135deg,#7c4fe0,#3b2a6e);}
+  .hero-box .badge{display:inline-block;background:rgba(255,255,255,.2);font-size:10px;font-weight:700;padding:3px 9px;border-radius:9px;margin-bottom:8px;margin-right:4px;}
+  .hero-box h2{font-size:19px;font-weight:800;line-height:1.35;margin-bottom:4px;}
+  .hero-box .basis{font-size:11px;opacity:.8;margin-bottom:12px;}
+  .hero-stats{display:flex;gap:7px;}
+  .hstat{flex:1;background:rgba(255,255,255,.13);border-radius:10px;padding:8px 6px;text-align:center;}
+  .hstat .k{font-size:9.5px;opacity:.75;}
+  .hstat .v{font-size:13px;font-weight:800;margin-top:2px;}
+  .coupon-bar{background:var(--amber-soft);border:1px solid #f0dba8;border-radius:11px;padding:10px 13px;font-size:11.5px;font-weight:700;color:var(--amber);margin-bottom:12px;line-height:1.5;}
+  .coupon-bar small{display:block;font-weight:500;font-size:10px;opacity:.85;}
+  .recog-banner{background:var(--green-soft);border:1px solid #bfe3d3;border-radius:12px;padding:12px 14px;font-size:12px;color:var(--green);margin-bottom:8px;line-height:1.6;}
+  .recog-banner b{font-size:13px;}
+  .recog-toggle{width:100%;border:none;background:transparent;color:var(--green);font-size:11.5px;font-weight:700;padding:6px;cursor:pointer;font-family:inherit;margin-bottom:10px;}
+  .recog-list{display:none;margin-bottom:12px;}
+  .recog-list.open{display:block;}
+  .s-sem{margin-bottom:14px;}
+  .s-sem h4{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+  .s-sem h4 span{font-size:10.5px;color:var(--gray-light);font-weight:600;}
+  .sel-all{border:1px solid var(--blue-line);background:var(--blue-soft);color:var(--blue);border-radius:7px;font-size:10px;font-weight:800;padding:3px 8px;cursor:pointer;font-family:inherit;}
+  .s-subj{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:6px;font-size:12.5px;font-weight:600;background:#fff;}
+  .s-subj.dim{background:#f6f7f9;}
+  .s-subj.dim .nm{color:var(--gray-light);text-decoration:line-through;}
+  .s-subj.cert{background:var(--green-soft);border-color:#bfe3d3;}
+  .s-subj.cert .nm{color:var(--green);text-decoration:line-through;}
+  .s-subj .nm{flex:1;}
+  .s-subj input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);}
+  .s-badge{font-size:9.5px;font-weight:800;border-radius:7px;padding:2px 7px;white-space:nowrap;}
+  .s-badge.done{background:#e3e6eb;color:var(--gray);}
+  .s-badge.cert{background:var(--green);color:#fff;}
+  .s-badge.internal{background:#1d4ed8;color:#fff;}
+  .deg-gauge{border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:12px;}
+  .deg-gauge h5{font-size:12px;font-weight:800;margin-bottom:8px;}
+  .dg-row{margin-bottom:7px;}
+  .dg-lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--gray);margin-bottom:3px;}
+  .dg-bar{height:7px;background:#eef0f4;border-radius:6px;overflow:hidden;display:flex;}
+  .dg-rec{background:var(--green);height:100%;}
+  .dg-plan{background:var(--blue);height:100%;}
+  .price-block{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;text-align:right;}
+  .price-block .orig{font-size:12px;color:var(--gray-light);text-decoration:line-through;}
+  .price-block .fin{font-size:21px;font-weight:800;color:var(--blue);}
+  .price-block .lbl{font-size:11px;color:var(--gray);}
+  .valid-bar{background:#f8f9fc;border-radius:10px;padding:9px 12px;font-size:11px;color:var(--gray);margin-bottom:12px;text-align:center;}
+  .s-comment{background:#f8f9fc;border-radius:12px;padding:13px;font-size:12px;line-height:1.6;margin-bottom:14px;}
+  .s-comment b{display:block;font-size:11px;color:var(--gray);margin-bottom:5px;}
+  .s-cta{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+  .s-cta2{width:100%;background:#fff;border:1.5px solid var(--blue);color:var(--blue);border-radius:12px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+  .s-cta3{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  /* 부분 결제 하단 바 */
+  .sel-bar{position:sticky;bottom:0;background:#fff;border-top:2px solid var(--blue);padding:12px 14px;margin:0 -16px -16px;box-shadow:0 -4px 16px rgba(27,42,74,.1);}
+  .sel-bar .cmp{display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:7px;}
+  .sel-bar .cmp b{color:var(--ink);}
+  .sel-bar .pkg-hint{font-size:10.5px;color:var(--blue);font-weight:700;margin-bottom:8px;}
+  .sel-bar button{width:100%;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:13px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  /* 이정표 */
+  .ms-card{border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:12px;}
+  .ms-card h5{font-size:12.5px;font-weight:800;margin-bottom:9px;}
+  .ms-status{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;padding:7px 0;border-bottom:1px solid var(--line);}
+  .ms-status:last-child{border-bottom:none;}
+  .ms-ic{font-size:13px;}
+  .ms-ic.ok{color:var(--green);}
+  .ms-ic.pend{color:var(--amber);}
+  .ms-ic.no{color:var(--gray-light);}
+  .ms-eta{background:var(--blue-soft);border-radius:11px;padding:12px;text-align:center;font-size:12.5px;font-weight:700;color:var(--blue);margin-bottom:12px;}
+  .ms-coupon{background:var(--amber-soft);border:1px solid #f0dba8;border-radius:11px;padding:11px 13px;font-size:11.5px;font-weight:700;color:var(--amber);margin-bottom:10px;}
+
+
+  /* 이수 현황 (인정/미인정 탭) */
+  .ih-card{background:#f7fbf9;border:1px solid #cfe8db;border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .ih-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .ih-head h3{font-size:14px;font-weight:800;flex:1;min-width:160px;}
+  .ih-head-right{display:flex;gap:8px;align-items:center;margin-left:auto;}
+  .ih-summary{font-size:11.5px;color:var(--gray);font-weight:600;text-align:right;}
+  .ih-toggle{border:1.5px solid #cfe8db;background:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:inherit;color:var(--green);}
+  .ih-body{display:none;margin-top:10px;}
+  .ih-body.open{display:block;}
+  .ih-tabs{display:flex;gap:4px;margin-bottom:10px;}
+  .ih-tab{border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11.5px;font-weight:700;padding:6px 12px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .ih-tab.act{background:var(--green);border-color:var(--green);color:#fff;}
+  .ih-grp{font-size:11px;font-weight:800;color:var(--green);margin:10px 0 5px;}
+  .ih-grp:first-child{margin-top:0;}
+  .ih-row{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 11px;margin-bottom:6px;font-size:12.5px;background:#fff;}
+  .ih-row .nm{flex:1;font-weight:600;}
+  .ih-row.excl{background:#f6f7f9;}
+  .ih-row.excl .nm{color:var(--gray-light);}
+  .ih-act{border:1.5px solid var(--line);background:#fff;border-radius:7px;font-size:10.5px;font-weight:700;padding:4px 8px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .ih-act:hover{border-color:var(--blue-line);color:var(--blue);}
+  .mini-tag{font-size:9px;font-weight:800;border-radius:6px;padding:2px 6px;white-space:nowrap;}
+  .mt-sub{background:#e3ecff;color:#1d4ed8;}
+  .mt-cr{background:var(--green-soft);color:var(--green);}
+  .mt-int{background:#1d4ed8;color:#fff;}
+  .mt-pre{background:var(--amber-soft);color:var(--amber);}
+
+  /* 집계표 (경계 위치) */
+  .tally{background:#fff;border:1.5px solid var(--navy);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .tally h3{font-size:14px;font-weight:800;margin-bottom:4px;}
+  .tally .th{font-size:11px;color:var(--gray);margin-bottom:10px;}
+  .tally table{width:100%;border-collapse:collapse;font-size:12px;}
+  .tally th,.tally td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);}
+  .tally th{font-size:11px;color:var(--gray);font-weight:700;}
+  .tally td:first-child,.tally th:first-child{text-align:left;font-weight:700;}
+  .tally tr.total td{border-top:2px solid var(--navy);border-bottom:none;font-weight:800;}
+  .tally .ok{color:var(--green);font-weight:800;}
+  .tally .bad{color:var(--red);font-weight:800;}
+  .tally td.pre{color:var(--amber);font-weight:700;}
+  .conn{text-align:center;font-size:11px;color:var(--gray-light);margin:4px 0;}
+
+  /* 레이아웃 비교 전환 바 */
+  .layout-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:11px 16px;margin-bottom:14px;}
+  .lb-label{font-size:12.5px;font-weight:800;color:var(--navy);}
+  .lb-hint{font-size:11px;color:var(--gray-light);margin-left:auto;}
+  .layout-toggle{display:flex;background:var(--bg-soft);border:1px solid var(--line);border-radius:22px;padding:3px;}
+  .layout-toggle button{border:none;background:transparent;font-size:12px;font-weight:700;color:var(--gray);padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .layout-toggle button.active{background:var(--navy);color:#fff;}
+
+  /* 버전 A — 집계표 고정 + 탭 전환 */
+  .tally-fixed{position:sticky;top:8px;z-index:20;margin-bottom:12px;}
+  .tally-fixed .tally{box-shadow:0 4px 16px rgba(27,42,74,.1);}
+  .bl-tabs{display:flex;gap:6px;margin-bottom:12px;}
+  .bl-tab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:11px;font-size:13px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .bl-tab.act{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+  /* 버전 B — 좌우 2분할 */
+  .tally-strip{margin-bottom:12px;}
+  .split-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+  .split-col{min-width:0;}
+  @media(max-width:1100px){ .split-grid{grid-template-columns:1fr;} }
+  /* split일 때 빌더 전체폭 — 좌측 사이드 패널을 상단 가로 배치 */
+  .builder.layout-split{grid-template-columns:1fr;}
+  .builder.layout-split>div:first-child{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;}
+  .builder.layout-split>div:first-child .summary{grid-column:span 1;}
+  @media(max-width:900px){ .builder.layout-split>div:first-child{grid-template-columns:1fr;} }
+  /* 수강 계획 — 기이수 현황과 동일한 카드 구조 (미래=파란 톤) */
+  .plan-card{background:#f5f8ff;border:1px solid var(--blue-line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .plan-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--blue-line);}
+  .plan-head h3{font-size:14px;font-weight:800;flex:1;min-width:160px;}
+  .plan-summary{font-size:11.5px;color:var(--gray);font-weight:600;margin-left:auto;text-align:right;}
+  .plan-summary b{color:var(--blue);}
+  /* 이수 현황 일괄 처리 */
+  .ih-bulk{display:flex;align-items:center;gap:8px;padding:6px 0 10px;border-bottom:1px solid var(--line);margin-bottom:8px;}
+  .ih-bulk .sel-count{flex:1;font-size:11.5px;font-weight:600;color:var(--gray);}
+  .btn-bulk-recog{background:var(--green-soft);color:var(--green);border:1.5px solid #bfe3d3;border-radius:7px;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:inherit;}
+  .btn-bulk-excl{background:#f6f7f9;color:var(--gray);border:1.5px solid var(--line);border-radius:7px;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:inherit;}
+  .ih-cb{width:15px;height:15px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;}
+
+  /* 기이수 현황 테이블 */
+  .ih-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .ih-table th{font-size:10.5px;color:var(--gray);font-weight:700;text-align:left;padding:6px 8px;border-bottom:1.5px solid var(--line);white-space:nowrap;}
+  .ih-table th.c,.ih-table td.c{text-align:center;}
+  .ih-table td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .ih-table tr.sel td{background:#eef2ff !important;}
+  .ih-table .nm{font-weight:600;}
+  .ih-table .term-txt{font-size:11px;color:var(--gray);white-space:nowrap;}
+  .ih-table .org-txt{font-size:11px;color:var(--gray);white-space:nowrap;}
+  /* 상태별 행 색상: 인정=파랑 / 미인정=회색 / 미분류=주황 */
+  .ih-table tr.st-recog td:first-child{box-shadow:inset 3px 0 0 var(--blue);}
+  .ih-table tr.st-excl td:first-child{box-shadow:inset 3px 0 0 var(--gray-light);}
+  .ih-table tr.st-unset td:first-child{box-shadow:inset 3px 0 0 var(--amber);}
+  .ih-table tr.st-recog td{background:#f3f7ff;}
+  .ih-table tr.st-excl td{background:#f6f7f9;}
+  .ih-table tr.st-excl .nm{color:var(--gray-light);}
+  .ih-table tr.st-unset td{background:#fdf8ee;}
+  /* 이수구분 라벨 */
+  .area-pill{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap;display:inline-block;}
+  .area-pill.major{background:#e3ecff;color:#1d4ed8;}
+  .area-pill.major2{background:#e8e2fb;color:#6b3fd4;}
+  .area-pill.gen{background:#e7f5ef;color:#1a9c6b;}
+  .area-pill.free{background:#fbeede;color:#b06a10;}
+  /* 학점원 라벨 */
+  .origin-pill{font-size:9.5px;font-weight:700;border-radius:6px;padding:2px 7px;white-space:nowrap;display:inline-block;background:#eef2f7;color:#566;}
+  .origin-pill.internal{background:#1d4ed8;color:#fff;}
+  .origin-pill.transfer{background:#eef2f7;color:#48607a;}
+  .origin-pill.cert{background:var(--green-soft);color:var(--green);}
+  /* 상태 점 */
+  .st-dot{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;white-space:nowrap;}
+  .st-dot::before{content:"";width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .st-dot.recog{color:var(--blue);} .st-dot.recog::before{background:var(--blue);}
+  .st-dot.excl{color:var(--gray-light);} .st-dot.excl::before{background:var(--gray-light);}
+  .st-dot.unset{color:var(--amber);} .st-dot.unset::before{background:var(--amber);}
+  /* 미분류 탭 강조 */
+  .ih-tab.unset-warn{border-color:#f0dba8;color:var(--amber);}
+  .ih-tab.unset-warn.act{background:var(--amber);border-color:var(--amber);color:#fff;}
+  .ih-badge-n{display:inline-block;min-width:15px;background:var(--amber);color:#fff;font-size:9px;font-weight:800;border-radius:8px;padding:0 5px;margin-left:3px;}
+
+  /* 집계표 4분류 */
+  .tally .grp-sep td{border-top:1.5px solid var(--line);}
+
+  @media(max-width:900px){
+    .builder{grid-template-columns:1fr;}
+    .subj{flex-wrap:wrap;}
+    .ih-table{font-size:11px;}
+    .ih-table th,.ih-table td{padding:6px 5px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-head">
+    <div>
+      <h1>학습설계 툴 <span style="font-size:12px;color:var(--gray-light);font-weight:600">시연 최종판</span></h1>
+      <div class="sub">경로 B · 임시저장/검증/버전 · 부분결제 · 이정표 통합</div>
+    </div>
+    <div class="toggles">
+      <div class="view-toggle mode">
+        <button id="mCert" class="active" onclick="switchMode('cert')">자격증 과정</button>
+        <button id="mDeg" onclick="switchMode('deg')">학위 과정</button>
+      </div>
+      <div class="view-toggle">
+        <button id="tabAdmin" class="active" onclick="switchView('admin')">관리자 화면</button>
+        <button id="tabStudent" onclick="switchView('student')">학생 화면</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 레이아웃 비교 전환 바 (시연용) -->
+  <div class="layout-bar" id="layoutBar">
+    <span class="lb-label">📐 학습설계 툴 레이아웃 비교</span>
+    <div class="layout-toggle">
+      <button class="active" data-l="stack" onclick="setLayout('stack')">현재형 · 세로 스택</button>
+      <button data-l="tab" onclick="setLayout('tab')">A · 집계 고정 + 탭 전환</button>
+      <button data-l="split" onclick="setLayout('split')">B · 좌우 2분할</button>
+    </div>
+    <span class="lb-hint">같은 데이터로 3가지 배치 비교</span>
+  </div>
+
+  <!-- 재설계 안내 바 -->
+  <div class="redesign-bar" id="redesignBar">
+    <span class="rt">이 학생은 동일 과정 설계 <b>v1 (2026.03.15 발송)</b>이 있습니다. 어떻게 시작할까요?</span>
+    <button class="rb-load" onclick="alert('v1 불러오기 (시연)\n· 과목 상태·학기 배치·자격증 인정 복사 → 새 임시저장 작업본 생성\n· 자사 이수 자동 체크 재실행 (v1 이후 수강분 반영)\n· 마감 차수 → 최신 모집 차수로 교체 + 변경 표시');document.getElementById('redesignBar').style.display='none'">v1 불러와서 수정</button>
+    <button class="rb-new" onclick="document.getElementById('redesignBar').style.display='none'">템플릿에서 새로 시작</button>
+  </div>
+
+  <div class="builder" id="adminView">
+    <div>
+      <div class="panel">
+        <h3>접수 정보</h3>
+        <div class="stu-row"><span class="k">학생명</span><span class="v">김OO</span></div>
+        <div class="stu-row"><span class="k">과정</span><span class="v" id="stuCourse">사회복지사 2급</span></div>
+        <div class="stu-row"><span class="k">최종학력</span><span class="v">전문대학 졸업</span></div>
+        <div class="stu-row"><span class="k">신청 유형</span><span class="v"><span class="type-badge">보유학점 있음</span></span></div>
+        <div class="file-chip">성적증명서_김OO.pdf 보기</div>
+        <span class="note">자사 수강 이력은 LMS 자동 조회 — 엑셀에 포함하지 마세요 (중복 방지)</span>
+        <div class="upload-box">
+          <div class="ut">기이수 현황 엑셀 업로드</div>
+          <div class="ud">타기관(전적대) 이수 과목만 표준 양식으로 일괄 등록<br>자사 이수는 LMS 자동 조회 — 업로드 불필요</div>
+          <div class="ubtns">
+            <button class="btn-tmpl-dl" onclick="alert('기이수 현황 양식.xlsx 다운로드 (시연)\n열: 과목명·학점·이수구분·이수년도·이수학기·기관명\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
+            <button class="btn-upload" onclick="uploadExcel()">파일 업로드</button>
+          </div>
+          <div class="upload-done" id="uploadDone" style="display:none;">✓ 3과목 등록 — 기이수 현황에 미분류로 반영</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>템플릿 불러오기</h3>
+        <div class="tmpl-tabs">
+          <button class="tmpl-tab act" onclick="tmplTab(this)">패키지</button>
+          <button class="tmpl-tab" onclick="tmplTab(this)">내 템플릿</button>
+          <button class="tmpl-tab" onclick="tmplTab(this)">팀 공유</button>
+        </div>
+        <div id="tmplList"></div>
+        <span class="note">패키지연동=패키지 등록정보 자동 변환 / 직접등록=패키지 없는 과정</span>
+      </div>
+
+      <div class="panel">
+        <h3>자격증 학점 인정 <button class="btn-mini" onclick="alert('자격증 추가 (시연)')">+ 추가</button></h3>
+        <div class="cert-row"><span class="cn">컴퓨터활용능력 2급</span><span class="cc">+6학점</span></div>
+      </div>
+
+      <div class="summary" id="summaryBox"></div>
+    </div>
+
+    <div class="builder-main">
+      <div class="status-bar">
+        <span class="st-badge draft">임시저장</span>
+        <span class="st-badge ver">v2 작업본</span>
+        <span class="sv">마지막 저장 오늘 10:24 · 발송 전까지 학생에게 보이지 않음 · 스냅샷은 발송 시점에만 고정</span>
+      </div>
+
+      <div id="semList"></div>
+
+      <div class="sem-card comment-card">
+        <div class="sem-head"><h3>설계 코멘트</h3></div>
+        <textarea id="commentArea">전적대 이수 과목, 자사 수강 이력, 보유 자격증 학점을 반영한 맞춤 설계입니다.</textarea>
+        <div class="editor-hint">자유 서술 영역 — 에디터는 이 영역에만 사용</div>
+      </div>
+
+      <div class="save-row">
+        <button class="btn-draft" onclick="alert('임시저장되었습니다 (검증 없이 저장, 수정 자유, 학생 비노출)')">임시저장</button>
+        <button class="btn-save" onclick="openValidate()">검증 후 발송 (스냅샷)</button>
+        <button class="btn-mytmpl" onclick="saveMyTemplate()">내 템플릿 저장</button>
+        <button class="btn-preview" onclick="switchView('student')">학생 화면</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="student-view" id="studentView">
+    <div class="dev-toggle">
+      <button id="devMo" class="active" onclick="switchDevice('mo')">모바일</button>
+      <button id="devPc" onclick="switchDevice('pc')">PC</button>
+    </div>
+    <div class="phone" id="phoneFrame">
+      <div class="phone-head">
+        <div class="ph-tab act" id="phTab1" onclick="phTab(1)">학습설계 결과</div>
+        <div class="ph-tab" id="phTab2" onclick="phTab(2)">자격취득 이정표</div>
+      </div>
+      <div class="phone-body" id="phoneBody"></div>
+    </div>
+    <div class="stu-pc" id="stuPc">
+      <div class="stu-pc-head">
+        <div class="stu-pc-tab act" id="pcTab1" onclick="phTab(1)">학습설계 결과</div>
+        <div class="stu-pc-tab" id="pcTab2" onclick="phTab(2)">자격취득 이정표</div>
+      </div>
+      <div id="stuPcBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 저장 전 검증 모달 -->
+<div class="modal" id="vModal" onclick="if(event.target===this)closeValidate()">
+  <div class="modal-box">
+    <h4>발송 전 자격취득 기준 검증</h4>
+    <div class="md">자격취득 기준 마스터와 대조하여 설계를 검증합니다</div>
+    <div class="law-ver" id="lawVer"></div>
+    <div id="vChecks"></div>
+    <div class="modal-actions">
+      <button class="ma-close" onclick="closeValidate()">돌아가서 수정</button>
+      <button class="ma-send" id="btnSend" onclick="doSend()">검증 통과 · 발송</button>
+    </div>
+    <div class="force-line" onclick="alert('강제 발송 (시연): 사유 입력 필수 + 이력 기록\n특수 케이스 전용 — 검증 미충족 상태로 발송됨이 스냅샷에 표기됩니다')">미충족 상태로 강제 발송 (사유 기록)</div>
+  </div>
+</div>
+
+<div class="set-pop" id="setPop" onclick="if(event.target===this)closeSetPop()">
+  <div class="set-box">
+    <h4>과목 세트 추가</h4>
+    <div class="sd">묶음 단위 삽입 후 개별 조정</div>
+    <div id="setList"></div>
+    <button class="set-close" onclick="closeSetPop()">닫기</button>
+  </div>
+</div>
+
+<script>
+  let mode = "cert";
+  let builderLayout = "stack";   // stack(현재) | tab(A) | split(B)
+  let blTab = "ih";              // 버전 A 탭: ih | plan
+  function setLayout(l){ builderLayout=l;
+    document.querySelectorAll(".layout-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.l===l));
+    const av=document.getElementById("adminView");
+    if(av) av.classList.toggle("layout-split", l==="split");
+    document.querySelector(".wrap").classList.toggle("wide", l==="split");
+    renderBuilder();
+  }
+  function setBlTab(t){ blTab=t; renderBuilder(); }
+  const PRICE_PER = 68200, PKG_FULL = 954800, SEM_MAX = 24, CERT_CREDITS = 6;
+  const VALID_UNTIL = "2026.07.10";
+
+  // src:"internal" = 자사 이수 (LMS 자동 체크)
+  // 자격증 과정 area: req(필수) / elec(선택)
+  let certSems = [
+    { subjects: [
+      {id:3, name:"사회복지실천론", credit:3, area:"req"},
+      {id:4, name:"사회복지실천기술론", credit:3, area:"req"},
+      {id:5, name:"사회복지정책론", credit:3, area:"req"},
+      {id:6, name:"사회복지행정론", credit:3, area:"req"},
+      {id:7, name:"사회복지법제와실천", credit:3, area:"req"}
+    ]},
+    { subjects: [
+      {id:9,  name:"사회복지현장실습", credit:3, area:"req", prereq:true},
+      {id:11, name:"청소년복지론", credit:3, area:"elec"},
+      {id:12, name:"노인복지론", credit:3, area:"elec"},
+      {id:14, name:"가족복지론", credit:3, area:"elec"}
+    ]}
+  ];
+  // 이수 현황: status = unset(미분류) / recog(인정) / excl(미인정)
+  // origin = internal(자사) / transfer(전적대·학은제) / cert(자격증)
+  // kind = sub(과목대체) / cr(학점인정) / pre(취득예정)
+  let certIH = [
+    {id:1, name:"사회복지학개론", credit:3, area:"req", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
+    {id:2, name:"인간행동과사회환경", credit:3, area:"req", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
+    {id:8, name:"사회복지조사론", credit:2, area:"req", status:"recog", kind:"sub", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)", fromSem:0},
+    {id:10, name:"아동복지론", credit:3, area:"elec", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
+    {id:13, name:"장애인복지론", credit:3, area:"elec", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
+    {id:20, name:"사회복지윤리와철학", credit:3, area:"elec", status:"unset", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)"},
+    {id:21, name:"대학영어", credit:2, area:"etc", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:23, name:"한국사", credit:2, area:"etc", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:24, name:"현대사회와복지", credit:3, area:"req", status:"excl", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:22, name:"자원봉사론", credit:3, area:"elec", status:"recog", kind:"pre", origin:"cert", when:"보육교사 2급 취득 예정"}
+  ];
+  const DEG_TARGET = {total:140, mreq:18, melec:42, gen:30, free:0};
+  let degSems = [
+    { subjects:[
+      {id:101,name:"경영학원론",credit:3,area:"mreq"},{id:102,name:"회계원리",credit:3,area:"mreq"},
+      {id:103,name:"마케팅원론",credit:3,area:"mreq"},{id:104,name:"경제학개론",credit:3,area:"gen"},
+      {id:105,name:"생활속의통계",credit:3,area:"gen"},{id:106,name:"조직행동론",credit:3,area:"melec"},
+      {id:107,name:"인적자원관리",credit:3,area:"melec"},{id:108,name:"재무관리",credit:3,area:"mreq"}]},
+    { subjects:[
+      {id:109,name:"국제경영",credit:3,area:"melec"},{id:110,name:"소비자행동론",credit:3,area:"melec"},
+      {id:111,name:"경영정보시스템",credit:3,area:"melec"},{id:112,name:"심리학개론",credit:3,area:"gen"},
+      {id:113,name:"생산운영관리",credit:3,area:"melec"},{id:114,name:"경영전략",credit:3,area:"mreq"},
+      {id:115,name:"광고론",credit:3,area:"melec"}]},
+    { subjects:[
+      {id:116,name:"브랜드관리",credit:3,area:"melec"},{id:117,name:"유통관리",credit:3,area:"melec"},
+      {id:118,name:"서비스마케팅",credit:3,area:"melec"},{id:119,name:"글쓰기",credit:3,area:"gen"},
+      {id:120,name:"창업론",credit:3,area:"free"},{id:121,name:"품질경영",credit:3,area:"melec"},
+      {id:122,name:"e-비즈니스",credit:3,area:"free"}]}
+  ];
+  // 학위 이수 현황 (전적대 인정분 — 4분류)
+  let degIH = [
+    {id:201,name:"미시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"2022년 1학기 · OO대학(전적대)"},
+    {id:202,name:"거시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"2022년 1학기 · OO대학(전적대)"},
+    {id:203,name:"경영통계",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"2022년 2학기 · OO대학(전적대)"},
+    {id:204,name:"국제무역론",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"2022년 2학기 · OO대학(전적대)"},
+    {id:205,name:"대학국어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"2021년 1학기 · OO대학(전적대)"},
+    {id:206,name:"교양영어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"2021년 1학기 · OO대학(전적대)"},
+    {id:207,name:"철학의이해",credit:3,area:"free",status:"unset",origin:"transfer",when:"2021년 2학기 · OO대학(전적대)"},
+    {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"2021년 2학기 · OO대학(전적대)"}
+  ];
+  const templates = {
+    cert: [
+      {n:"사회복지사 2급 · 전문대졸", m:"패키지 2938 변환 · 학기2 · 17과목", b:"sys", origin:"pkg"},
+      {n:"사회복지사 2급 · 고졸", m:"패키지 2936 변환 · 20과목", b:"sys", origin:"pkg"},
+      {n:"보육교사 2급 (패키지 미구성)", m:"직접 등록 템플릿 · 14과목", b:"sys", origin:"direct"},
+      {n:"전적대 사복 일부이수 패턴", m:"팀장 승인 · 검증됨", b:"team", origin:"team"},
+      {n:"보육교사 자격 보유자 패턴", m:"06.02 저장 · 나만", b:"mine", origin:"mine"}
+    ],
+    deg: [
+      {n:"정보통신공학 · 14과목 패키지", m:"패키지 2940 변환 · 전필/전선 자동", b:"sys", origin:"pkg"},
+      {n:"한국어 학사 · 15과목", m:"패키지 2937 변환 · 1·2·3영역 매핑", b:"sys", origin:"pkg"},
+      {n:"학사 3학기 압축 패턴", m:"06.08 저장 · 나만", b:"mine", origin:"mine"}
+    ]
+  };
+  const subjectSets = [
+    {n:"교양 인기 세트", m:"심리학개론·글쓰기·생활속의통계 (9학점)", subjects:[
+      {name:"심리학개론",credit:3,area:"gen"},{name:"글쓰기",credit:3,area:"gen"},{name:"생활속의통계",credit:3,area:"gen"}]},
+    {n:"사복 선택과목 세트", m:"정신건강론·자원봉사론·사회문제론 (9학점)", subjects:[
+      {name:"정신건강론",credit:3,area:"elec"},{name:"자원봉사론",credit:3,area:"elec"},{name:"사회문제론",credit:3,area:"elec"}]},
+    {n:"경영 전공심화 세트", m:"리더십·협상론·기업윤리 (9학점)", subjects:[
+      {name:"리더십",credit:3,area:"melec"},{name:"협상론",credit:3,area:"melec"},{name:"기업윤리",credit:3,area:"melec"}]}
+  ];
+
+  let device = "mo";            // mo | pc
+  let selMode = false;          // 학생 화면 부분선택 모드
+  let selected = new Set();     // 선택 과목 id
+  let phView = 1;               // 1 결과 / 2 이정표
+  let nextNewId = 500, setTargetSem = 0;
+
+  function sems(){ return mode==="cert"?certSems:degSems; }
+  function ihList(){ return mode==="cert"?certIH:degIH; }
+  function recogList_(){ return ihList().filter(x=>x.status==="recog"); }
+  function exclList_(){ return ihList().filter(x=>x.status==="excl"); }
+  function unsetList_(){ return ihList().filter(x=>x.status==="unset"); }
+  function recogCreditsByArea(area){ return ihList().filter(x=>x.status==="recog"&&x.kind!=='pre'&&x.area===area).reduce((t,x)=>t+x.credit,0); }
+  function preCreditsByArea(area){ return ihList().filter(x=>x.status==="recog"&&x.kind==='pre'&&x.area===area).reduce((t,x)=>t+x.credit,0); }
+  function planByArea(area){ return all().filter(s=>s.area===area).reduce((t,s)=>t+s.credit,0); }
+  function all(){ return sems().flatMap(s=>s.subjects); }
+  function fmt(n){ return n.toLocaleString("ko-KR"); }
+  const START_YEAR=2026, START_TERM=2;
+  function termLabel(i){ let y=START_YEAR,t=START_TERM; for(let k=0;k<i;k++){t++;if(t>2){t=1;y++;}} return y+"년 "+t+"학기"; }
+  function counts(){ const a=all(); const ih=ihList();
+    return {total:a.length+recogList_().length, need:a.length,
+            done:ih.filter(x=>x.status==="recog"&&x.kind!=='pre').length, cert:ih.filter(x=>x.status==="recog"&&x.kind==='cr').length}; }
+  function needCredits(){ return all().reduce((t,s)=>t+s.credit,0); }
+  function doneCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='sub'&&x.origin!=='cert').reduce((t,x)=>t+x.credit,0); }
+  function certSubjCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='cr').reduce((t,x)=>t+x.credit,0); }
+  function price(){ return all().length*PRICE_PER; }
+  function activeSemCount(){ return sems().filter(s=>s.subjects.length>0).length; }
+  function semNeedCredits(sem){ return sem.subjects.reduce((t,s)=>t+s.credit,0); }
+  function prereqViolation(){
+    const l=sems(); const f=l.findIndex(s=>s.subjects.length>0);
+    if(f<0) return false; return l[f].subjects.some(s=>s.prereq);
+  }
+  function overSems(){ return sems().filter(s=>semNeedCredits(s)>SEM_MAX).length; }
+  function planCredits(a){ return all().filter(s=>s.area===a).reduce((t,s)=>t+s.credit,0); }
+
+  // 이수구분 메타 (과정 유형별 분류 체계)
+  const AREA_META = {
+    cert: { req:{label:"필수", cls:"major"}, elec:{label:"선택", cls:"major2"}, etc:{label:"기타", cls:"gen"} },
+    deg:  { mreq:{label:"전필", cls:"major"}, melec:{label:"전선", cls:"major2"},
+            gen:{label:"교양", cls:"gen"}, free:{label:"일선", cls:"free"} }
+  };
+  function areaMeta(a){ return (AREA_META[mode] && AREA_META[mode][a]) || {label:"기타", cls:"gen"}; }
+  function originLabel(o){ return o==="internal"?"학은제(자사)":o==="transfer"?"전적대":o==="cert"?"자격증":"기타"; }
+  // when("2023년 1학기 · OO대학(전적대)") → {term:"2023-1", org:"OO대학"}
+  function parseWhen(w){
+    if(!w) return {term:"-", org:"-"};
+    const parts=w.split("·").map(s=>s.trim());
+    let term=parts[0]||"-";
+    let org=parts.length>=2?parts.slice(1).join(" · "):"-";
+    // 연도·학기 → 2023-1
+    const m=term.match(/(\d{4})\s*년?\s*(\d)\s*학기/);
+    if(m) term=`${m[1]}-${m[2]}`;
+    // 기관명 괄호 라벨 제거: "OO대학(전적대)" → "OO대학", "배론(자사)" → "배론"
+    org=org.replace(/\s*\([^)]*\)\s*$/,"").trim()||"-";
+    return {term, org};
+  }
+
+  // 학생 학위 게이지용 (전필+전선 합산을 '전공'으로)
+  function degGaugeData(){
+    const recMajor=recogCreditsByArea("mreq")+recogCreditsByArea("melec");
+    const recGen=recogCreditsByArea("gen");
+    const recFree=recogCreditsByArea("free");
+    const recTot=recMajor+recGen+recFree;
+    const plMajor=planByArea("mreq")+planByArea("melec");
+    const plGen=planByArea("gen");
+    const plTot=needCredits();
+    return {recMajor,recGen,recTot,plMajor,plGen,plTot,
+            tgtMajor:DEG_TARGET.mreq+DEG_TARGET.melec, tgtGen:DEG_TARGET.gen, tgtTot:DEG_TARGET.total};
+  }
+  function studentRecogCredits(){
+    return ihList().filter(x=>x.status==="recog"&&x.kind!=='pre').reduce((t,x)=>t+x.credit,0)+(mode==="cert"?CERT_CREDITS:0);
+  }
+  function studentGaugeHTML(){
+    if(mode!=="deg") return "";
+    const g=degGaugeData();
+    const row=(l,t,r,p)=>{const rp=Math.min(100,r/t*100),pp=Math.min(100-rp,p/t*100);
+      return `<div class="dg-row"><div class="dg-lab"><span>${l}</span><span>${r+p}/${t}</span></div><div class="dg-bar"><div class="dg-rec" style="width:${rp}%"></div><div class="dg-plan" style="width:${pp}%"></div></div></div>`;};
+    return `<div class="deg-gauge"><h5>학점 이수 현황</h5>${row("총계",g.tgtTot,g.recTot,g.plTot)}${row("전공(전필+전선)",g.tgtMajor,g.recMajor,g.plMajor)}${row("교양",g.tgtGen,g.recGen,g.plGen)}</div>`;
+  }
+
+  function renderTemplates(){
+    document.getElementById("tmplList").innerHTML = templates[mode].map(t=>{
+      const originTag = t.origin==="pkg" ? '<span class="tb sys">패키지연동</span>'
+        : t.origin==="direct" ? '<span class="tb" style="background:#eef0f4;color:#777;">직접등록</span>'
+        : t.origin==="team" ? '<span class="tb team">팀 공유</span>'
+        : '<span class="tb mine">내 것</span>';
+      const msg = t.origin==="pkg"
+        ? '패키지 데이터(학기·과목·이수구분·가격) 자동 변환 — 추가 입력 없이 템플릿화'
+        : t.origin==="direct" ? '패키지 미구성 과정 — 직접 등록한 템플릿' : '저장된 설계 패턴';
+      return `<div class="tmpl-item" onclick="alert('템플릿 불러오기 (시연): ${t.n}\\n${msg}\\n· 불러온 순간부터 학생 개인 사본 — 원본/패키지 불변 (스냅샷 시점 고정)')">
+        <span class="tn">${t.n}</span>${originTag}
+        <div class="tm">${t.m}</div>
+      </div>`;
+    }).join("");
+  }
+  function tmplTab(el){ document.querySelectorAll(".tmpl-tab").forEach(b=>b.classList.remove("act")); el.classList.add("act"); }
+
+  // 엑셀 업로드 (시연): 표준양식 파싱 → 기이수 원천 현황에 '미분류'로 등록 (인정 판단은 상담사)
+  let uploaded = false;
+  function uploadExcel(){
+    if(uploaded){ alert("이미 업로드된 내역이 있습니다 (시연)"); return; }
+    if(mode!=="cert"){ alert("시연 데이터는 자격증 과정 기준입니다."); return; }
+    const rows=[
+      {id:4, fromSem:0, when:"2023년 2학기 · OO대학(전적대)"},
+      {id:6, fromSem:0, when:"2023년 2학기 · OO대학(전적대)"}
+    ];
+    rows.forEach(r=>{ const arr=sems();
+      for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===r.id);
+        if(idx>-1){ const s=arr[i].subjects.splice(idx,1)[0];
+          certIH.push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:"unset",origin:"transfer",when:r.when,fromSem:r.fromSem}); break; } } });
+    // 우리 커리큘럼에 없는 전적대 과목도 일단 미분류로 등록 (기록 보존, 상담사가 미인정 처리)
+    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"etc",status:"unset",origin:"transfer",when:"2023년 2학기 · OO대학(전적대)"});
+    uploaded=true;
+    ihTab="unset"; ihOpen=true;
+    document.getElementById("uploadDone").style.display="block";
+    alert("업로드 완료 (시연)\n· 표준양식 읽음 → 기이수 현황에 '미분류' 상태로 등록\n· 타기관 이수분만 등록 (자사 이수는 LMS 자동 조회 — 중복 제외)\n· [미분류] 탭에서 체크 후 일괄 [인정]/[미인정] 처리하세요");
+    renderBuilder();
+  }
+
+  function ihSummary(){
+    const r=recogList_().length, e=exclList_().length, u=unsetList_().length;
+    const rc=ihList().filter(x=>x.status==="recog"&&x.kind!=='pre').reduce((t,x)=>t+x.credit,0);
+    const pc=ihList().filter(x=>x.status==="recog"&&x.kind==='pre').reduce((t,x)=>t+x.credit,0);
+    return `인정 ${r}과목(${rc}학점)${pc?` · 예정 ${pc}학점`:''} · 미인정 ${e}${u?` · <b style="color:var(--amber)">미분류 ${u}</b>`:''}`;
+  }
+  let ihOpen=true, ihTab="unset"; let ihSelected=new Set();
+  function toggleIH(){ ihOpen=!ihOpen; renderBuilder(); }
+  function ihTabSel(t){ ihTab=t; ihSelected.clear(); renderBuilder(); }
+  function curIHList(){ return ihTab==="recog"?recogList_():ihTab==="excl"?exclList_():ihTab==="unset"?unsetList_():ihList(); }
+
+  // 일괄 처리
+  function toggleSelIH(id){ ihSelected.has(id)?ihSelected.delete(id):ihSelected.add(id); renderBuilder(); }
+  function toggleAllIH(){
+    const list=curIHList();
+    const allSel=list.length>0&&list.every(x=>ihSelected.has(x.id));
+    if(allSel){list.forEach(x=>ihSelected.delete(x.id));}else{list.forEach(x=>ihSelected.add(x.id));}
+    renderBuilder();
+  }
+  function bulkSetStatus(val){
+    ihSelected.forEach(id=>{const x=ihList().find(x=>x.id===id);if(x){x.status=val;if(val==="recog"&&!x.kind)x.kind="sub";}});
+    ihSelected.clear();
+    renderBuilder();
+  }
+
+  function statusDot(s){
+    if(s==="recog") return '<span class="st-dot recog">인정</span>';
+    if(s==="excl") return '<span class="st-dot excl">미인정</span>';
+    return '<span class="st-dot unset">미분류</span>';
+  }
+  function renderIH(){
+    const recog=recogList_(), excl=exclList_(), unset=unsetList_();
+    const list = curIHList();
+    // 정렬: 연도-학기 기준
+    const sorted=[...list].sort((a,b)=>parseWhen(a.when).term.localeCompare(parseWhen(b.when).term));
+    const selCount=[...ihSelected].filter(id=>list.some(x=>x.id===id)).length;
+    const allSel=list.length>0&&list.every(x=>ihSelected.has(x.id));
+    const showStCol = (ihTab==="all"); // 전체 탭에서만 상태 컬럼 노출
+    const colspan = showStCol?7:6;
+
+    const bulkBar=`
+      <div class="ih-bulk">
+        <span class="sel-count">${selCount>0?`<b>${selCount}과목</b> 선택됨 →`:'행 선택 후 일괄 처리'}</span>
+        <button class="btn-bulk-recog" ${selCount?'':'disabled style="opacity:.4;cursor:default"'} onclick="bulkSetStatus('recog')">✓ 인정</button>
+        <button class="btn-bulk-excl" ${selCount?'':'disabled style="opacity:.4;cursor:default"'} onclick="bulkSetStatus('excl')">✕ 미인정</button>
+        ${ihTab!=="unset"?`<button class="btn-bulk-excl" ${selCount?'':'disabled style="opacity:.4;cursor:default"'} onclick="bulkSetStatus('unset')">↺ 미분류로</button>`:''}
+      </div>`;
+
+    const headRow=`<tr>
+        <th class="c" style="width:30px;"><input type="checkbox" class="ih-cb" ${allSel?'checked':''} onchange="toggleAllIH()"></th>
+        <th style="width:54px;">이수구분</th>
+        <th>과목명</th>
+        <th style="width:74px;">학점원</th>
+        ${showStCol?'<th class="c" style="width:50px;">상태</th>':''}
+        <th style="width:78px;">연도·학기</th>
+        <th class="c" style="width:42px;">학점</th>
+        <th style="width:88px;">기관명</th>
+      </tr>`;
+
+    const bodyRows = list.length===0
+      ? `<tr><td colspan="${colspan}"><div class="empty-sem">해당 항목 없음</div></td></tr>`
+      : sorted.map(x=>{
+          const am=areaMeta(x.area);
+          let wp=parseWhen(x.when);
+          if(x.kind==='cr'||x.kind==='pre'){ wp={term:"-", org:"-"}; } // 자격증은 시기·기관 무의미
+          return `<tr class="st-${x.status} ${ihSelected.has(x.id)?'sel':''}">
+            <td class="c"><input type="checkbox" class="ih-cb" ${ihSelected.has(x.id)?'checked':''} onchange="toggleSelIH(${x.id})"></td>
+            <td><span class="area-pill ${am.cls}">${am.label}</span></td>
+            <td><span class="nm">${x.name}</span></td>
+            <td><span class="origin-pill ${x.origin}">${originLabel(x.origin)}</span></td>
+            ${showStCol?`<td class="c">${statusDot(x.status)}</td>`:''}
+            <td><span class="term-txt">${wp.term}</span></td>
+            <td class="c">${x.credit}</td>
+            <td><span class="org-txt">${wp.org}</span></td>
+          </tr>`;
+        }).join("");
+
+    const uN = unset.length;
+    return `<div class="ih-card">
+      <div class="ih-head">
+        <h3>기이수 현황 <span style="font-weight:400;font-size:11px;color:var(--gray)">자사(LMS 자동) · 타기관(엑셀) 이수분 — 인정 여부는 상담사 확정</span></h3>
+        <div class="ih-head-right">
+          <span class="ih-summary">${ihSummary()}</span>
+          <button class="ih-toggle" onclick="toggleIH()">${ihOpen?'접기 ▴':'펼치기 ▾'}</button>
+        </div>
+      </div>
+      <div class="ih-body ${ihOpen?'open':''}">
+        <div class="ih-tabs">
+          <button class="ih-tab ${uN?'unset-warn':''} ${ihTab==='unset'?'act':''}" onclick="ihTabSel('unset')">미분류${uN?`<span class="ih-badge-n">${uN}</span>`:` (0)`}</button>
+          <button class="ih-tab ${ihTab==='recog'?'act':''}" onclick="ihTabSel('recog')">인정 (${recog.length})</button>
+          <button class="ih-tab ${ihTab==='excl'?'act':''}" onclick="ihTabSel('excl')">미인정 (${excl.length})</button>
+          <button class="ih-tab ${ihTab==='all'?'act':''}" onclick="ihTabSel('all')">전체 (${ihList().length})</button>
+        </div>
+        ${bulkBar}
+        <table class="ih-table"><thead>${headRow}</thead><tbody>${bodyRows}</tbody></table>
+        <div style="font-size:10.5px;color:var(--gray-light);margin-top:8px;">· 업로드/불러온 직후는 <b style="color:var(--amber)">미분류</b> 상태 — 체크박스 선택 후 일괄 [인정]/[미인정] 처리 · 인정분만 집계표에 반영</div>
+      </div>
+    </div>`;
+  }
+
+  function renderTally(){
+    const areaDefs = mode==="cert"
+      ? [["req","필수",30],["elec","선택",12]]
+      : [["mreq","전필",DEG_TARGET.mreq],["melec","전선",DEG_TARGET.melec],["gen","교양",DEG_TARGET.gen],["free","일선",DEG_TARGET.free]];
+    let rTot=0,pTot=0,plTot=0,reqTot=0;
+    const body = areaDefs.map(([a,label,need])=>{
+      const r=recogCreditsByArea(a), p=preCreditsByArea(a), pl=planByArea(a);
+      const sum=r+p+pl; rTot+=r;pTot+=p;plTot+=pl;reqTot+=need;
+      const ok=sum>=need;
+      return `<tr><td>${label}</td><td>${need||'-'}</td><td>${r}</td><td>${pl}</td><td class="pre">${p||'-'}</td><td>${sum}</td>
+        <td class="${ok?'ok':'bad'}">${need?(ok?'충족':'부족 '+(need-sum)):'-'}</td></tr>`;
+    }).join("");
+    const sumTot=rTot+pTot+plTot;
+    const totalReq = mode==="cert" ? 42 : DEG_TARGET.total;
+    const okTot=sumTot>=totalReq;
+    return `<div class="tally">
+      <h3>이수구분 집계표 <span style="font-weight:400;font-size:11px;color:var(--gray)">과거(인정) + 미래(배치) 합산${mode==="cert"?" · 필수/선택 (자격구분)":" · 전필/전선/교양/일선"}</span></h3>
+      <div class="th">기준: ${mode==="cert"?"사회복지사업법 별표1 · 전문대졸 · 필수 10과목(30학점)·선택 4과목(12학점)":"학사 표준교육과정 · 전필18·전선42·교양30"} · 인정=이수현황 인정분만(미인정·미분류 제외) · 예정=취득예정 자격증 조건부</div>
+      <table>
+        <tr><th>이수구분</th><th>요건</th><th>인정</th><th>배치</th><th>예정</th><th>합계</th><th>판정</th></tr>
+        ${body}
+        <tr class="total"><td>총계</td><td>${totalReq}</td><td>${rTot}</td><td>${plTot}</td><td class="pre">${pTot||'-'}</td><td>${sumTot}</td><td class="${okTot?'ok':'bad'}">${okTot?'충족':'부족 '+(totalReq-sumTot)}</td></tr>
+      </table>
+    </div>`;
+  }
+
+  function renderBuilder(){
+    const list=document.getElementById("semList"), semArr=sems();
+    const ihHTML = renderIH();
+    const tallyHTML = renderTally();
+    const totalNeed=all().length, totalNeedCr=needCredits();
+    let planInner = `<div class="plan-head">
+        <h3>수강 계획 <span style="font-weight:400;font-size:11px;color:var(--gray)">앞으로 수강할 과목 (미래) — 학기별 배치</span></h3>
+        <span class="plan-summary">총 <b>${totalNeed}과목</b> · <b>${totalNeedCr}학점</b> · <b>${activeSemCount()}학기</b></span>
+      </div>`;
+    planInner += semArr.map((sem,i)=>{
+      const nc=sem.subjects.reduce((t,s)=>t+s.credit,0), over=nc>SEM_MAX;
+      // B안: 이 학기에서 인정 처리되어 빠진 과목 (회색+체크 placeholder)
+      const ghosts = recogList_().filter(x=>x.fromSem===i);
+      const subjRows = sem.subjects.map(s=>{
+        const am=areaMeta(s.area);
+        return `
+          <div class="subj">
+            <span class="name">${s.name}</span>
+            <span class="area-tag ${am.cls}">${am.label}</span>
+            ${s.prereq?'<span class="prereq-tag">선이수 필요</span>':""}
+            <input class="credit-input" type="number" min="1" max="6" value="${s.credit}" onchange="setCredit(${s.id},this.value)"><span class="meta">학점</span>
+            <button class="mv" onclick="moveSubj(${s.id},-1)" ${i===0?'disabled style="opacity:.3"':''}>◀</button>
+            <button class="mv" onclick="moveSubj(${s.id},1)" ${i===semArr.length-1?'disabled style="opacity:.3"':''}>▶</button>
+          </div>`;
+      }).join("");
+      const ghostRows = ghosts.map(x=>{
+        const am=areaMeta(x.area);
+        return `
+          <div class="subj ghost">
+            <span class="gcheck">✓</span>
+            <span class="name">${x.name}</span>
+            <span class="area-tag ${am.cls}">${am.label}</span>
+            <span class="ghost-tag">${x.origin==="cert"?"자격증 인정":x.origin==="internal"?"자사 이수":"인정 완료"}</span>
+            <span class="meta">${x.credit}학점</span>
+            <button class="ih-act" onclick="unrecognize(${x.id},${i})" title="인정 취소 → 수강으로 되돌림">수강으로 ↓</button>
+          </div>`;
+      }).join("");
+      const rows = (sem.subjects.length===0 && ghosts.length===0)
+        ? '<div class="empty-sem">과목 없음 — 빈 학기는 삭제 가능</div>'
+        : subjRows + ghostRows;
+      return `
+        <div class="sem-card ${over?"over":""}" style="margin-bottom:14px;">
+          <div class="sem-head">
+            <h3>${i+1}학기 <span>${termLabel(i)}</span></h3>
+            <div class="right">
+              ${over?`<span class="over-warn">학기 ${SEM_MAX}학점 초과 (${nc}학점)</span>`:""}
+              <span class="cnt">수강 ${sem.subjects.length}${ghosts.length?` · 인정 ${ghosts.length}`:''} · ${nc}학점</span>
+              ${(sem.subjects.length===0&&ghosts.length===0)?`<button class="btn-del-sem" onclick="delSemester(${i})">학기 삭제</button>`:""}
+            </div>
+          </div>
+          ${rows}
+          <div class="sem-actions">
+            <button class="btn-add-subj" onclick="addSubj(${i})">+ 과목 추가</button>
+            <button class="btn-add-set" onclick="openSetPop(${i})">+ 세트 추가</button>
+          </div>
+        </div>`;
+    }).join("");
+    planInner += `<button class="btn-add-sem" onclick="addSemester()">+ 학기 추가</button>`;
+    const planHTML = `<div class="plan-card">${planInner}</div>`;
+
+    let html="";
+    if(builderLayout==="tab"){
+      // 버전 A — 집계표 고정 + 기이수/수강 탭 전환
+      html = `<div class="tally-fixed">${tallyHTML}</div>
+        <div class="bl-tabs">
+          <button class="bl-tab ${blTab==='ih'?'act':''}" onclick="setBlTab('ih')">① 기이수 현황 분류</button>
+          <button class="bl-tab ${blTab==='plan'?'act':''}" onclick="setBlTab('plan')">② 수강 계획 배치</button>
+        </div>
+        <div class="bl-panel">${blTab==='ih'?ihHTML:planHTML}</div>`;
+    } else if(builderLayout==="split"){
+      // 버전 B — 좌우 2분할 (좌:기이수, 우:수강계획) + 집계표 상단 띠
+      html = `<div class="tally-strip">${tallyHTML}</div>
+        <div class="split-grid">
+          <div class="split-col">${ihHTML}</div>
+          <div class="split-col">${planHTML}</div>
+        </div>`;
+    } else {
+      // 현재형 — 세로 스택
+      html = ihHTML + tallyHTML + planHTML;
+    }
+    list.innerHTML = html;
+    if(prereqViolation()) list.innerHTML += `<div class="prereq-warn-bar">⚠ 선이수 필요 과목(실습)이 첫 수강 학기에 배치되어 있습니다.</div>`;
+    renderSummary(); renderTemplates();
+    document.getElementById("stuCourse").textContent = mode==="cert"?"사회복지사 2급":"경영학사 (학위과정)";
+  }
+
+  function renderSummary(){
+    const box=document.getElementById("summaryBox"), c=counts();
+    const recCr = ihList().filter(x=>x.status==="recog"&&x.kind!=='pre').reduce((t,x)=>t+x.credit,0);
+    const preCr = ihList().filter(x=>x.status==="recog"&&x.kind==='pre').reduce((t,x)=>t+x.credit,0);
+    const unsetN = unsetList_().length;
+    if(mode==="cert"){
+      box.className="summary";
+      box.innerHTML=`
+        <div class="t">설계 요약 (실시간)</div>
+        <div class="big">인정 ${recogList_().filter(x=>x.kind!=='pre').length}과목(${recCr}학점)${preCr?` + 예정 ${preCr}학점`:''}<br>→ <em>${c.need}과목</em> 수강</div>
+        <div class="dur">미인정 ${exclList_().length}과목${unsetN?` · <span style="color:#ffd87a;font-weight:700">미분류 ${unsetN}과목 처리 필요</span>`:''}</div>
+        <div class="dur">수강 기간: <b>${activeSemCount()}학기</b></div>
+        <div class="price">전체 패키지 <s>${fmt(PKG_FULL)}원</s><br>맞춤 설계가 <b style="font-size:17px">${fmt(price())}원</b></div>
+        <div class="valid">유효기간 ${VALID_UNTIL} · 쿠폰은 결제 단계 적용</div>`;
+    } else {
+      box.className="summary deg";
+      box.innerHTML=`<div class="t">학점 게이지</div><div class="big">학위 과정은 집계표 참조</div>
+        <div class="price">설계 수강료 <b style="font-size:17px">${fmt(price())}원</b></div>`;
+    }
+  }
+  // 수강 계획 → 이수 현황 (인정 처리) — fromSem 기록해 B안 회색 placeholder 유지
+  function recognize(id,semIdx){
+    const arr=sems();
+    for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===id);
+      if(idx>-1){ const s=arr[i].subjects.splice(idx,1)[0];
+        const w=prompt("이수/인정 시기·근거를 입력하세요\n예: 2024년 2학기 · OO대학(전적대) / 자격증 학점인정", "");
+        if(w===null){ arr[i].subjects.splice(idx,0,s); return; }
+        ihList().push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:"recog",kind:"sub",origin:"transfer",when:w.trim()||"시기 미입력",fromSem:(semIdx!=null?semIdx:i)});
+        renderBuilder(); return; }
+    }
+  }
+  // 이수 현황(인정) → 수강 계획 되돌림 (회색 placeholder의 [수강으로 ↓])
+  function unrecognize(id,semIdx){
+    const ih=ihList(); const idx=ih.findIndex(x=>x.id===id);
+    if(idx>-1){ const x=ih.splice(idx,1)[0];
+      const arr=sems(); const tgt=(semIdx!=null&&arr[semIdx])?semIdx:0;
+      arr[tgt].subjects.push({id:x.id,name:x.name,credit:x.credit,area:x.area,prereq:x.prereq});
+      renderBuilder(); }
+  }
+  // 이수 현황 상태 변경 (인정/미인정/미분류)
+  function setRecog(id,val){ const x=ihList().find(x=>x.id===id); if(x){x.status=val?"recog":"excl"; if(val&&!x.kind)x.kind="sub";} renderBuilder(); }
+  function setCredit(id,v){ const n=Math.max(1,Math.min(6,parseInt(v)||3)); all().forEach(s=>{if(s.id===id)s.credit=n;}); renderBuilder(); }
+  function addSubj(i){ const name=prompt("과목명 (시연)",""); if(!name)return; sems()[i].subjects.push({id:nextNewId++,name,credit:3,area:mode==="cert"?"elec":"melec"}); renderBuilder(); }
+  function moveSubj(id,dir){
+    const arr=sems();
+    for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===id);
+      if(idx>-1){ const t=i+dir; if(t<0||t>=arr.length)return; arr[t].subjects.push(arr[i].subjects.splice(idx,1)[0]); renderBuilder(); return; } }
+  }
+  function addSemester(){ sems().push({subjects:[]}); renderBuilder(); }
+  function delSemester(i){ if(sems()[i].subjects.length>0){alert("과목이 있는 학기는 삭제 불가");return;} sems().splice(i,1); renderBuilder(); }
+  function openSetPop(i){ setTargetSem=i;
+    document.getElementById("setList").innerHTML=subjectSets.map((s,k)=>`<div class="set-item" onclick="applySet(${k})"><div class="sn">${s.n}</div><div class="sm">${s.m}</div></div>`).join("");
+    document.getElementById("setPop").classList.add("open"); }
+  function applySet(k){ subjectSets[k].subjects.forEach(s=>sems()[setTargetSem].subjects.push({id:nextNewId++,name:s.name,credit:s.credit,area:s.area}));
+    document.getElementById("setPop").classList.remove("open"); renderBuilder(); }
+  function closeSetPop(){ document.getElementById("setPop").classList.remove("open"); }
+  function saveMyTemplate(){
+    const c=confirm("[확인] 구조만 저장 — 상태 전체 '수강' 초기화 (권장)\n[취소] 상태 포함 저장 — 같은 패턴 학생 전용");
+    alert(c?"구조만 저장되었습니다. 팀장 승인 시 팀 공유 승격 가능.":"상태 포함 저장되었습니다.");
+  }
+  function switchMode(m){ mode=m; selected.clear(); selMode=false; ihSelected.clear(); ihTab=(unsetList_().length?"unset":"recog");
+    document.getElementById("mCert").classList.toggle("active",m==="cert");
+    document.getElementById("mDeg").classList.toggle("active",m==="deg");
+    renderBuilder();
+    if(document.getElementById("studentView").style.display==="flex") renderStudent();
+  }
+
+  // ===== 검증 모달 =====
+  function buildChecks(){
+    const c=counts();
+    if(mode==="cert"){
+      const practicePlaced = all().some(s=>s.prereq);
+      return [
+        {ok:c.need+c.done>=14, t:"이수 기준 충족", s:`기준 17과목 환산 — 인정 ${c.done} + 수강 ${c.need}`},
+        {ok:practicePlaced, t:"현장실습 배치", s:practicePlaced?"실습 1과목 배치됨":"실습 과목 미배치 — 충족 불가"},
+        {ok:!prereqViolation(), t:"선이수 순서", s:prereqViolation()?"실습이 첫 수강 학기에 있음":"이론 이수 후 실습 배치 적합"},
+        {ok:overSems()===0, t:"학기당 이수학점", s:overSems()===0?`전 학기 ${SEM_MAX}학점 이내`:`${overSems()}개 학기 초과`}
+      ];
+    } else {
+      const rArea=a=>recogCreditsByArea(a), plArea=a=>planByArea(a);
+      const recTot=["mreq","melec","gen","free"].reduce((t,a)=>t+rArea(a),0);
+      const plTot=needCredits(); const sumTot=recTot+plTot;
+      const mreqSum=rArea("mreq")+plArea("mreq"), melecSum=rArea("melec")+plArea("melec"), genSum=rArea("gen")+plArea("gen");
+      return [
+        {ok:sumTot>=DEG_TARGET.total, t:"총 학점 충족", s:`인정 ${recTot} + 배치 ${plTot} / 목표 ${DEG_TARGET.total}`},
+        {ok:mreqSum>=DEG_TARGET.mreq, t:"전공필수 충족", s:`${mreqSum} / ${DEG_TARGET.mreq}`},
+        {ok:melecSum>=DEG_TARGET.melec, t:"전공선택 충족", s:`${melecSum} / ${DEG_TARGET.melec}`},
+        {ok:genSum>=DEG_TARGET.gen, t:"교양 충족", s:`${genSum} / ${DEG_TARGET.gen}`},
+        {ok:overSems()===0, t:"학기당 이수학점", s:overSems()===0?`전 학기 ${SEM_MAX}학점 이내`:`${overSems()}개 학기 초과`}
+      ];
+    }
+  }
+  function openValidate(){
+    const checks=buildChecks();
+    document.getElementById("lawVer").innerHTML = mode==="cert"
+      ? "기준: 사회복지사업법 시행규칙 별표1 · <b>2026 개정판</b> · 학력분기: 전문대졸 이상"
+      : "기준: 학점인정 등에 관한 법률 · 학사(경영) 표준교육과정 · <b>2026 기준</b>";
+    document.getElementById("vChecks").innerHTML = checks.map(c=>`
+      <div class="vcheck ${c.ok?"ok":"bad"}"><span class="ic">${c.ok?"✓":"✕"}</span>
+        <span class="vd">${c.t}<div class="vs">${c.s}</div></span></div>`).join("");
+    document.getElementById("btnSend").disabled = !checks.every(c=>c.ok);
+    document.getElementById("vModal").classList.add("open");
+  }
+  function closeValidate(){ document.getElementById("vModal").classList.remove("open"); }
+  function doSend(){
+    closeValidate();
+    alert("발송 완료 (시연)\n· 스냅샷 고정: 학기·과목·학점·가격·차수·검증결과·기준버전·유효기간\n· 상태: 임시저장 → 발송 완료 (v2)\n· 학생에게 설계 완료 알림 발송");
+  }
+
+  // ===== 학생 화면 =====
+  function phTab(n){ phView=n;
+    document.getElementById("phTab1").classList.toggle("act",n===1);
+    document.getElementById("phTab2").classList.toggle("act",n===2);
+    document.getElementById("pcTab1").classList.toggle("act",n===1);
+    document.getElementById("pcTab2").classList.toggle("act",n===2);
+    renderStudent(); }
+  function switchDevice(d){ device=d;
+    document.getElementById("devMo").classList.toggle("active",d==="mo");
+    document.getElementById("devPc").classList.toggle("active",d==="pc");
+    document.getElementById("phoneFrame").style.display = d==="mo"?"block":"none";
+    document.getElementById("stuPc").classList.toggle("show",d==="pc");
+    renderStudent(); }
+  function toggleSelMode(){ selMode=!selMode; if(!selMode)selected.clear(); renderStudent(); }
+  function toggleSel(id){ selected.has(id)?selected.delete(id):selected.add(id); renderStudent(); }
+  function selectSem(i){ sems()[i].subjects.forEach(s=>selected.add(s.id)); renderStudent(); }
+  function selCredits(){ return all().filter(s=>selected.has(s.id)).length*PRICE_PER; }
+
+  function renderStudent(){
+    if(device==="pc"){ renderStudentPC(); return; }
+    const body=document.getElementById("phoneBody");
+    if(phView===2){ body.innerHTML=renderMilestone(); return; }
+    const c=counts(); const comment=document.getElementById("commentArea").value;
+    const recog=recogList_().filter(x=>x.kind!=="pre");
+    const semBlocks=sems().map((sem,i)=>{
+      const needOnly=sem.subjects;
+      if(needOnly.length===0)return "";
+      return `<div class="s-sem">
+        <h4>${i+1}학기 수강 과목 <span>${termLabel(i)} · ${semNeedCredits(sem)}학점 ${selMode?`<button class="sel-all" onclick="selectSem(${i})">학기 전체 선택</button>`:""}</span></h4>
+        ${needOnly.map(s=>`<div class="s-subj">
+          ${selMode?`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`:""}
+          <span class="nm">${s.name}</span><span style="font-size:10px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
+      </div>`;
+    }).join("");
+    const rGroups={};
+    recog.forEach(s=>{const k=s.when||"시기 미입력";(rGroups[k]=rGroups[k]||[]).push(s);});
+    const rKeys=Object.keys(rGroups).sort();
+    const recogList=`
+      <button class="recog-toggle" onclick="document.getElementById('recogL').classList.toggle('open')">인정 내역 ${recog.length+(mode==="cert"?2:0)}건 보기 ▾</button>
+      <div class="recog-list" id="recogL">
+        ${rKeys.map(k=>`
+          <div style="font-size:10.5px;font-weight:800;color:var(--green);margin:9px 0 5px;">${k}</div>
+          ${rGroups[k].map(s=>`<div class="s-subj ${s.kind==="cr"?"cert":"dim"}"><span class="nm">${s.name}</span>
+            ${s.origin==="internal"?'<span class="s-badge internal">자사 이수</span>':s.kind==="cr"?'<span class="s-badge cert">자격증 인정</span>':'<span class="s-badge done">전적대 이수</span>'}</div>`).join("")}
+        `).join("")}
+        ${mode==="cert"?`<div style="font-size:10.5px;font-weight:800;color:var(--green);margin:9px 0 5px;">자격증 학점인정 (학점 단위)</div>
+        <div class="s-subj cert"><span class="nm">컴퓨터활용능력 2급</span><span class="s-badge cert">+6학점</span></div>`:""}
+      </div>`;
+    const gaugeBlock=studentGaugeHTML();
+    const recogCredits=studentRecogCredits();
+    const selBar = selMode?`
+      <div class="sel-bar">
+        <div class="cmp"><span>선택 ${selected.size}과목 · 단과가</span><b>${fmt(selCredits())}원</b></div>
+        ${mode==="cert"?`<div class="pkg-hint">전체 패키지로 결제 시 ${fmt(PKG_FULL)}원 — 패키지 할인은 전체 결제에만 적용</div>`:""}
+        <button onclick="alert('수강신청 바구니로 ${selected.size}과목 일괄 전송 (시연)\\n과목·차수 매핑된 채 결제 화면 이동 → 쿠폰 적용 가능')">선택 과목 수강신청 (${selected.size})</button>
+      </div>`:"";
+    body.innerHTML=`
+      <div class="hero-box ${mode==="deg"?"deg":""}">
+        <span class="badge">맞춤 설계 완료</span><span class="badge">v2</span>
+        <h2>${mode==="cert"?"사회복지사 2급":"경영학사"}<br>학습설계 결과</h2>
+        <div class="basis">전문대학 졸업 · 보유학점 반영 · 2026.05.29 개강반</div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="k">기간</div><div class="v">${activeSemCount()}학기</div></div>
+          <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
+          <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(price())}원</div></div>
+        </div>
+      </div>
+      <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 적용하면 약 ${fmt(Math.round(price()*0.9))}원
+        <small>쿠폰은 결제 단계에서 적용됩니다 (설계 금액은 정가 기준)</small></div>
+      <div class="recog-banner">${mode==="cert"
+        ? `자사 이수 + 전적대 <b>${c.done}과목(${doneCredits()}학점)</b> · 자격증 <b>${certSubjCredits()+CERT_CREDITS}학점</b><br>= 총 <b>${recogCredits}학점 인정</b> → ${c.need}과목만 수강`
+        : `전적대·기보유 학점 <b>${recogCredits}학점 인정</b><br>→ 잔여 <b>${needCredits()}학점</b>을 ${c.need}과목으로 설계`}</div>
+      ${recogList}${gaugeBlock}${semBlocks}
+      <div class="price-block">
+        ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
+        <div class="fin">${fmt(price())}원</div><div class="lbl">맞춤 설계가 (정가 기준)</div>
+      </div>
+      <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효합니다</div>
+      <div class="s-comment"><b>설계 담당자 코멘트</b>${comment}</div>
+      ${mode==="cert"?`<button class="s-cta" onclick="alert('패키지 페이지 딥링크 (시연)\\npkg_id+round_id 프리셀렉트 → 결제 시 쿠폰 적용')">전체 패키지로 신청 (${fmt(PKG_FULL)}원)</button>`:""}
+      <button class="s-cta2" onclick="toggleSelMode()">${selMode?"선택 모드 닫기":"선택 과목만 신청 (1학기 먼저 등 부분 결제)"}</button>
+      <button class="s-cta3">상담 신청하기</button>
+      ${selBar}`;
+  }
+
+  function renderStudentPC(){
+    const body=document.getElementById("stuPcBody");
+    if(phView===2){
+      body.innerHTML = `<div class="stu-pc-grid"><div class="stu-pc-main">${renderMilestone()}</div>
+        <div class="stu-pc-side"><div class="phone-like" style="font-size:12px;color:var(--gray);">PC에서는 이정표가 본문 영역에 펼쳐지고, 우측은 상담·결제 진입 영역으로 활용합니다.<br><br><button class="s-cta" onclick="phTab(1)">설계 확인하고 결제</button><button class="s-cta3">상담 신청하기</button></div></div></div>`;
+      return;
+    }
+    const c=counts(); const comment=document.getElementById("commentArea").value;
+    const recog=recogList_().filter(x=>x.kind!=="pre");
+    const rGroups={};
+    recog.forEach(s=>{const k=s.when||"시기 미입력";(rGroups[k]=rGroups[k]||[]).push(s);});
+    const rKeys=Object.keys(rGroups).sort();
+    const recogCredits=studentRecogCredits();
+    const semBlocks=sems().map((sem,i)=>{
+      const needOnly=sem.subjects;
+      if(needOnly.length===0)return "";
+      return `<div class="s-sem">
+        <h4>${i+1}학기 수강 과목 <span>${termLabel(i)} · ${semNeedCredits(sem)}학점 ${selMode?`<button class="sel-all" onclick="selectSem(${i})">학기 전체 선택</button>`:""}</span></h4>
+        ${needOnly.map(s=>`<div class="s-subj">
+          ${selMode?`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`:""}
+          <span class="nm">${s.name}</span><span style="font-size:11px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
+      </div>`;
+    }).join("");
+    const gaugeBlock=studentGaugeHTML();
+    body.innerHTML = `
+      <div class="stu-pc-grid">
+        <div class="stu-pc-main">
+          <div class="hero-box ${mode==="deg"?"deg":""}">
+            <span class="badge">맞춤 설계 완료</span><span class="badge">v2</span>
+            <h2>${mode==="cert"?"사회복지사 2급":"경영학사"} 학습설계 결과</h2>
+            <div class="basis">전문대학 졸업 · 보유학점 반영 · 2026.05.29 개강반</div>
+            <div class="hero-stats" style="max-width:420px;">
+              <div class="hstat"><div class="k">기간</div><div class="v">${activeSemCount()}학기</div></div>
+              <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
+              <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(price())}원</div></div>
+            </div>
+          </div>
+          <div class="phone-like">
+            <div class="recog-banner">${mode==="cert"
+              ? `자사 이수 + 전적대 <b>${c.done}과목(${doneCredits()}학점)</b> · 자격증 <b>${certSubjCredits()+CERT_CREDITS}학점</b> = 총 <b>${recogCredits}학점 인정</b> → ${c.need}과목만 수강`
+              : `전적대·기보유 학점 <b>${recogCredits}학점 인정</b> → 잔여 <b>${needCredits()}학점</b>을 ${c.need}과목으로 설계`}</div>
+            ${rKeys.map(k=>`
+              <div style="font-size:11px;font-weight:800;color:var(--green);margin:9px 0 5px;">${k}</div>
+              ${rGroups[k].map(s=>`<div class="s-subj ${s.kind==="cr"?"cert":"dim"}"><span class="nm">${s.name}</span>
+                ${s.origin==="internal"?'<span class="s-badge internal">자사 이수</span>':s.kind==="cr"?'<span class="s-badge cert">자격증 인정</span>':'<span class="s-badge done">전적대 이수</span>'}</div>`).join("")}
+            `).join("")}
+            ${mode==="cert"?`<div style="font-size:11px;font-weight:800;color:var(--green);margin:9px 0 5px;">자격증 학점인정 (학점 단위)</div>
+            <div class="s-subj cert"><span class="nm">컴퓨터활용능력 2급</span><span class="s-badge cert">+6학점</span></div>`:""}
+          </div>
+          <div class="phone-like">${gaugeBlock}${semBlocks}</div>
+          <div class="phone-like s-comment" style="margin-bottom:0;"><b>설계 담당자 코멘트</b>${comment}</div>
+        </div>
+        <div class="stu-pc-side">
+          <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 약 ${fmt(Math.round(price()*0.9))}원<small>쿠폰은 결제 단계에서 적용</small></div>
+          <div class="price-block">
+            ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
+            <div class="fin">${fmt(price())}원</div><div class="lbl">맞춤 설계가 (정가 기준)</div>
+          </div>
+          <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효</div>
+          ${mode==="cert"?`<button class="s-cta" onclick="alert('패키지 페이지 딥링크 (시연)')">전체 패키지로 신청</button>`:""}
+          <button class="s-cta2" onclick="toggleSelMode()">${selMode?"선택 모드 닫기":"선택 과목만 신청"}</button>
+          ${selMode?`<div class="phone-like" style="padding:13px;">
+            <div class="cmp" style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span>선택 ${selected.size}과목 · 단과가</span><b>${fmt(selCredits())}원</b></div>
+            ${mode==="cert"?`<div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:8px;">패키지 할인은 전체 결제에만 적용</div>`:""}
+            <button class="s-cta" style="margin:0;" onclick="alert('바구니로 ${selected.size}과목 일괄 전송 (시연)')">선택 과목 수강신청 (${selected.size})</button>
+          </div>`:""}
+          <button class="s-cta3">상담 신청하기</button>
+        </div>
+      </div>`;
+  }
+
+  function renderMilestone(){
+    const c=counts();
+    const donePct=c.total?Math.round(c.done/c.total*100):0;
+    return `
+      <div class="hero-box ${mode==="deg"?"deg":""}" style="margin-bottom:12px;">
+        <span class="badge">자격취득 이정표</span>
+        <h2>${mode==="cert"?"사회복지사 2급":"경영학사"}<br>취득까지의 현재 위치</h2>
+        <div class="basis">기준: ${mode==="cert"?"사회복지사업법 시행규칙 별표1 · 2026 개정":"학점인정법 · 2026 기준"} · 전문대졸 분기</div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="k">진척률</div><div class="v">${donePct}%</div></div>
+          <div class="hstat"><div class="k">남은 과목</div><div class="v">${c.need}과목</div></div>
+          <div class="hstat"><div class="k">예상 취득</div><div class="v">2027.1학기</div></div>
+        </div>
+      </div>
+      <div class="ms-card"><h5>요건별 현황 (기준 마스터 대비)</h5>
+        <div class="ms-status"><span class="ms-ic ok">✓</span><span style="flex:1">인정 학점 (자사·전적대·자격증)</span><b>${doneCredits()+certSubjCredits()+CERT_CREDITS}학점</b></div>
+        <div class="ms-status"><span class="ms-ic pend">●</span><span style="flex:1">수강 진행 중 과목</span><b>결제 후 표시</b></div>
+        <div class="ms-status"><span class="ms-ic no">○</span><span style="flex:1">현장실습 (160시간)</span><b>미이수</b></div>
+        <div class="ms-status"><span class="ms-ic no">○</span><span style="flex:1">남은 이수 과목</span><b>${c.need}과목</b></div>
+      </div>
+      <div class="ms-eta">이대로 진행하면 <b>2027년 1학기</b> 취득 예상</div>
+      <div class="ms-coupon">🎟 재등록 쿠폰 보유 중 — 다음 학기 결제 시 적용 가능</div>
+      <button class="s-cta" onclick="phTab(1)">설계 확인하고 다음 학기 결제</button>
+      <button class="s-cta3">상담 신청하기</button>
+      <div class="valid-bar" style="margin-top:10px">수강 중에는 실적 기준으로 자동 갱신됩니다 (설계=계획 채점 / 이정표=실적 채점, 동일 검증 엔진)</div>`;
+  }
+
+  function switchView(v){
+    const admin=document.getElementById("adminView"), student=document.getElementById("studentView");
+    document.getElementById("tabAdmin").classList.toggle("active",v==="admin");
+    document.getElementById("tabStudent").classList.toggle("active",v==="student");
+    if(v==="admin"){ admin.style.display="grid"; student.style.display="none"; }
+    else{ renderStudent(); admin.style.display="none"; student.style.display="flex"; }
+  }
+
+  renderBuilder();
+</script>
+</body>
+</html>
