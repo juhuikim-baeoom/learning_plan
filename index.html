@@ -94,6 +94,9 @@
   .st-badge.draft{background:var(--amber-soft);color:var(--amber);}
   .st-badge.ver{background:var(--violet-soft);color:var(--violet);}
   .status-bar .sv{font-size:11.5px;color:var(--gray-light);}
+  .expose-toggle{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer;margin-left:auto;white-space:nowrap;}
+  .expose-toggle input{width:15px;height:15px;accent-color:var(--blue);cursor:pointer;}
+  .expose-toggle b{color:var(--blue);}
 
   .sem-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
   .sem-card.over{background:var(--red-soft);border-color:#f3b8c0;}
@@ -438,7 +441,7 @@
   <!-- 재설계 안내 바 -->
   <div class="redesign-bar" id="redesignBar">
     <span class="rt">이 학생은 동일 과정 설계 <b>v1 (2026.03.15 발송)</b>이 있습니다. 어떻게 시작할까요?</span>
-    <button class="rb-load" onclick="alert('v1 불러오기 (시연)\n· 과목 상태·학기 배치·자격증 인정 복사 → 새 임시저장 작업본 생성\n· 자사 이수 자동 체크 재실행 (v1 이후 수강분 반영)\n· 마감 차수 → 최신 모집 차수로 교체 + 변경 표시');document.getElementById('redesignBar').style.display='none'">v1 불러와서 수정</button>
+    <button class="rb-load" onclick="alert('v1 불러오기 (시연)\n· 과목 상태·학기 배치·자격증 인정 복사 → 새 임시저장 작업본 생성만 수행\n· 자동 갱신 없음 (v1.1) — 차수 교체·이수 반영은 상담사가 직접 수정\n· 발송된 v1은 불변 보존');document.getElementById('redesignBar').style.display='none'">v1 불러와서 수정</button>
     <button class="rb-new" onclick="document.getElementById('redesignBar').style.display='none'">템플릿에서 새로 시작</button>
   </div>
 
@@ -456,10 +459,10 @@
           <div class="ut">기이수 현황 엑셀 업로드</div>
           <div class="ud">타기관(전적대) 이수 과목만 표준 양식으로 일괄 등록<br>자사 이수는 LMS 자동 조회 — 업로드 불필요</div>
           <div class="ubtns">
-            <button class="btn-tmpl-dl" onclick="alert('기이수 현황 양식.xlsx 다운로드 (시연)\n열: 과목명·학점·이수구분·이수년도·이수학기·기관명\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
+            <button class="btn-tmpl-dl" onclick="alert('기이수 현황 양식.xlsx 다운로드 (시연)\n열: 이수구분·과목명·학점원·연도-학기(YYYY-N)·학점·기관명\n이수구분은 상담사 기입 (1단계 자동 분류 없음)\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
             <button class="btn-upload" onclick="uploadExcel()">파일 업로드</button>
           </div>
-          <div class="upload-done" id="uploadDone" style="display:none;">✓ 3과목 등록 — 기이수 현황에 미분류로 반영</div>
+          <div class="upload-done" id="uploadDone" style="display:none;">✓ 3과목 등록 — 이수구분은 양식 값 그대로, 인정 상태만 미분류</div>
         </div>
       </div>
 
@@ -487,6 +490,7 @@
         <span class="st-badge draft">임시저장</span>
         <span class="st-badge ver">v2 작업본</span>
         <span class="sv">마지막 저장 오늘 10:24 · 발송 전까지 학생에게 보이지 않음 · 스냅샷은 발송 시점에만 고정</span>
+        <label class="expose-toggle" title="발송 버전별 학생 노출을 설계 목록에서 표시/비표시로 관리 (P8 흡수 — v1.1)"><input type="checkbox" checked onchange="toggleExpose(this)"><span>학생 노출: <b id="exposeLbl">v1 표시 중</b></span></label>
       </div>
 
       <div id="semList"></div>
@@ -569,36 +573,35 @@
   const VALID_UNTIL = "2026.07.10";
 
   // src:"internal" = 자사 이수 (LMS 자동 체크)
-  // 자격증 과정 area: req(필수) / elec(선택)
   let certSems = [
     { subjects: [
-      {id:3, name:"사회복지실천론", credit:3, area:"req"},
-      {id:4, name:"사회복지실천기술론", credit:3, area:"req"},
-      {id:5, name:"사회복지정책론", credit:3, area:"req"},
-      {id:6, name:"사회복지행정론", credit:3, area:"req"},
-      {id:7, name:"사회복지법제와실천", credit:3, area:"req"}
+      {id:3, name:"사회복지실천론", credit:3, area:"major"},
+      {id:4, name:"사회복지실천기술론", credit:3, area:"major"},
+      {id:5, name:"사회복지정책론", credit:3, area:"major"},
+      {id:6, name:"사회복지행정론", credit:3, area:"major"},
+      {id:7, name:"사회복지법제와실천", credit:3, area:"major"}
     ]},
     { subjects: [
-      {id:9,  name:"사회복지현장실습", credit:3, area:"req", prereq:true},
-      {id:11, name:"청소년복지론", credit:3, area:"elec"},
-      {id:12, name:"노인복지론", credit:3, area:"elec"},
-      {id:14, name:"가족복지론", credit:3, area:"elec"}
+      {id:9,  name:"사회복지현장실습", credit:3, area:"major", prereq:true},
+      {id:11, name:"청소년복지론", credit:3, area:"major"},
+      {id:12, name:"노인복지론", credit:3, area:"major"},
+      {id:14, name:"가족복지론", credit:3, area:"major"}
     ]}
   ];
   // 이수 현황: status = unset(미분류) / recog(인정) / excl(미인정)
   // origin = internal(자사) / transfer(전적대·학은제) / cert(자격증)
   // kind = sub(과목대체) / cr(학점인정) / pre(취득예정)
   let certIH = [
-    {id:1, name:"사회복지학개론", credit:3, area:"req", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
-    {id:2, name:"인간행동과사회환경", credit:3, area:"req", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
-    {id:8, name:"사회복지조사론", credit:2, area:"req", status:"recog", kind:"sub", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)", fromSem:0},
-    {id:10, name:"아동복지론", credit:3, area:"elec", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
-    {id:13, name:"장애인복지론", credit:3, area:"elec", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
-    {id:20, name:"사회복지윤리와철학", credit:3, area:"elec", status:"unset", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)"},
-    {id:21, name:"대학영어", credit:2, area:"etc", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
-    {id:23, name:"한국사", credit:2, area:"etc", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
-    {id:24, name:"현대사회와복지", credit:3, area:"req", status:"excl", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
-    {id:22, name:"자원봉사론", credit:3, area:"elec", status:"recog", kind:"pre", origin:"cert", when:"보육교사 2급 취득 예정"}
+    {id:1, name:"사회복지학개론", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
+    {id:2, name:"인간행동과사회환경", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
+    {id:8, name:"사회복지조사론", credit:2, area:"major", status:"recog", kind:"sub", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)", fromSem:0},
+    {id:10, name:"아동복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
+    {id:13, name:"장애인복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
+    {id:20, name:"사회복지윤리와철학", credit:3, area:"major", status:"unset", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)"},
+    {id:21, name:"대학영어", credit:2, area:"gen", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:23, name:"한국사", credit:2, area:"gen", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:24, name:"현대사회와복지", credit:3, area:"major", status:"excl", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:22, name:"자원봉사론", credit:3, area:"major", status:"recog", kind:"pre", origin:"cert", when:"보육교사 2급 취득 예정"}
   ];
   const DEG_TARGET = {total:140, mreq:18, melec:42, gen:30, free:0};
   let degSems = [
@@ -647,9 +650,9 @@
     {n:"교양 인기 세트", m:"심리학개론·글쓰기·생활속의통계 (9학점)", subjects:[
       {name:"심리학개론",credit:3,area:"gen"},{name:"글쓰기",credit:3,area:"gen"},{name:"생활속의통계",credit:3,area:"gen"}]},
     {n:"사복 선택과목 세트", m:"정신건강론·자원봉사론·사회문제론 (9학점)", subjects:[
-      {name:"정신건강론",credit:3,area:"elec"},{name:"자원봉사론",credit:3,area:"elec"},{name:"사회문제론",credit:3,area:"elec"}]},
+      {name:"정신건강론",credit:3,area:"major"},{name:"자원봉사론",credit:3,area:"major"},{name:"사회문제론",credit:3,area:"major"}]},
     {n:"경영 전공심화 세트", m:"리더십·협상론·기업윤리 (9학점)", subjects:[
-      {name:"리더십",credit:3,area:"melec"},{name:"협상론",credit:3,area:"melec"},{name:"기업윤리",credit:3,area:"melec"}]}
+      {name:"리더십",credit:3,area:"major"},{name:"협상론",credit:3,area:"major"},{name:"기업윤리",credit:3,area:"major"}]}
   ];
 
   let device = "mo";            // mo | pc
@@ -677,6 +680,11 @@
   function doneCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='sub'&&x.origin!=='cert').reduce((t,x)=>t+x.credit,0); }
   function certSubjCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='cr').reduce((t,x)=>t+x.credit,0); }
   function price(){ return all().length*PRICE_PER; }
+  // 수량 자동 할인 룰 — 1단계: 하드코딩 + 산식 스냅샷 기록 (할인율은 시연용 예시, LMS 정책 확정 시 교체 / 3단계: 결제 API 실시간 견적으로 대체)
+  const QTY_DISCOUNT=[{min:5,rate:0.10,label:"5과목 이상 10%"},{min:3,rate:0.05,label:"3과목 이상 5%"}];
+  function qtyRule(){ const n=all().length; return QTY_DISCOUNT.find(r=>n>=r.min)||null; }
+  function discPrice(){ const r=qtyRule(); return r?Math.round(price()*(1-r.rate)):price(); }
+  function toggleExpose(el){ const l=document.getElementById("exposeLbl"); l.textContent=el.checked?"v1 표시 중":"비표시"; l.style.color=el.checked?"":"var(--gray-light)"; }
   function activeSemCount(){ return sems().filter(s=>s.subjects.length>0).length; }
   function semNeedCredits(sem){ return sem.subjects.reduce((t,s)=>t+s.credit,0); }
   function prereqViolation(){
@@ -688,11 +696,11 @@
 
   // 이수구분 메타 (과정 유형별 분류 체계)
   const AREA_META = {
-    cert: { req:{label:"필수", cls:"major"}, elec:{label:"선택", cls:"major2"}, etc:{label:"기타", cls:"gen"} },
+    cert: { major:{label:"전공", cls:"major"}, gen:{label:"교양", cls:"gen"} },
     deg:  { mreq:{label:"전필", cls:"major"}, melec:{label:"전선", cls:"major2"},
             gen:{label:"교양", cls:"gen"}, free:{label:"일선", cls:"free"} }
   };
-  function areaMeta(a){ return (AREA_META[mode] && AREA_META[mode][a]) || {label:"기타", cls:"gen"}; }
+  function areaMeta(a){ return (AREA_META[mode] && AREA_META[mode][a]) || {label:a, cls:"gen"}; }
   function originLabel(o){ return o==="internal"?"학은제(자사)":o==="transfer"?"전적대":o==="cert"?"자격증":"기타"; }
   // when("2023년 1학기 · OO대학(전적대)") → {term:"2023-1", org:"OO대학"}
   function parseWhen(w){
@@ -748,7 +756,8 @@
   }
   function tmplTab(el){ document.querySelectorAll(".tmpl-tab").forEach(b=>b.classList.remove("act")); el.classList.add("act"); }
 
-  // 엑셀 업로드 (시연): 표준양식 파싱 → 기이수 원천 현황에 '미분류'로 등록 (인정 판단은 상담사)
+  // 엑셀 업로드 (시연): 표준양식 파싱 → 이수구분은 양식 값 그대로 등록, 인정 상태(미분류/인정/미인정)만 '미분류'로 시작
+  // 두 축은 별개 — 입력 자동화 ≠ 인정 자동화 (기획서 8-4)
   let uploaded = false;
   function uploadExcel(){
     if(uploaded){ alert("이미 업로드된 내역이 있습니다 (시연)"); return; }
@@ -762,11 +771,11 @@
         if(idx>-1){ const s=arr[i].subjects.splice(idx,1)[0];
           certIH.push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:"unset",origin:"transfer",when:r.when,fromSem:r.fromSem}); break; } } });
     // 우리 커리큘럼에 없는 전적대 과목도 일단 미분류로 등록 (기록 보존, 상담사가 미인정 처리)
-    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"etc",status:"unset",origin:"transfer",when:"2023년 2학기 · OO대학(전적대)"});
+    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"unset",origin:"transfer",when:"2023년 2학기 · OO대학(전적대)"});
     uploaded=true;
     ihTab="unset"; ihOpen=true;
     document.getElementById("uploadDone").style.display="block";
-    alert("업로드 완료 (시연)\n· 표준양식 읽음 → 기이수 현황에 '미분류' 상태로 등록\n· 타기관 이수분만 등록 (자사 이수는 LMS 자동 조회 — 중복 제외)\n· [미분류] 탭에서 체크 후 일괄 [인정]/[미인정] 처리하세요");
+    alert("업로드 완료 (시연)\n· 이수구분은 양식 값 그대로 등록, 인정 상태만 '미분류'로 시작\n· 타기관 이수분만 등록 (자사 이수는 LMS 자동 조회 — 중복 제외)\n· [미분류] 탭에서 체크 후 일괄 [인정]/[미인정] 처리하세요");
     renderBuilder();
   }
 
@@ -872,7 +881,7 @@
 
   function renderTally(){
     const areaDefs = mode==="cert"
-      ? [["req","필수",30],["elec","선택",12]]
+      ? [["major","전공",42],["gen","교양",0]]
       : [["mreq","전필",DEG_TARGET.mreq],["melec","전선",DEG_TARGET.melec],["gen","교양",DEG_TARGET.gen],["free","일선",DEG_TARGET.free]];
     let rTot=0,pTot=0,plTot=0,reqTot=0;
     const body = areaDefs.map(([a,label,need])=>{
@@ -886,8 +895,8 @@
     const totalReq = mode==="cert" ? 42 : DEG_TARGET.total;
     const okTot=sumTot>=totalReq;
     return `<div class="tally">
-      <h3>이수구분 집계표 <span style="font-weight:400;font-size:11px;color:var(--gray)">과거(인정) + 미래(배치) 합산${mode==="cert"?" · 필수/선택 (자격구분)":" · 전필/전선/교양/일선"}</span></h3>
-      <div class="th">기준: ${mode==="cert"?"사회복지사업법 별표1 · 전문대졸 · 필수 10과목(30학점)·선택 4과목(12학점)":"학사 표준교육과정 · 전필18·전선42·교양30"} · 인정=이수현황 인정분만(미인정·미분류 제외) · 예정=취득예정 자격증 조건부</div>
+      <h3>이수구분 집계표 <span style="font-weight:400;font-size:11px;color:var(--gray)">과거(인정) + 미래(배치) 합산${mode==="cert"?" · 전공/교양":" · 전필/전선/교양/일선"}</span></h3>
+      <div class="th">기준: ${mode==="cert"?"사회복지사업법 별표1 · 전문대졸":"학사 표준교육과정 · 전필18·전선42·교양30"} · 인정=이수현황 인정분만(미인정·미분류 제외) · 예정=취득예정 자격증 조건부</div>
       <table>
         <tr><th>이수구분</th><th>요건</th><th>인정</th><th>배치</th><th>예정</th><th>합계</th><th>판정</th></tr>
         ${body}
@@ -994,12 +1003,12 @@
         <div class="big">인정 ${recogList_().filter(x=>x.kind!=='pre').length}과목(${recCr}학점)${preCr?` + 예정 ${preCr}학점`:''}<br>→ <em>${c.need}과목</em> 수강</div>
         <div class="dur">미인정 ${exclList_().length}과목${unsetN?` · <span style="color:#ffd87a;font-weight:700">미분류 ${unsetN}과목 처리 필요</span>`:''}</div>
         <div class="dur">수강 기간: <b>${activeSemCount()}학기</b></div>
-        <div class="price">전체 패키지 <s>${fmt(PKG_FULL)}원</s><br>맞춤 설계가 <b style="font-size:17px">${fmt(price())}원</b></div>
+        <div class="price">전체 패키지 <s>${fmt(PKG_FULL)}원</s>${qtyRule()?`<br>단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}`:""}<br>맞춤 설계가 <b style="font-size:17px">${fmt(discPrice())}원</b></div>
         <div class="valid">유효기간 ${VALID_UNTIL} · 쿠폰은 결제 단계 적용</div>`;
     } else {
       box.className="summary deg";
       box.innerHTML=`<div class="t">학점 게이지</div><div class="big">학위 과정은 집계표 참조</div>
-        <div class="price">설계 수강료 <b style="font-size:17px">${fmt(price())}원</b></div>`;
+        <div class="price">${qtyRule()?`단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}<br>`:""}설계 수강료 <b style="font-size:17px">${fmt(discPrice())}원</b></div>`;
     }
   }
   // 수강 계획 → 이수 현황 (인정 처리) — fromSem 기록해 B안 회색 placeholder 유지
@@ -1024,7 +1033,7 @@
   // 이수 현황 상태 변경 (인정/미인정/미분류)
   function setRecog(id,val){ const x=ihList().find(x=>x.id===id); if(x){x.status=val?"recog":"excl"; if(val&&!x.kind)x.kind="sub";} renderBuilder(); }
   function setCredit(id,v){ const n=Math.max(1,Math.min(6,parseInt(v)||3)); all().forEach(s=>{if(s.id===id)s.credit=n;}); renderBuilder(); }
-  function addSubj(i){ const name=prompt("과목명 (시연)",""); if(!name)return; sems()[i].subjects.push({id:nextNewId++,name,credit:3,area:mode==="cert"?"elec":"melec"}); renderBuilder(); }
+  function addSubj(i){ const name=prompt("과목명 (시연)",""); if(!name)return; sems()[i].subjects.push({id:nextNewId++,name,credit:3,area:mode==="cert"?"major":"melec"}); renderBuilder(); }
   function moveSubj(id,dir){
     const arr=sems();
     for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===id);
@@ -1088,7 +1097,7 @@
   function closeValidate(){ document.getElementById("vModal").classList.remove("open"); }
   function doSend(){
     closeValidate();
-    alert("발송 완료 (시연)\n· 스냅샷 고정: 학기·과목·학점·가격·차수·검증결과·기준버전·유효기간\n· 상태: 임시저장 → 발송 완료 (v2)\n· 학생에게 설계 완료 알림 발송");
+    alert("발송 완료 (시연)\n· 스냅샷 고정: 학기·과목·학점·가격(할인 산식 포함)·차수·검증결과·기준버전·유효기간\n· 상태: 임시저장 → 발송 완료 (v2)\n· 학생에게 설계 완료 알림 발송");
   }
 
   // ===== 학생 화면 =====
@@ -1155,10 +1164,10 @@
         <div class="hero-stats">
           <div class="hstat"><div class="k">기간</div><div class="v">${activeSemCount()}학기</div></div>
           <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
-          <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(price())}원</div></div>
+          <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(discPrice())}원</div></div>
         </div>
       </div>
-      <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 적용하면 약 ${fmt(Math.round(price()*0.9))}원
+      <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 적용하면 약 ${fmt(Math.round(discPrice()*0.9))}원
         <small>쿠폰은 결제 단계에서 적용됩니다 (설계 금액은 정가 기준)</small></div>
       <div class="recog-banner">${mode==="cert"
         ? `자사 이수 + 전적대 <b>${c.done}과목(${doneCredits()}학점)</b> · 자격증 <b>${certSubjCredits()+CERT_CREDITS}학점</b><br>= 총 <b>${recogCredits}학점 인정</b> → ${c.need}과목만 수강`
@@ -1166,7 +1175,8 @@
       ${recogList}${gaugeBlock}${semBlocks}
       <div class="price-block">
         ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
-        <div class="fin">${fmt(price())}원</div><div class="lbl">맞춤 설계가 (정가 기준)</div>
+        ${qtyRule()?`<div class="orig">단과 정가 ${fmt(price())}원</div>`:""}
+        <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}</div>
       </div>
       <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효합니다</div>
       <div class="s-comment"><b>설계 담당자 코멘트</b>${comment}</div>
@@ -1210,7 +1220,7 @@
             <div class="hero-stats" style="max-width:420px;">
               <div class="hstat"><div class="k">기간</div><div class="v">${activeSemCount()}학기</div></div>
               <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
-              <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(price())}원</div></div>
+              <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(discPrice())}원</div></div>
             </div>
           </div>
           <div class="phone-like">
@@ -1229,10 +1239,11 @@
           <div class="phone-like s-comment" style="margin-bottom:0;"><b>설계 담당자 코멘트</b>${comment}</div>
         </div>
         <div class="stu-pc-side">
-          <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 약 ${fmt(Math.round(price()*0.9))}원<small>쿠폰은 결제 단계에서 적용</small></div>
+          <div class="coupon-bar">🎟 보유 쿠폰: 신규가입 10% — 결제 시 약 ${fmt(Math.round(discPrice()*0.9))}원<small>쿠폰은 결제 단계에서 적용</small></div>
           <div class="price-block">
             ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
-            <div class="fin">${fmt(price())}원</div><div class="lbl">맞춤 설계가 (정가 기준)</div>
+            ${qtyRule()?`<div class="orig">단과 정가 ${fmt(price())}원</div>`:""}
+            <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}</div>
           </div>
           <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효</div>
           ${mode==="cert"?`<button class="s-cta" onclick="alert('패키지 페이지 딥링크 (시연)')">전체 패키지로 신청</button>`:""}
