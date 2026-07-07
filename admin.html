@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>학습설계 툴 — 템플릿·과목 세트 관리 (1단계 시연)</title>
+<title>설계보조도구 — 1단계 시연</title>
 <style>
   :root{
     --navy:#1b2a4a; --blue:#2f5fe0; --blue-soft:#eaf0ff; --blue-line:#c9d6ff;
@@ -123,11 +123,11 @@
 <body>
 <div class="wrap">
 
-  <div class="demo-nav">시연 이동 · <a href="learner.html">학습자 메뉴</a> · <a href="builder.html">빌더</a> · <a href="builder.html?view=student">학생 화면</a></div>
+  <div class="demo-nav">시연 이동 · <a href="index.html">홈</a> · <a href="builder.html">학습설계 툴</a> · <a href="builder.html?view=student">학생 화면</a> · <a href="learner.html">학습자 메뉴</a></div>
   <div class="page-head">
     <div>
-      <h1>학습설계 <span style="font-size:12px;color:var(--gray-light);font-weight:600">관리 화면 배치 시연</span></h1>
-      <div class="sub">기존 LMS 사이드바에는 "학습설계" 1개만 추가 — 하위 요소는 툴 안 상단 탭으로 배치 (사이드바 중첩 없음)</div>
+      <h1>설계보조도구 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
+      <div class="sub">기존 LMS 사이드바에는 "설계보조도구" 1개만 추가 — 하위 요소는 도구 안 상단 탭으로 배치 (사이드바 중첩 없음)</div>
     </div>
 
   </div>
@@ -140,10 +140,10 @@
       <div class="lms-item">회원 관리</div>
       <div class="lms-item">수강 관리</div>
       <div class="lms-item">패키지 등록</div>
-      <div class="lms-item act">학습설계</div>
+      <div class="lms-item act">설계보조도구</div>
       <div class="lms-item">쿠폰 관리</div>
       <div class="lms-item">통계</div>
-      <div class="menu-hint" style="border:none;margin-top:14px;">사이드바에는 <b>"학습설계" 1개</b>만 추가.<br>템플릿·세트·문구는 툴 내부 탭 — 운영 메뉴를 늘리지 않음</div>
+      <div class="menu-hint" style="border:none;margin-top:14px;">사이드바에는 <b>"설계보조도구" 1개</b>만 추가.<br>템플릿·세트·문구는 도구 내부 탭 — 운영 메뉴를 늘리지 않음</div>
     </div>
 
     <!-- 우측: 학습설계 툴 워크스페이스 -->
@@ -154,7 +154,7 @@
         <button class="ttab" id="miSet" onclick="switchMenu('set')">과목 세트</button>
         <button class="ttab" id="miCopy" onclick="switchMenu('copy')">문구 설정</button>
         <span style="flex:1"></span>
-        <button class="btn-line" onclick="goBuilder()">빌더 열기 →</button>
+        <button class="btn-line" onclick="goBuilder()">학습설계 툴 열기 →</button>
       </div>
 
 
