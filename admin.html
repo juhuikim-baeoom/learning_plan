@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학습설계 툴 — 템플릿·과목 세트 관리 (1단계 시연)</title>
+<style>
+  :root{
+    --navy:#1b2a4a; --blue:#2f5fe0; --blue-soft:#eaf0ff; --blue-line:#c9d6ff;
+    --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
+    --bg:#f4f6fb; --card:#fff; --red:#e23b4e; --red-soft:#fdf1f2;
+    --green:#1a9c6b; --green-soft:#e7f5ef; --amber:#b07c10; --amber-soft:#fdf3dc;
+    --violet:#7c4fe0; --violet-soft:#f1ebfd;
+    --radius:14px; --shadow:0 2px 14px rgba(27,42,74,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  .demo-nav{font-size:11px;color:var(--gray-light);margin-bottom:10px;}
+  .demo-nav a{color:inherit;font-weight:700;text-decoration:none;border-bottom:1px dotted;}
+  .demo-nav a:hover{color:#2f5fe0;}
+
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 20px 80px;}
+  .note{display:inline-flex;align-items:center;gap:6px;background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;margin:6px 0;}
+  .note::before{content:"기획";background:#f5b942;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .page-head h1{font-size:21px;font-weight:800;letter-spacing:-.5px;}
+  .page-head .sub{font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;}
+  .role-toggle{display:flex;background:#fff;border:1px solid var(--line);border-radius:24px;padding:3px;}
+  .role-toggle button{border:none;background:transparent;font-size:12.5px;font-weight:700;color:var(--gray);padding:8px 16px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .role-toggle button.active{background:var(--navy);color:#fff;}
+
+  .layout{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:start;}
+  .lms-side{background:#eceef3;border:1px solid var(--line);border-radius:var(--radius);padding:12px 10px;}
+  .lms-logo{font-size:12px;font-weight:800;color:var(--gray);padding:4px 8px 10px;line-height:1.4;}
+  .lms-logo span{font-size:9.5px;font-weight:600;color:var(--gray-light);}
+  .lms-item{font-size:12px;font-weight:600;color:var(--gray-light);border-radius:8px;padding:8px 9px;}
+  .lms-item.act{background:var(--navy);color:#fff;font-weight:800;}
+  .tool-tabs{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow);flex-wrap:wrap;}
+  .ttab{border:none;background:transparent;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--gray);padding:9px 15px;cursor:pointer;font-family:inherit;position:relative;}
+  .ttab.act{background:var(--blue-soft);color:var(--blue);font-weight:800;}
+  .badge-n{display:inline-block;background:var(--amber);color:#fff;font-size:9.5px;font-weight:800;border-radius:8px;padding:1px 6px;margin-left:3px;vertical-align:1px;}
+
+  /* 좌측 관리 메뉴 트리 */
+  .menu-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);}
+  .menu-group{font-size:11px;font-weight:800;color:var(--gray-light);padding:6px 8px 4px;}
+  .menu-item{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--gray);border-radius:9px;padding:9px 10px;cursor:pointer;}
+  .menu-item:hover{background:var(--bg);}
+  .menu-item.act{background:var(--blue-soft);color:var(--blue);font-weight:800;}
+  .menu-item .cnt{font-size:10.5px;font-weight:700;color:var(--gray-light);}
+  .menu-item.act .cnt{color:var(--blue);}
+  .menu-hint{font-size:10.5px;color:var(--gray-light);border-top:1px solid var(--line);margin-top:10px;padding:10px 8px 2px;line-height:1.6;}
+
+  .main{display:flex;flex-direction:column;gap:14px;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap;}
+  .panel-head h2{font-size:16px;font-weight:800;}
+  .panel-head .desc{font-size:11.5px;color:var(--gray);margin-top:2px;}
+  .btn-pri{background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:12.5px;font-weight:800;padding:10px 16px;cursor:pointer;font-family:inherit;}
+  .btn-line{background:#fff;border:1.5px solid var(--line);color:var(--gray);border-radius:9px;font-size:11.5px;font-weight:700;padding:7px 12px;cursor:pointer;font-family:inherit;}
+  .btn-line:hover{border-color:var(--blue-line);color:var(--blue);}
+  .btn-danger{background:#fff;border:1.5px solid var(--line);color:var(--gray-light);border-radius:9px;font-size:11.5px;font-weight:700;padding:7px 12px;cursor:pointer;font-family:inherit;}
+  .btn-danger:hover{border-color:#f3b8c0;color:var(--red);}
+  .btn-green{background:var(--green);border:none;color:#fff;border-radius:9px;font-size:11.5px;font-weight:800;padding:8px 13px;cursor:pointer;font-family:inherit;}
+
+  /* 템플릿 탭 */
+  .tabs{display:flex;gap:6px;margin-bottom:12px;}
+  .tab{border:1.5px solid var(--line);background:#fff;border-radius:9px;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .tab.act{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .tab .n{font-size:10.5px;opacity:.7;margin-left:3px;}
+
+  /* 목록 행 */
+  .row{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;flex-wrap:wrap;background:#fff;}
+  .row .name{font-size:13.5px;font-weight:700;min-width:180px;}
+  .row .meta{font-size:11px;color:var(--gray-light);flex:1;min-width:160px;}
+  .row .acts{display:flex;gap:6px;flex-wrap:wrap;}
+  .tb{display:inline-block;font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;vertical-align:1px;margin-left:5px;white-space:nowrap;}
+  .tb.pkg{background:var(--blue-soft);color:var(--blue);}
+  .tb.mine{background:var(--violet-soft);color:var(--violet);}
+  .tb.team{background:var(--green-soft);color:var(--green);}
+  .tb.struct{background:#f0f1f4;color:var(--gray);}
+  .tb.state{background:var(--amber-soft);color:var(--amber);}
+  .tb.use{background:var(--navy);color:#fff;}
+  .tb.wait{background:var(--amber-soft);color:var(--amber);}
+  .readonly-bar{background:#f8f9fc;border-radius:10px;padding:9px 13px;font-size:11.5px;color:var(--gray);margin-bottom:10px;line-height:1.6;}
+  .readonly-bar b{color:var(--ink);}
+
+  /* 승인 대기 */
+  .pending-box{border:1.5px solid #f0dba8;background:var(--amber-soft);border-radius:12px;padding:13px 14px;margin-bottom:12px;}
+  .pending-box h4{font-size:12.5px;font-weight:800;color:var(--amber);margin-bottom:8px;}
+  .pending-box .row{background:#fff;border-color:#f0dba8;margin-bottom:6px;}
+
+  /* 세트 */
+  .set-chips{display:flex;gap:4px;flex-wrap:wrap;flex:1;min-width:200px;}
+  .schip{font-size:10.5px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:3px 8px;color:var(--gray);}
+  .new-set{border:1.5px dashed var(--blue-line);background:var(--blue-soft);border-radius:12px;padding:14px;margin-bottom:12px;display:none;}
+  .new-set.open{display:block;}
+  .new-set .fr{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
+  .new-set label{font-size:11.5px;font-weight:700;color:var(--gray);width:64px;}
+  .new-set input[type=text]{flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;font-family:inherit;}
+  .new-set input[type=text]:focus{border-color:var(--blue);outline:none;}
+  .scope-pick{display:flex;gap:5px;}
+  .scope-pick button{border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:6px 11px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .scope-pick button.on{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .footer-hint{font-size:11px;color:var(--gray-light);margin-top:8px;line-height:1.6;}
+
+  .lst-expose{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;}
+  .lst-expose input{width:14px;height:14px;accent-color:var(--blue);cursor:pointer;}
+  .lst-expose b{color:var(--blue);}
+  .copy-sec{border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;}
+  .copy-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .copy-head h3{font-size:13.5px;font-weight:800;}
+  .copy-sub{font-size:10.5px;color:var(--gray-light);}
+  .copy-course{border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit;font-weight:700;color:var(--ink);}
+  .copy-item{margin-bottom:9px;}
+  .copy-item label{display:block;font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:4px;}
+  .copy-item textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12px;font-family:inherit;min-height:44px;resize:vertical;line-height:1.6;}
+  .copy-item textarea:focus{border-color:var(--blue);outline:none;}
+  .copy-save{display:flex;justify-content:flex-end;gap:6px;margin-top:4px;}
+  .hidden{display:none;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="demo-nav">시연 이동 · <a href="learner.html">학습자 메뉴</a> · <a href="builder.html">빌더</a> · <a href="builder.html?view=student">학생 화면</a></div>
+  <div class="page-head">
+    <div>
+      <h1>학습설계 <span style="font-size:12px;color:var(--gray-light);font-weight:600">관리 화면 배치 시연</span></h1>
+      <div class="sub">기존 LMS 사이드바에는 "학습설계" 1개만 추가 — 하위 요소는 툴 안 상단 탭으로 배치 (사이드바 중첩 없음)</div>
+    </div>
+
+  </div>
+
+  <div class="layout">
+
+    <!-- 좌측: 기존 LMS 사이드바 (자리 표시) -->
+    <div class="lms-side">
+      <div class="lms-logo">배론 LMS<br><span>기존 운영 메뉴</span></div>
+      <div class="lms-item">회원 관리</div>
+      <div class="lms-item">수강 관리</div>
+      <div class="lms-item">패키지 등록</div>
+      <div class="lms-item act">학습설계</div>
+      <div class="lms-item">쿠폰 관리</div>
+      <div class="lms-item">통계</div>
+      <div class="menu-hint" style="border:none;margin-top:14px;">사이드바에는 <b>"학습설계" 1개</b>만 추가.<br>템플릿·세트·문구는 툴 내부 탭 — 운영 메뉴를 늘리지 않음</div>
+    </div>
+
+    <!-- 우측: 학습설계 툴 워크스페이스 -->
+    <div class="main">
+      <div class="tool-tabs">
+        <button class="ttab act" id="miList" onclick="switchMenu('list')">설계 목록</button>
+        <button class="ttab" id="miTmpl" onclick="switchMenu('tmpl')">템플릿</button>
+        <button class="ttab" id="miSet" onclick="switchMenu('set')">과목 세트</button>
+        <button class="ttab" id="miCopy" onclick="switchMenu('copy')">문구 설정</button>
+        <span style="flex:1"></span>
+        <button class="btn-line" onclick="goBuilder()">빌더 열기 →</button>
+      </div>
+
+
+      <!-- ===== 설계 목록 ===== -->
+      <div class="panel" id="viewList">
+        <div class="panel-head">
+          <div>
+            <h2>설계 목록</h2>
+            <div class="desc">접수부터 만료까지 한 목록에서 관리 — 접수 건은 빌더 미작성 설계 건으로 통합(별도 접수 메뉴 없음). 발송본은 수정 불가, 변경은 [새 버전]으로. 학습자는 LMS 학습설계 메뉴에서 유효기간 내 최신 발송본 확인</div>
+          </div>
+          <button class="btn-pri" onclick="goBuilder()">+ 새 설계 작성</button>
+        </div>
+        <div class="tabs">
+          <button class="tab act" onclick="listFilter(this,'all')">전체 <span class="n">5</span></button>
+          <button class="tab" onclick="listFilter(this,'req')">접수 <span class="n">1</span></button>
+          <button class="tab" onclick="listFilter(this,'draft')">임시저장 <span class="n">1</span></button>
+          <button class="tab" onclick="listFilter(this,'sent')">발송 <span class="n">2</span></button>
+          <button class="tab" onclick="listFilter(this,'expired')">만료 <span class="n">1</span></button>
+        </div>
+        <div class="row" data-st="req"><span class="name">정OO · 보육교사 2급 <span class="tb wait">접수</span></span><span class="meta">신청 07.06 09:12 · 보유학점 있음 · 성적증명서 1건 · 담당 미배정 · SLA 영업일 1일</span><span class="acts"><button class="btn-line" onclick="alert('담당자 지정 (시연)')">담당 지정</button><button class="btn-pri" style="padding:8px 14px" onclick="goBuilder()">설계 시작</button></span></div>
+        <div class="row" data-st="sent"><span class="name">김OO · 사회복지사 2급 <span class="tb team">v2 발송</span></span><span class="meta">발송 06.20 · 유효 07.10까지 · <b style="color:var(--green)">열람 06.21</b> · 담당 김주희</span><span class="tb pkg">유효 D-7</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">학생 화면</button><button class="btn-line" onclick="alert('변경 로그 (시연)\n06.20 김주희 — v2 발송\n06.18 김주희 — v1 복사 → v2 작업본\n03.15 박OO — v1 발송 (담당 변경 06.01)')">이력</button></span></div>
+        <div class="row" data-st="draft"><span class="name">이OO · 한국어교원 2급 <span class="tb state">v1 임시저장</span><span class="tb wait">9일 경과</span></span><span class="meta">최종 수정 06.24 · 담당 박OO · 발송 전 비노출</span><span class="acts"><button class="btn-line" onclick="goBuilder()">이어서 작성</button><button class="btn-line">이력</button></span></div>
+        <div class="row" data-st="sent"><span class="name">박OO · 경영학사 <span class="tb team">v3 발송</span><span class="tb wait">미열람</span></span><span class="meta">발송 06.28 · 유효 07.28까지 · 담당 김주희 · 이전 버전 2건 — 미열람 시 팔로업 콜 대상</span><span class="tb pkg">유효 D-25</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">학생 화면</button><button class="btn-line">이력</button></span></div>
+        <div class="row" data-st="expired" style="opacity:.65"><span class="name">최OO · 사회복지사 2급 <span class="tb struct">v1 만료</span></span><span class="meta">발송 05.02 · 열람 05.10 · 유효기간 만료 06.01 · 담당 김주희 · 결제 비활성 (E2)</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전으로 재설계</button><button class="btn-line">이력</button></span></div>
+        <div class="footer-hint">임시저장 N일 경과 건은 주황 뱃지로 표시 (E8 — 기준 일수는 운영 설정에서). 담당자 변경은 이력에 자동 기록 (E10). 학생 노출은 토글이 아닌 유효기간 규칙으로 자동 제어 — 새 버전 발송 시 이전 버전 자동 대체, 만료 시 결제 비활성(E2). 열람 로그: 학습자가 LMS 학습설계 메뉴에서 해당 설계를 연 시점 자동 기록 — 발송→열람→결제 퍼널 지표</div>
+      </div>
+
+      <!-- ===== 학생 화면 문구 관리 ===== -->
+      <div class="panel hidden" id="viewCopy">
+        <div class="panel-head">
+          <div>
+            <h2>학생 화면 문구 관리</h2>
+            <div class="desc">문구를 3층으로 나눠 관리 — 학생 화면에서는 개인 맞춤 → 과정 기본 → 학점은행제 기본 순으로 조립됩니다</div>
+          </div>
+        </div>
+        <div class="readonly-bar">조립 순서: <b>① 개인 맞춤 (담당자 코멘트)</b> 설계 본문 하단 → <b>② 과정 기본</b> 과정 안내 → <b>③ 학점은행제 기본</b> 최하단 공통 유의사항. 발송 시 세 층 모두 스냅샷에 고정됩니다</div>
+
+        <div class="copy-sec">
+          <div class="copy-head"><h3>학점은행제 기본 <span class="tb pkg">전 과정 공통</span></h3><span class="copy-sub">법·제도 관련 고정 유의사항 — 수정 시 이후 발송분부터 적용</span></div>
+          <div class="copy-item"><label>가격·유효기간 안내</label><textarea>본 설계 금액은 유효기간 내 결제 시 보장되며, 만료 후에는 재설계 기준가가 적용됩니다.</textarea></div>
+          <div class="copy-item"><label>연간 이수학점 유의</label><textarea>학점은행제는 연간 최대 42학점까지 이수 가능합니다. 타기관 수강분을 신고하지 않은 경우 초과 여부를 확인할 수 없으니 유의 바랍니다.</textarea></div>
+          <div class="copy-item"><label>기이수 인정 고지</label><textarea>기이수 인정 내역은 제출하신 성적증명서를 기준으로 하며, 국가평생교육진흥원 심사 결과에 따라 달라질 수 있습니다.</textarea></div>
+          <div class="copy-save"><button class="btn-line" onclick="alert('변경 이력 (시연)\n06.12 김주희 — 연간 이수학점 문구 수정')">이력</button><button class="btn-pri" style="padding:9px 16px" onclick="alert('저장 (시연) — 이후 발송분부터 적용, 기존 스냅샷 불변')">저장</button></div>
+        </div>
+
+        <div class="copy-sec">
+          <div class="copy-head"><h3>과정 기본 <span class="tb team">과정별</span></h3>
+            <select class="copy-course" onchange="alert('과정 전환 (시연): '+this.value)"><option>사회복지사 2급</option><option>한국어교원 2급</option><option>경영학사</option></select>
+          </div>
+          <div class="copy-item"><label>과정 안내</label><textarea>사회복지사 2급은 이론 과목 이수 후 현장실습(160시간)을 수료해야 자격 신청이 가능합니다.</textarea></div>
+          <div class="copy-item"><label>실습 안내</label><textarea>현장실습은 실습기관 배정 일정에 따라 개강일이 달라질 수 있으며, 지역(수도권/전국) 선택이 필요합니다.</textarea></div>
+          <div class="copy-save"><button class="btn-line">이력</button><button class="btn-pri" style="padding:9px 16px" onclick="alert('저장 (시연)')">저장</button></div>
+        </div>
+
+
+        <div class="copy-sec">
+          <div class="copy-head"><h3>자주 쓰는 문구 (스니펫) <span class="tb mine">개인 맞춤용 부품</span></h3><span class="copy-sub">과목 세트의 문구 버전 — 승인 없음 · 수정 이력 기록 (세트와 동일 정책)</span></div>
+          <div class="row"><span class="name">야간 접수 안내 <span class="tb team">팀</span></span><span class="meta" style="flex:1">야간·주말 접수분은 다음 영업일 기준으로 설계가 완료됩니다…</span><span class="meta" style="flex:0 0 auto">사용 34회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line">이력</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">실습 일정 안내 <span class="tb team">팀</span></span><span class="meta" style="flex:1">현장실습은 기관 배정에 따라 개강일이 변동될 수 있어…</span><span class="meta" style="flex:0 0 auto">사용 21회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line">이력</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">전적대 서류 보완 요청 <span class="tb mine">내 것</span></span><span class="meta" style="flex:1">성적증명서 원본 확인이 추가로 필요한 경우…</span><span class="meta" style="flex:0 0 auto">사용 6회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line" onclick="alert('팀 문구로 전환 (시연)')">팀으로</button><button class="btn-danger">삭제</button></span></div>
+          <div class="copy-save"><button class="btn-pri" style="padding:9px 16px" onclick="alert('스니펫 추가 (시연) — 빌더 코멘트에서 [현재 코멘트를 문구로 저장]으로도 등록 가능')">+ 문구 추가</button></div>
+        </div>
+        <div class="copy-sec" style="background:#f8f9fc;">
+          <div class="copy-head"><h3>개인 맞춤 안내 <span class="tb mine">설계별</span></h3><span class="copy-sub">읽기 전용 — 이 화면에서 관리하지 않습니다</span></div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.7;">상담사가 <b>빌더의 설계 코멘트</b>에 설계별로 입력합니다. 코멘트 영역의 <b>[자주 쓰는 문구]</b>로 아래 스니펫을 불러와 삽입 후 학생에 맞게 수정하는 흐름 — 학생 화면 "설계 담당자 코멘트"에 노출, 발송 시 해당 설계 스냅샷에만 고정</div>
+          <div class="copy-save"><button class="btn-line" onclick="goBuilder()">빌더에서 확인</button></div>
+        </div>
+      </div>
+
+      <!-- ===== 템플릿 관리 ===== -->
+      <div class="panel hidden" id="viewTmpl">
+        <div class="panel-head">
+          <div>
+            <h2>템플릿 관리</h2>
+            <div class="desc">과정×학력 단위의 설계 전체 틀 — 불러오면 학생 전용 사본이 생성되며 원본은 변하지 않습니다</div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab act" id="tabPkg" onclick="tmplTab('pkg')">패키지 연동 <span class="n">4</span></button>
+          <button class="tab" id="tabMine" onclick="tmplTab('mine')">내 템플릿 <span class="n">3</span></button>
+          <button class="tab" id="tabTeam" onclick="tmplTab('team')">팀 공유 <span class="n">3</span></button>
+        </div>
+
+        <!-- 패키지 연동 탭 -->
+        <div id="panePkg">
+          <div class="readonly-bar"><b>자동 변환 · 읽기 전용</b> — 패키지 등록 데이터(학기·차수·과목·이수구분·가격)에서 자동 변환됩니다. 수정은 패키지 등록 메뉴에서, 여기서는 조회와 사용 여부만 관리합니다.</div>
+          <div class="row"><span class="name">사회복지사 2급 실습포함 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">전문대졸 이상 · 14과목 · 개강 05.29 (차수 연동)</span><span class="acts"><button class="btn-line" onclick="alert('미리보기 (시연): 빌더 로드 화면과 동일 렌더')">미리보기</button><button class="btn-line" onclick="alert('원본 패키지 등록 화면으로 이동 (시연)')">원본 패키지</button><button class="btn-line" onclick="alert('사용 안 함 처리 (시연)\n빌더의 템플릿 목록에서 숨김 — 패키지 판매에는 영향 없음')">사용 안 함</button></span></div>
+          <div class="row"><span class="name">사회복지사 2급 이론 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">고졸 · 20과목 · 개강 05.29</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button><button class="btn-line">사용 안 함</button></span></div>
+          <div class="row"><span class="name">한국어교원 2급 스타트 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">전문대졸 이상 · 18과목 · 개강 05.29</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button><button class="btn-line">사용 안 함</button></span></div>
+          <div class="row" style="opacity:.55"><span class="name">경영학사 편입 <span class="tb pkg">패키지</span></span><span class="meta">전문대졸 · 80학점 · 마감 차수 — 최신 모집분 등록 시 자동 갱신</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button></span></div>
+        </div>
+
+        <!-- 내 템플릿 탭 -->
+        <div id="paneMine" class="hidden">
+          <div class="readonly-bar">빌더에서 <b>[내 템플릿 저장]</b>으로 생성됩니다 — 구조만 저장(상태 초기화, 권장) / 상태 포함 저장(같은 패턴 학생 전용) 구분</div>
+          <div class="row"><span class="name">보육교사 자격 보유자 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span></span><span class="meta">사복 2급 · 전문대졸 · 06.02 저장 · 최근 사용 06.28</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line" onclick="alert('복제 (시연): 사본 생성 후 수정')">복제</button><button class="btn-green" onclick="alert('팀에 공유 (시연)\n승인 절차 없음 — 즉시 팀 공유 탭에 노출, 언제든 공유 해제 가능\n공유·수정 내역은 이력에 자동 기록')">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">전적대 사복 일부이수 패턴 <span class="tb mine">내 것</span><span class="tb state">상태 포함</span></span><span class="meta">사복 2급 · 전문대졸 · 06.15 저장</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line">복제</button><button class="btn-green">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">학사 3학기 압축 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span><span class="tb team">공유 중</span></span><span class="meta">경영학사 · 06.08 저장 · 팀 공유 06.30</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('공유 해제 (시연): 팀 목록에서 제거 — 이미 사용된 설계에는 영향 없음')">공유 해제</button><button class="btn-danger">삭제</button></span></div>
+        </div>
+
+        <!-- 팀 공유 탭 -->
+        <div id="paneTeam" class="hidden">
+          <div class="readonly-bar">작성자가 팀에 공유한 템플릿 — 전 상담사가 빌더에서 사용 가능. 승인 절차 없음, 공유/해제·수정·삭제는 <b>작성자만</b> (다른 사람은 복제 후 사용) · 변경 이력 자동 기록</div>
+          <div class="row"><span class="name">전적대 사복 일부이수 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 박OO 06.20 · 사용 31회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('내 템플릿으로 복제 (시연): 사본을 수정해 재공유 요청 가능')">내 것으로 복제</button><span style="font-size:10px;color:var(--gray-light)">작성자 아님 — 복제만</span></span></div>
+          <div class="row"><span class="name">한국어교원 3중 요건 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 김주희 06.25 · 사용 12회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">내 것으로 복제</button><button class="btn-danger" onclick="alert('공유 해제 (시연) — 작성자 본인')">공유 해제</button></span></div>
+        </div>
+      </div>
+
+      <!-- ===== 과목 세트 관리 ===== -->
+      <div class="panel hidden" id="viewSet">
+        <div class="panel-head">
+          <div>
+            <h2>과목 세트 관리</h2>
+            <div class="desc">과목 묶음 부품 — 빌더의 학기 카드에서 [+ 세트 추가]로 삽입 후 개별 조정합니다. 템플릿과 달리 전체 틀이 아닙니다</div>
+          </div>
+          <button class="btn-pri" onclick="document.getElementById('newSet').classList.toggle('open')">+ 세트 만들기</button>
+        </div>
+
+        <div class="new-set" id="newSet">
+          <div class="fr"><label>세트명</label><input type="text" placeholder="예: 교양 인기 세트"></div>
+          <div class="fr"><label>과목</label><input type="text" placeholder="과목 검색 후 추가 (시연)"><button class="btn-line" onclick="alert('과목 검색·추가 (시연): LMS 과목 마스터에서 검색')">추가</button></div>
+          <div class="fr"><label>저장 범위</label><div class="scope-pick"><button class="on">내 세트</button><button onclick="alert('팀 세트 (시연)\n승인 절차 없음 — 저장 즉시 팀 목록 반영\n생성·수정 내역은 이력에 자동 기록')">팀 세트</button></div></div>
+          <div class="fr" style="margin-bottom:0"><span style="flex:1"></span><button class="btn-line" onclick="document.getElementById('newSet').classList.remove('open')">취소</button><button class="btn-pri" style="padding:9px 18px" onclick="alert('세트 저장 (시연)');document.getElementById('newSet').classList.remove('open')">저장</button></div>
+        </div>
+
+        <div class="row"><span class="name">교양 인기 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">심리학개론 3</span><span class="schip">글쓰기 3</span><span class="schip">생활속의통계 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 48회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
+        <div class="row"><span class="name">사복 선택과목 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">정신건강론 3</span><span class="schip">자원봉사론 3</span><span class="schip">사회문제론 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 27회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
+        <div class="row"><span class="name">경영 전공심화 세트 <span class="tb mine">내 세트</span></span><span class="set-chips"><span class="schip">리더십 3</span><span class="schip">협상론 3</span><span class="schip">기업윤리 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 5회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-line" onclick="alert('팀 세트로 전환 (시연)')">팀 세트로</button><button class="btn-danger">삭제</button></span></div>
+
+        <div class="footer-hint">세트를 수정·삭제해도 이미 학기에 삽입된 설계에는 영향이 없습니다 (삽입 시점에 과목이 개별 복사됨). 수정·삭제는 <b>작성자 본인만</b> — 다른 사람은 복제 후 사용. 세트에는 학기·가격 정보가 없으며, 삽입된 학기의 규칙(24학점 한도 등)을 그대로 따릅니다.</div>
+        <span class="note">확정: 템플릿·세트 모두 승인 절차 없음 — 작성자의 공유 on/off + 생성·수정 이력 자동 기록. 수정·삭제·공유 해제는 작성자만</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // 페이지 연결 — 같은 레포에 배포된 실제 파일명으로 수정해서 사용
+  const LINK_BUILDER="builder.html";
+  function goBuilder(){ location.href=LINK_BUILDER; }
+  function goStudent(){ location.href=LINK_BUILDER+"?view=student"; }
+  const MENUS=["list","tmpl","set","copy"];
+  function switchMenu(m){
+    MENUS.forEach(k=>{
+      const cap=k[0].toUpperCase()+k.slice(1);
+      document.getElementById("mi"+cap).classList.toggle("act",k===m);
+      document.getElementById("view"+cap).classList.toggle("hidden",k!==m);
+    });
+  }
+  function listFilter(el,st){
+    el.parentElement.querySelectorAll(".tab").forEach(t=>t.classList.remove("act"));
+    el.classList.add("act");
+    document.querySelectorAll("#viewList .row").forEach(r=>{
+      r.style.display=(st==="all"||r.dataset.st===st)?"flex":"none";
+    });
+  }
+  function tmplTab(t){
+    ["pkg","mine","team"].forEach(k=>{
+      document.getElementById("tab"+k[0].toUpperCase()+k.slice(1)).classList.toggle("act",k===t);
+      document.getElementById("pane"+k[0].toUpperCase()+k.slice(1)).classList.toggle("hidden",k!==t);
+    });
+  }
+</script>
+</body>
+</html>
