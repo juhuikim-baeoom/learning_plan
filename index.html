@@ -11,6 +11,10 @@
     --bg:#f4f6fb; --green:#1a9c6b; --violet:#7c4fe0; --amber:#b07c10;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  .gnb{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line);padding:12px 22px;position:fixed;top:0;left:0;right:0;z-index:80;}
+  .gnb-logo{font-size:14px;font-weight:800;color:var(--main);text-decoration:none;letter-spacing:-.3px;}
+  .gnb-tag{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border-radius:20px;padding:4px 11px;}
+
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
   .wrap{width:100%;max-width:860px;}
   .head{text-align:center;margin-bottom:26px;}
@@ -35,6 +39,7 @@
 </style>
 </head>
 <body>
+<div class="gnb"><a href="index.html" class="gnb-logo">학습설계 시스템</a><span class="gnb-tag">1단계 시연</span></div>
 <div class="wrap">
   <div class="head">
     <span class="tag">1단계 시연 · 와이어프레임</span>

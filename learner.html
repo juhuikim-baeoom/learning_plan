@@ -12,18 +12,27 @@
     --amber:#b07c10; --amber-soft:#fdf3dc; --red:#e23b4e;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  .gnb{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:16px;background:#fff;border-bottom:1px solid var(--line);padding:11px 20px;flex-wrap:wrap;}
+  .gnb-logo{font-size:14px;font-weight:800;color:var(--main);text-decoration:none;letter-spacing:-.3px;white-space:nowrap;}
+  .gnb-nav{display:flex;gap:4px;flex-wrap:wrap;flex:1;}
+  .gnb-item{font-size:12.5px;font-weight:700;color:var(--gray);text-decoration:none;padding:7px 13px;border-radius:9px;white-space:nowrap;}
+  .gnb-item:hover{background:var(--soft);color:var(--main);}
+  .gnb-item.act{background:var(--main);color:#fff;}
+  .gnb-tag{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border-radius:20px;padding:4px 11px;white-space:nowrap;}
+
   .demo-nav{font-size:11px;color:var(--gray-light);margin-bottom:10px;}
   .demo-nav a{color:inherit;font-weight:700;text-decoration:none;border-bottom:1px dotted;}
   .demo-nav a:hover{color:#0093D0;}
 
-  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;padding:20px;}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .learner-stage{display:flex;flex-direction:column;align-items:center;padding:20px;}
   .page-note{font-size:12px;color:var(--gray);margin-bottom:14px;text-align:center;line-height:1.6;}
   .page-note b{color:var(--main);}
-  .phone{width:386px;background:#fff;border:10px solid #1a1d24;border-radius:36px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);}
-  .ph-head{background:var(--main);color:#fff;padding:16px;}
+  .phone{width:430px;height:932px;background:#fff;border:10px solid #1a1d24;border-radius:44px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);display:flex;flex-direction:column;}
+  .ph-head{background:var(--main);color:#fff;padding:16px;flex:none;}
   .ph-head .crumb{font-size:10.5px;opacity:.8;}
   .ph-head h1{font-size:17px;font-weight:800;margin-top:2px;}
-  .ph-body{padding:16px;max-height:660px;overflow-y:auto;background:#fff;}
+  .ph-body{padding:16px;flex:1;overflow-y:auto;background:#fff;}
 
   /* ── 목록 뷰 ── */
   .new-badge{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;border-radius:8px;padding:1px 6px;vertical-align:2px;margin-left:4px;}
@@ -92,13 +101,14 @@
 </style>
 </head>
 <body>
+<div class="gnb"><a href="index.html" class="gnb-logo">학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item act">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
+<div class="learner-stage">
 
-<div class="demo-nav" style="text-align:center;">시연 이동 · <a href="index.html">홈</a> · <a href="builder.html">학습설계 툴</a> · <a href="admin.html">설계보조도구</a></div>
 <div class="page-note">학습자 LMS <b>학습설계</b> 메뉴 (로그인 기반) — <b>반응형 단일 화면</b>: 같은 데이터를 모바일·PC로 렌더링. 신청과 확인은 탭 없이 한 목록에서 상태만 바뀝니다</div>
 
 <div class="dev-toggle">
-  <button id="devMo" class="active" onclick="switchDev('mo')">모바일</button>
-  <button id="devPc" onclick="switchDev('pc')">PC</button>
+  <button id="devPc" class="active" onclick="switchDev('pc')">PC</button>
+  <button id="devMo" onclick="switchDev('mo')">모바일</button>
 </div>
 
 <div class="phone">
@@ -211,6 +221,7 @@
     if(d==="pc"){ document.getElementById("pcInner").append(vl,vf); phone.style.display="none"; pc.classList.add("show"); }
     else{ phone.append(vl,vf); phone.style.display="block"; pc.classList.remove("show"); }
   }
+  switchDev("pc"); // 기본 진입 뷰 = PC
   function switchV(v){
     document.getElementById("viewList").style.display = v==="list"?"block":"none";
     document.getElementById("viewForm").style.display = v==="form"?"block":"none";
@@ -225,5 +236,6 @@
     alert("신청 완료 (시연)\n· 목록에 '접수됨' 카드 생성 — 별도 신청 내역 탭 없음\n· 관리자 설계 목록에 접수 건으로 도착 → 담당자 배정\n· 설계 발송 시 같은 카드가 '설계 도착'으로 전환 + 알림");
   }
 </script>
+</div>
 </body>
 </html>

@@ -6,7 +6,8 @@
 <title>학습설계 툴 — 1단계 시연 (툴 코어)</title>
 <style>
   :root{
-    --navy:#1b2a4a; --blue:#2f5fe0; --blue-soft:#eaf0ff; --blue-line:#c9d6ff;
+    --navy:#12435a; --blue:#0093D0; --blue-soft:#DEEBF7; --blue-line:#66BEE3;
+    --main:#0093D0; --mid:#66BEE3; --soft:#DEEBF7; --gray:#6b7280;
     --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
     --bg:#ffffff; --bg-soft:#f4f6fb; --card:#fff; --red:#e23b4e; --red-soft:#fdf1f2;
     --green:#1a9c6b; --green-soft:#e7f5ef; --amber:#b07c10; --amber-soft:#fdf3dc;
@@ -14,9 +15,17 @@
     --radius:14px; --shadow:0 2px 14px rgba(27,42,74,.07);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  .gnb{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:16px;background:#fff;border-bottom:1px solid var(--line);padding:11px 20px;flex-wrap:wrap;}
+  .gnb-logo{font-size:14px;font-weight:800;color:var(--main);text-decoration:none;letter-spacing:-.3px;white-space:nowrap;}
+  .gnb-nav{display:flex;gap:4px;flex-wrap:wrap;flex:1;}
+  .gnb-item{font-size:12.5px;font-weight:700;color:var(--gray);text-decoration:none;padding:7px 13px;border-radius:9px;white-space:nowrap;}
+  .gnb-item:hover{background:var(--soft);color:var(--main);}
+  .gnb-item.act{background:var(--main);color:#fff;}
+  .gnb-tag{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border-radius:20px;padding:4px 11px;white-space:nowrap;}
+
   .demo-nav{font-size:11px;color:var(--gray-light);margin-bottom:10px;}
   .demo-nav a{color:inherit;font-weight:700;text-decoration:none;border-bottom:1px dotted;}
-  .demo-nav a:hover{color:#2f5fe0;}
+  .demo-nav a:hover{color:#0093D0;}
 
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:1080px;margin:0 auto;padding:20px 20px 80px;}
@@ -73,7 +82,7 @@
   .cert-row .cc{font-weight:800;color:var(--green);white-space:nowrap;}
   .btn-mini{border:1.5px dashed var(--blue-line);background:var(--blue-soft);color:var(--blue);border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:inherit;}
 
-  .summary{background:linear-gradient(135deg,#2f5fe0,#1b2a4a);color:#fff;border-radius:var(--radius);padding:16px 18px;}
+  .summary{background:linear-gradient(135deg,#0093D0,#1b2a4a);color:#fff;border-radius:var(--radius);padding:16px 18px;}
   .summary.deg{background:linear-gradient(135deg,#7c4fe0,#3b2a6e);}
   .summary .t{font-size:11px;opacity:.75;margin-bottom:6px;}
   .summary .big{font-size:15px;font-weight:800;line-height:1.5;}
@@ -211,12 +220,12 @@
   .stu-pc-side .price-block,.stu-pc-side .coupon-bar,.stu-pc-side .valid-bar{margin-bottom:12px;}
   .stu-pc-side{position:sticky;top:16px;}
   @media(max-width:860px){.stu-pc-grid{grid-template-columns:1fr;}.stu-pc-side{position:static;}}
-  .phone{width:386px;background:#fff;border:10px solid #1a1d24;border-radius:36px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);}
-  .phone-head{display:flex;border-bottom:1px solid var(--line);}
+  .phone{width:430px;height:932px;background:#fff;border:10px solid #1a1d24;border-radius:44px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);display:flex;flex-direction:column;}
+  .phone-head{display:flex;border-bottom:1px solid var(--line);flex:none;}
   .ph-tab{flex:1;text-align:center;font-size:12.5px;font-weight:700;padding:13px 4px;cursor:pointer;color:var(--gray-light);border-bottom:2.5px solid transparent;}
   .ph-tab.act{color:var(--blue);border-bottom-color:var(--blue);}
-  .phone-body{padding:16px;max-height:640px;overflow-y:auto;}
-  .hero-box{background:linear-gradient(135deg,#2f5fe0,#1e3a8a);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px;}
+  .phone-body{padding:16px;flex:1;overflow-y:auto;}
+  .hero-box{background:linear-gradient(135deg,#0093D0,#12435a);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px;}
   .hero-box.deg{background:linear-gradient(135deg,#7c4fe0,#3b2a6e);}
   .hero-box .badge{display:inline-block;background:rgba(255,255,255,.2);font-size:10px;font-weight:700;padding:3px 9px;border-radius:9px;margin-bottom:8px;margin-right:4px;}
   .hero-box h2{font-size:19px;font-weight:800;line-height:1.35;margin-bottom:4px;}
@@ -418,12 +427,12 @@
 </style>
 </head>
 <body>
+<div class="gnb"><a href="index.html" class="gnb-logo">학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item act">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
 <div class="wrap">
 
-  <div class="demo-nav">시연 이동 · <a href="index.html">홈</a> · <a href="admin.html">설계보조도구</a> · <a href="?view=student">학생 화면 바로 열기</a> · <a href="learner.html">학습자 메뉴</a></div>
   <div class="page-head">
     <div>
-      <h1>학습설계 툴 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연 · 툴 코어</span></h1>
+      <h1>학습설계 툴 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
       <div class="sub">1단계 범위 — 기준 마스터 자동 검증(2단계) · 결제 연결/쿠폰(3단계) · 이정표(추후) 미포함</div>
     </div>
     <div class="toggles">
