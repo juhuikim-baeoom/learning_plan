@@ -427,7 +427,7 @@
 </style>
 </head>
 <body>
-<div class="gnb"><a href="index.html" class="gnb-logo">학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item act">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
+<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item act">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
 <div class="wrap">
 
   <div class="page-head">
@@ -632,8 +632,8 @@
   // origin = internal(자사) / transfer(전적대·학은제) / cert(자격증)
   // kind = sub(과목대체) / cr(학점인정) / pre(취득예정)
   let certIH = [
-    {id:1, name:"사회복지학개론", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
-    {id:2, name:"인간행동과사회환경", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · 배론(자사)", fromSem:0},
+    {id:1, name:"사회복지학개론", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · (주)배움(자사)", fromSem:0},
+    {id:2, name:"인간행동과사회환경", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · (주)배움(자사)", fromSem:0},
     {id:8, name:"사회복지조사론", credit:2, area:"major", status:"recog", kind:"sub", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)", fromSem:0},
     {id:10, name:"아동복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
     {id:13, name:"장애인복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
@@ -754,7 +754,7 @@
     // 연도·학기 → 2023-1
     const m=term.match(/(\d{4})\s*년?\s*(\d)\s*학기/);
     if(m) term=`${m[1]}-${m[2]}`;
-    // 기관명 괄호 라벨 제거: "OO대학(전적대)" → "OO대학", "배론(자사)" → "배론"
+    // 기관명 괄호 라벨 제거: "OO대학(전적대)" → "OO대학", "(주)배움(자사)" → "(주)배움"
     org=org.replace(/\s*\([^)]*\)\s*$/,"").trim()||"-";
     return {term, org};
   }
