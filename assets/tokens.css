@@ -1,0 +1,17 @@
+/* 3사 브랜드 컬러 토큰 — web-standards 02-table-column-standards.md §1.5 기준값 */
+:root{
+  /* 배움 BAEOOM */
+  --baeoom-main:#F8981D;
+  --baeoom-mid:#FBC177;
+  --baeoom-soft:#FFF2CC;
+
+  /* 배론 BAERON */
+  --baeron-main:#0093D0;
+  --baeron-mid:#66BEE3;
+  --baeron-soft:#DEEBF7;
+
+  /* 허브 HUB */
+  --hub-main:#50B948;
+  --hub-mid:#96D591;
+  --hub-soft:#E2F0D9;
+}

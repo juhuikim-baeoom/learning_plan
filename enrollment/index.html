@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수강신청 개편 v2 — 풀 프레임 (현행 유지형)</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  :root{
+    --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
+    --ink:#222; --gray:#666; --gray-light:#999; --line:#ddd; --line-dark:#bbb;
+    --bg:#fff; --panel:#f7f8fa; --red:#d9232e; --red-soft:#fdeeee;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#fff;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px 120px;}
+  .note{display:inline-flex;align-items:center;gap:6px;background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;margin:8px 0;}
+  .note::before{content:"기획";background:#f5b942;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
+
+  /* 타이틀 + 안내 */
+  .page-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:0;}
+  .page-top h1{font-size:26px;font-weight:800;letter-spacing:-1px;}
+  .page-top h1 span{font-weight:400;}
+  .guide{font-size:12px;color:var(--gray);margin-top:6px;line-height:1.6;}
+  .guide b{color:var(--red);}
+  .guide-chips{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap;}
+  .g-chip{background:var(--panel);border:1px solid var(--line);border-radius:14px;font-size:12px;font-weight:600;color:var(--gray);padding:4px 12px;}
+  .g-chip.strong{background:var(--soft);border-color:var(--mid);color:var(--main);font-weight:800;}
+  .g-more{border:none;background:transparent;font-size:12px;color:var(--gray-light);cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px 2px;}
+  .guide-full{margin-top:6px;}
+  .sel-row{display:flex;gap:18px;align-items:flex-start;}
+  .sel-row + .sel-row{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
+  .sel-label{width:66px;flex-shrink:0;font-size:13px;font-weight:800;padding-top:11px;}
+  .sel-body{flex:1;min-width:0;}
+  .top-btns{display:flex;gap:8px;}
+  .top-btns button{background:#fff;border:1px solid var(--line-dark);border-radius:4px;font-size:12px;font-weight:600;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--ink);}
+
+  /* ① 과정 탭 */
+  .course-tabs{display:flex;border-left:1px solid var(--line);margin-top:0;}
+  .course-tab{flex:1;border:1px solid var(--line);border-left:none;background:var(--panel);text-align:center;padding:15px 4px 13px;cursor:pointer;position:relative;font-size:13.5px;font-weight:700;color:var(--gray);}
+  .course-tab small{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:1px;}
+  .course-tab .mini-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--main);color:var(--main);font-size:10px;font-weight:800;border-radius:10px;padding:0 8px;white-space:nowrap;}
+  .course-tab.act{background:#fff;border-top:2px solid var(--main);border-bottom-color:#fff;color:var(--ink);}
+  .course-tab.act::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:#fff;}
+  .course-tab .cat-desc{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:2px;}
+  .course-tab.act .cat-desc{color:var(--main);}
+  .course-row{display:flex;gap:8px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-top:none;background:#fff;overflow-x:auto;}
+  .c-chip{border:1px solid var(--line-dark);border-radius:18px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;background:#fff;position:relative;font-family:inherit;flex-shrink:0;}
+  .c-chip.act{background:var(--main);border-color:var(--main);color:#fff;}
+  .c-chip .mb{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--main);color:var(--main);font-size:9.5px;font-weight:800;border-radius:9px;padding:0 7px;white-space:nowrap;}
+  .c-chip.more{border-style:dashed;color:var(--gray-light);}
+
+  /* ② 방식 + ③ 개강일 영역 */
+  .select-zone{border:1px solid var(--line);border-top:none;padding:18px 20px;background:#fff;}
+  .mode-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .mode-label{font-size:13px;font-weight:800;min-width:56px;}
+  .mode-toggle{display:flex;width:100%;}
+  .mode-toggle button{flex:1;border:1px solid var(--line-dark);background:var(--panel);font-size:14.5px;font-weight:800;color:var(--gray);padding:12px 8px;cursor:pointer;font-family:inherit;text-align:center;}
+  .mode-toggle button small{display:block;font-size:11px;font-weight:500;margin-top:2px;color:var(--gray-light);}
+  .mode-toggle button:first-child{border-radius:4px 0 0 4px;}
+  .mode-toggle button:last-child{border-radius:0 4px 4px 0;border-left:none;}
+  .mode-toggle button.active{background:var(--main);border-color:var(--main);color:#fff;}
+  .mode-toggle button.active small{color:rgba(255,255,255,.85);}
+  .mode-caption{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+  .mode-hint{font-size:12px;color:var(--gray);}
+  .design-link{margin-left:auto;border:1px solid var(--mid);background:var(--soft);color:var(--main);border-radius:16px;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;font-family:inherit;}
+  .design-banner{display:flex;align-items:center;gap:14px;background:var(--soft);border:1px solid var(--mid);border-radius:6px;padding:13px 17px;margin:14px 0 2px;flex-wrap:wrap;}
+  .design-banner .db-t{flex:1;font-size:12.5px;font-weight:600;min-width:240px;}
+  .design-banner .db-t b{color:var(--main);}
+  .design-banner button{background:var(--main);color:#fff;border:none;border-radius:5px;font-size:12.5px;font-weight:700;padding:9px 16px;cursor:pointer;font-family:inherit;}
+  .monthly{font-size:11.5px;color:var(--gray);text-align:right;}
+  .monthly b{color:var(--main);font-weight:800;}
+  .hero-price .m-main{font-size:14px;text-align:right;}
+  .hero-price .m-main b{font-size:28px;font-weight:800;color:var(--main);letter-spacing:-.5px;}
+  .hero-price .m-from{font-size:13px;margin-left:2px;}
+  .hero-price .m-sub{font-size:12px;color:var(--gray);text-align:right;margin-top:2px;}
+  .hero-price .row-sub{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:7px;font-size:12px;color:var(--gray-light);}
+  .d-sm{color:var(--red);font-weight:800;font-size:11.5px;border:1px solid var(--red);border-radius:3px;padding:1px 6px;}
+  .db-pro{background:#fff !important;border:1px solid var(--main) !important;color:var(--main) !important;line-height:1.25;}
+  .db-pro small{display:block;font-size:10px;font-weight:600;opacity:.85;}
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;align-items:center;justify-content:center;}
+  .modal.open{display:flex;}
+  .modal-box{background:#fff;border-radius:10px;padding:24px;width:470px;max-width:92vw;max-height:84vh;overflow-y:auto;}
+  .modal-box h4{font-size:16px;font-weight:800;margin-bottom:4px;}
+  .modal-box .md{font-size:12px;color:var(--gray);margin-bottom:14px;}
+  .cm-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .cm-table th{background:var(--panel);border:1px solid var(--line);padding:7px;font-size:12px;}
+  .cm-table td{border:1px solid var(--line);padding:7px 10px;}
+  .cm-extra{font-size:12px;color:var(--gray);margin-top:8px;}
+  .cm-sum{background:var(--soft);border-radius:6px;padding:11px 14px;font-size:12.5px;font-weight:700;margin-top:12px;text-align:right;}
+  .cm-sum b{color:var(--main);font-size:15px;}
+  .modal-close{width:100%;border:1px solid var(--line-dark);background:#fff;border-radius:6px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:14px;color:var(--gray);}
+  .cf-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:9px 2px;border-bottom:1px solid var(--line);}
+  .cf-row .k{color:var(--gray);flex-shrink:0;}
+  .cf-row .v{font-weight:700;text-align:right;}
+  .cf-hint{font-size:11.5px;color:var(--gray);margin-top:10px;line-height:1.6;}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;}
+  .modal-actions button{flex:1;border-radius:6px;padding:13px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .ma-back{background:#fff;border:1px solid var(--line-dark);color:var(--gray);}
+  .ma-go{background:var(--main);border:none;color:#fff;}
+  /* 개강일 대형 탭 (현행 스타일 유지) */
+  .round-tabs{display:flex;}
+  .round-tab{flex:1;border:1px solid var(--line);background:var(--panel);text-align:center;padding:14px 8px;cursor:pointer;position:relative;}
+  .rt-badge{position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;background:#fff;}
+  .rt-badge.hot{color:var(--red);border:1px solid var(--red);}
+  .rt-badge.ok{color:var(--main);border:1px solid var(--mid);}
+  .prac-notice{font-size:11.5px;color:var(--gray);margin-top:12px;line-height:1.7;}
+  .round-tab + .round-tab{border-left:none;}
+  .round-tab .rt1{font-size:12px;color:var(--gray);}
+  .round-tab .rt2{font-size:17px;font-weight:800;color:var(--gray);}
+  .round-tab.act{background:#eef7fc;border-color:var(--main);border-bottom:2px solid var(--main);}
+  .round-tab.act .rt2{color:var(--main);}
+  .round-tab .rt3{font-size:11px;color:var(--gray-light);margin-top:2px;}
+  .round-tab.act .rt3{color:var(--main);opacity:.75;}
+  .round-info{display:flex;gap:26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-top:none;padding:11px 16px;font-size:12.5px;color:var(--gray);}
+  .round-info b{color:var(--ink);font-weight:700;margin-left:6px;}
+
+  /* 패키지 모드 */
+  .mode-body{margin-top:18px;}
+  .pkg-hero{border:2px solid var(--main);border-radius:8px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden;background:#fff;}
+  .hero-grid{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;}
+  .hero-left{flex:1;min-width:300px;padding-top:8px;}
+  .hero-right{min-width:240px;display:flex;flex-direction:column;align-items:flex-end;gap:12px;padding-top:8px;}
+  .benefits{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 10px;}
+  .benefit{background:var(--panel);border:1px solid var(--line);border-radius:4px;font-size:12px;font-weight:600;padding:7px 11px;}
+  .benefit::before{content:"✓ ";color:var(--main);font-weight:800;}
+  .compose-preview{font-size:12px;color:var(--gray);background:var(--soft);border-radius:5px;padding:9px 13px;line-height:1.55;}
+  .credit-sum{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-top:12px;}
+  .cs-head{font-size:12px;font-weight:600;margin-bottom:9px;}
+  .cs-head b{color:var(--main);}
+  .cs-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--gray);}
+  .cs-l{width:32px;flex-shrink:0;font-weight:700;}
+  .cs-bar{flex:1;height:8px;background:#e8ebef;border-radius:5px;overflow:hidden;display:flex;}
+  .cs-bar i.rec{background:#8fd3b0;height:100%;}
+  .cs-bar i.plan{background:var(--main);height:100%;}
+  .cs-v{width:86px;text-align:right;font-weight:700;color:var(--ink);flex-shrink:0;}
+  .cs-legend{font-size:10.5px;color:var(--gray-light);margin-top:5px;display:flex;gap:14px;align-items:center;}
+  .cs-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px;}
+  .cs-legend i.rec{background:#8fd3b0;}
+  .cs-legend i.plan{background:var(--main);}
+  .hero-price .row{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+  .hero-price .orig{font-size:13px;color:var(--gray-light);text-decoration:line-through;}
+  .hero-price .fin{font-size:27px;font-weight:800;letter-spacing:-.5px;}
+  .hero-price .per{font-size:11.5px;color:var(--gray);margin-top:2px;text-align:right;}
+  .pkg-row{border:1px solid var(--line);border-radius:6px;padding:13px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .pkg-row .rn{flex:1;min-width:230px;}
+  .pkg-row .rn .nm{font-size:14.5px;font-weight:700;}
+  .pkg-row .rn .cm{font-size:11.5px;color:var(--gray);margin-top:1px;}
+  .pkg-row .rp{text-align:right;min-width:190px;}
+  .pkg-row .rp .o{font-size:11.5px;color:var(--gray-light);text-decoration:line-through;margin-right:8px;}
+  .pkg-row .rp .f{font-size:17px;font-weight:800;}
+  .pkg-row .rp .d{color:var(--red);font-size:12px;font-weight:800;margin-left:6px;}
+  .pkg-row .rp .rper{font-size:10.5px;color:var(--gray-light);margin-top:1px;}
+  .apply-sm{background:#fff;border:1px solid var(--main);color:var(--main);border-radius:5px;font-size:12.5px;font-weight:700;padding:9px 18px;cursor:pointer;font-family:inherit;}
+  .ribbon{position:absolute;top:0;left:0;background:var(--main);color:#fff;font-size:11px;font-weight:800;padding:4px 14px;border-radius:0 0 8px 0;}
+  .pkg-main{flex:1;min-width:260px;}
+  .pkg-badges{margin-bottom:4px;}
+  .pk-badge{display:inline-block;font-size:10.5px;font-weight:800;border-radius:3px;padding:2px 7px;margin-right:5px;}
+  .pk-badge.hot{background:var(--red-soft);color:var(--red);}
+  .pk-badge.type{background:var(--soft);color:var(--main);}
+  .pkg-main h3, .hero-left h3{font-size:17.5px;font-weight:800;display:inline;letter-spacing:-.4px;}
+  .btn-compose{display:inline-block;border:1px solid var(--line-dark);background:#fff;border-radius:3px;font-size:11px;font-weight:600;padding:3px 9px;cursor:pointer;font-family:inherit;margin-left:8px;vertical-align:2px;color:var(--gray);}
+  .pkg-main .pm, .hero-left .pm{font-size:12.5px;color:var(--gray);margin-top:4px;}
+  .pkg-price{text-align:right;min-width:200px;}
+  .pkg-price .per{font-size:11.5px;color:var(--gray);}
+  .pkg-price .row{display:flex;align-items:center;justify-content:flex-end;gap:10px;}
+  .pkg-price .orig{font-size:13px;color:var(--gray-light);text-decoration:line-through;}
+  .pkg-price .fin{font-size:25px;font-weight:800;letter-spacing:-.5px;}
+  .disc{background:var(--red);color:#fff;font-size:12px;font-weight:800;border-radius:4px;padding:6px 8px;line-height:1.2;text-align:center;}
+  .pkg-apply{background:var(--main);color:#fff;border:none;border-radius:5px;font-size:13.5px;font-weight:800;padding:13px 26px;cursor:pointer;font-family:inherit;}
+
+  /* 단과 모드 */
+  .single-body{display:none;}
+  .single-body.show{display:block;}
+  .dept-tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:0;padding:0 2px;align-items:center;}
+  .dept-tab{font-size:13.5px;font-weight:700;color:var(--gray);padding:10px 2px;cursor:pointer;border-bottom:2px solid transparent;}
+  .dept-tab.act{color:var(--ink);border-bottom-color:var(--ink);}
+  .filter-chips{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;}
+  .f-chip{border:1px solid var(--line-dark);background:#fff;border-radius:15px;font-size:12px;font-weight:600;color:var(--gray);padding:5px 14px;cursor:pointer;font-family:inherit;}
+  .f-chip.act{background:var(--main);border-color:var(--main);color:#fff;}
+  tr.sel td{background:var(--soft);}
+  .st-txt{font-size:12px;font-weight:700;white-space:nowrap;}
+  .st-txt.ok{color:var(--gray);}
+  .st-txt.hot{color:var(--red);border:1px solid var(--red);border-radius:3px;padding:2px 7px;font-size:11px;}
+  .st-txt.full{color:var(--gray-light);}
+  .st-txt.done{color:#1a9c6b;}
+  .done-mark{color:#1a9c6b;font-weight:800;font-size:14px;}
+  .next-round{font-size:10.5px;color:var(--main);font-weight:700;cursor:pointer;margin-top:4px;text-decoration:underline;white-space:nowrap;}
+  .t-badge.pre{background:#fdf3dc;color:#b07c10;}
+  .recog-line{font-size:11px;color:var(--gray-light);margin-top:3px;}
+  .recog-chip{cursor:pointer;}
+  .recog-chip:hover{color:var(--main);text-decoration:underline;}
+  .recog-chip.act{color:var(--main);font-weight:800;}
+  .rc-sep{margin:0 3px;}
+  .login-demo{margin-left:auto;border:1px dashed var(--line-dark);background:#fff;border-radius:4px;font-size:11px;font-weight:600;color:var(--gray-light);padding:5px 10px;cursor:pointer;font-family:inherit;}
+  .login-demo.on{border-color:#1a9c6b;color:#1a9c6b;border-style:solid;}
+  table.subj{width:100%;border-collapse:collapse;font-size:13px;}
+  table.subj th{background:var(--panel);border:1px solid var(--line);padding:10px 6px;font-size:12.5px;font-weight:700;}
+  table.subj td{border:1px solid var(--line);padding:12px 10px;vertical-align:middle;}
+  td.grp{text-align:center;font-weight:700;background:#fbfbfc;width:76px;}
+  td.chk{text-align:center;width:52px;}
+  td.chk input{width:16px;height:16px;accent-color:var(--main);}
+  td.chk .closed-box{display:inline-block;width:16px;height:16px;background:repeating-linear-gradient(45deg,#ddd,#ddd 3px,#f2f2f2 3px,#f2f2f2 6px);border:1px solid #ccc;}
+  .subj-name{font-weight:700;font-size:13.5px;}
+  .subj-name.dim{color:var(--gray-light);font-weight:600;}
+  .subj-prof{font-weight:400;color:var(--gray);font-size:12px;margin-left:6px;}
+  .t-badge{display:inline-block;font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;margin-left:6px;vertical-align:1px;}
+  .t-badge.hot{border:1px solid var(--red);color:var(--red);}
+  .t-badge.prac{background:var(--main);color:#fff;}
+  .t-badge.full{color:var(--gray-light);border:1px solid var(--line-dark);}
+  .hash{font-size:11px;color:var(--gray-light);margin-top:3px;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  td.avail{text-align:center;color:var(--gray-light);width:70px;}
+  td.fee{text-align:right;width:110px;}
+  td.fee .o{font-size:11px;color:var(--gray-light);text-decoration:line-through;display:block;}
+  td.fee .f{font-size:14px;font-weight:800;}
+  td.icon-td{text-align:center;width:76px;color:var(--gray);font-size:16px;cursor:pointer;}
+
+  /* 하단 고정 합산 바 */
+  .cart-bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--main);box-shadow:0 -4px 18px rgba(0,0,0,.09);display:none;z-index:40;}
+  .cart-bar.show{display:block;}
+  .cart-in{max-width:1100px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .cart-in .c1{font-size:13.5px;font-weight:700;}
+  .cart-in .c1 b{color:var(--main);font-size:17px;}
+  .cart-in .c2{flex:1;font-size:12px;color:var(--gray);}
+  .cart-in .c2 b{color:var(--ink);}
+  .cart-cta{background:var(--main);color:#fff;border:none;border-radius:5px;font-size:14px;font-weight:800;padding:13px 32px;cursor:pointer;font-family:inherit;}
+
+  @media(max-width:860px){
+    .course-tabs{flex-wrap:wrap;}
+    .course-tab{min-width:25%;}
+    .hero-grid{flex-direction:column;}
+    .hero-right{align-items:flex-start;}
+    .pkg-row .rp{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 타이틀 + 안내 (현행 유지) -->
+  <div class="page-top">
+    <div>
+      <h1>수강<span>신청</span></h1>
+      <div class="guide-chips">
+        <span class="g-chip">과목당 3학점</span>
+        <span class="g-chip strong">학기 최대 8과목 (24학점)</span>
+        <span class="g-chip">연간 최대 14과목 (42학점)</span>
+        <button class="g-more" onclick="toggleGuide()">ⓘ 상세</button>
+      </div>
+      <div class="guide guide-full" id="guideFull" style="display:none;">
+        평가인정학습과목 / 인정학점: 과목당 3학점 / <b>한 학기 최대 8과목(24학점), 1년 내 최대 14과목(42학점)</b>까지만 학점인정 가능<br>
+        (전문학사학위 과정의 경우 교육기관 최대 20과목, 학사학위 과정의 경우 최대 35과목 까지만 수강 가능)
+      </div>
+    </div>
+    <div class="top-btns">
+      <button onclick="alert('중복과목확인 (시연)')">중복과목확인 ›</button>
+      <button onclick="alert('무이자 안내 (시연)')">무이자 안내 ›</button>
+    </div>
+  </div>
+
+  <!-- ① 과정 선택 (2단: 카테고리 → 과정) -->
+  <div class="course-tabs" id="catTabs"></div>
+  <div class="course-row" id="courseRow"></div>
+
+  <!-- ② 방식 토글 + ③ 개강일 대형 탭 -->
+  <div class="select-zone">
+    <div class="sel-row">
+      <span class="sel-label">수강 방식</span>
+      <div class="sel-body">
+        <div class="mode-toggle">
+          <button id="mPkg" class="active" onclick="setMode('pkg')">패키지<small>추천 · 과목당 최저가</small></button>
+          <button id="mSingle" onclick="setMode('single')">단과<small>필요한 과목만 선택</small></button>
+        </div>
+        <div class="mode-caption">
+          <span class="mode-hint" id="modeHint">전체 과목 구성으로 과목당 가격이 가장 낮습니다</span>
+          <button class="design-link" onclick="alert('무료 학습설계 신청 (시연)\n학습설계 접수 페이지로 이동 — 설계 완료 시 맞춤 설계가로 이 페이지 재진입')">보유학점·자격증이 있다면? 무료 학습설계 ›</button>
+        </div>
+      </div>
+    </div>
+    <div class="sel-row">
+      <span class="sel-label">개강일</span>
+      <div class="sel-body">
+        <div class="round-tabs" id="roundTabs"></div>
+        <div class="round-info" id="roundInfo"></div>
+      </div>
+    </div>
+  </div>
+  <span class="note">과정 2단 구성 — 1행 카테고리 3개 고정(자격/학위/교양·단과), 2행 과정 칩. 과정이 늘어도 카테고리는 불변, 행당 8개 초과 시 대표 8개 + 전체 보기. 현행 첫 선택지였던 개강일 대형 탭은 형태 그대로 과정·방식 아래로 이동, 학습기간 스트립은 선택 개강일에 연동</span>
+
+  <!-- 패키지 모드 -->
+  <div class="mode-body" id="pkgBody"></div>
+
+  <!-- 단과 모드 -->
+  <div class="mode-body single-body" id="singleBody">
+    <div class="design-banner">
+      <span class="db-t">어떤 과목을 담아야 할지 고민되시나요? 보유학점·자격증을 반영해 <b>필요한 과목만</b> 골라 드립니다</span>
+      <button onclick="alert('1분 자동 설계 (시연)\n모바일 학습설계 FLOW(경로 A)로 이동 — 과정·학력·개강일 선택 후 즉시 결과 확인')">1분 자동 설계 (바로 결과)</button>
+      <button class="db-pro" onclick="alert('맞춤 설계 신청 (시연)\n학습설계 빌더 접수 — 보유학점·성적증명서 반영, 영업일 1일 내 전달\n야간·주말 접수분은 다음 영업일 기준')">맞춤 설계 신청<small>영업일 1일 내 전달</small></button>
+    </div>
+    <span class="note">학습설계 빌더 연계 진입점 — 단과 이용자는 보유학점 케이스 가능성이 높아 설계 유도 효과가 가장 큰 위치. 설계 결과의 부분 결제 → 바구니 동선과 왕복 구조</span>
+    <div class="dept-tabs" id="deptTabs"></div>
+    <div class="filter-chips" id="filterChips"></div>
+    <table class="subj">
+      <thead><tr><th>이수구분</th><th>신청</th><th style="text-align:left;padding-left:14px;">교과목</th><th>상태</th><th>수강료</th><th>수업계획서</th><th>미리보기</th></tr></thead>
+      <tbody id="subjBody"></tbody>
+    </table>
+    <span class="note">상태 컬럼: 잔여석은 임계치(10석) 미만 시에만 자동 노출(마감임박 남발 방지), 마감 과목은 다음 차수 링크로 이탈 → 차수 전환 유도. 로그인 시 기이수 과목 "이수완료" 표시(중복 신청 방지). 해시태그 → "인정 과정" 라벨로 명확화, 클릭 시 해당 과정 필터</span>
+    <div class="prac-notice">※ 사회복지현장실습은 선이수 교과목 이수 후 수강이 가능하며, 신청 시 지역(수도권/전국)·실습 차수 선택이 필요합니다.</div>
+  </div>
+
+</div>
+
+<!-- 하단 고정 합산 바 -->
+<div class="cart-bar" id="cartBar">
+  <div class="cart-in">
+    <span class="c1">선택 <b id="cartCnt">0</b>과목 · <b id="cartSum">0원</b></span>
+    <span class="c2">실습포함 패키지 전체 결제 시 <b>954,800원</b> — 패키지 할인은 전체 결제에만 적용됩니다</span>
+    <button class="cart-cta" onclick="goCart()">수강신청 바구니 담기</button>
+  </div>
+</div>
+
+<!-- 구성과목 레이어 -->
+<div class="modal" id="composeModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <h4 id="cmTitle"></h4>
+    <div class="md" id="cmSub"></div>
+    <div id="cmBody"></div>
+    <button class="modal-close" onclick="document.getElementById('composeModal').classList.remove('open')">닫기</button>
+  </div>
+</div>
+
+<!-- 신청 직전 확인 모달 -->
+<div class="modal" id="confirmModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <h4>신청 내용 확인</h4>
+    <div class="md">아래 내용으로 진행합니다 — 개강일과 학습기간을 확인해 주세요</div>
+    <div id="cfBody"></div>
+    <div class="modal-actions">
+      <button class="ma-back" onclick="document.getElementById('confirmModal').classList.remove('open')">돌아가기</button>
+      <button class="ma-go" onclick="doPay()">확인하고 결제 진행</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATEGORIES=[
+  {id:"cert", name:"자격증 취득", desc:"과정 이수로 자격증 취득"},
+  {id:"deg", name:"학위 취득", desc:"학사 · 전문학사 (전공별)"},
+  {id:"free", name:"교양 · 단과", desc:"과정 없이 과목만 신청"}
+];
+const COURSES2={
+  cert:[
+    {id:"sw", name:"사회복지사 2급", badge:"최저 27,550", ready:true},
+    {id:"cc", name:"보육교사 2급"},
+    {id:"kr", name:"한국어교원 2급"},
+    {id:"di", name:"장애영유아보육교사"},
+    {id:"hf", name:"건강가정사"},
+    {id:"yt", name:"청소년지도사 2급"},
+    {id:"le", name:"평생교육사 2급"}
+  ],
+  deg:[
+    {id:"ba-biz", name:"경영학사", ready:true},
+    {id:"ba-sw", name:"사회복지학사"},
+    {id:"ba-psy", name:"심리학사"},
+    {id:"ba-child", name:"아동학사"},
+    {id:"ba-edu", name:"교육학사"},
+    {id:"ba-nur", name:"간호학사 (RN-BSN)"},
+    {id:"as-sw", name:"사회복지 전문학사"},
+    {id:"as-cc", name:"아동보육 전문학사"},
+    {id:"ba-re", name:"부동산학사"}
+  ],
+  free:[
+    {id:"lib", name:"교양 과목"},
+    {id:"all", name:"전체 과목"}
+  ]
+};
+const MAX_CHIPS=8;
+let catSel="cert", courseSel="sw";
+function renderCats(){
+  $("catTabs").innerHTML = CATEGORIES.map(c=>`
+    <div class="course-tab ${catSel===c.id?"act":""}" onclick="pickCat('${c.id}')">
+      ${c.name}<span class="cat-desc">${c.desc}</span>
+    </div>`).join("");
+}
+function pickCat(id){
+  catSel=id;
+  const first=COURSES2[id].find(c=>c.ready)||COURSES2[id][0];
+  courseSel=first.id;
+  if(!first.ready && id!=="free") alert("시연: 사회복지사 2급(자격)·경영학사(학위) 기준으로만 구성되어 있습니다");
+  renderCats(); renderCourseRow();
+  if(id==="free"){ setMode("single"); } else { renderPkg(); }
+}
+function renderCourseRow(){
+  const list=COURSES2[catSel];
+  const shown=list.slice(0,MAX_CHIPS);
+  const rest=list.length-shown.length;
+  $("courseRow").innerHTML = shown.map(c=>`
+    <button class="c-chip ${courseSel===c.id?"act":""}" onclick="pickCourse('${c.id}')">
+      ${c.badge?`<span class="mb">${c.badge}</span>`:""}${c.name}
+    </button>`).join("")
+    + (rest>0?`<button class="c-chip more" onclick="alert('전체 보기 (시연): 카테고리 내 과정 ${list.length}개 전체 레이어 노출')">전체 보기 +${rest}</button>`:"");
+}
+function pickCourse(id){
+  const c=COURSES2[catSel].find(x=>x.id===id);
+  if(!c.ready){ alert("시연: 사회복지사 2급(자격)·경영학사(학위) 기준으로만 구성되어 있습니다"); return; }
+  courseSel=id; renderCourseRow(); renderPkg();
+}
+const DEG_PACKAGES = [
+  {id:"d1", reco:true, name:"경영학사 편입 완성 패키지", comp:"27과목 · 80학점", desc:"전문대졸 편입 기준 잔여 80학점 전체 구성 (3~4학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
+   benefits:["학사 학위 잔여학점 완성형","학기당 24학점 한도 내 자동 분배"],
+   credits:{total:{t:140,r:60,p:80}, major:{t:60,r:18,p:42}, gen:{t:30,r:12,p:18}}},
+  {id:"d2", tag:"인기", name:"경영학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"},
+  {id:"d3", tag:"전공집중", name:"경영학사 전공 집중 패키지", comp:"14과목 · 42학점 (전공)", desc:"전공 학점만 우선 완성", price:954800, orig:2100000, per:22700, pl:"학점당", disc:"55%"}
+];
+function curPkgs(){ return catSel==="deg" ? DEG_PACKAGES : PACKAGES; }
+
+const ROUNDS = [
+  {id:"r1", term:"2026년 2학기", d:"8월 6일 개강", period:"2026.08.06 ~ 2026.11.18", pshort:"08.06 ~ 11.18", credit:"2027년 1월", degree:"2027년 2월", st:"hot"},
+  {id:"r2", term:"2026년 2학기", d:"9월 3일 개강", period:"2026.09.03 ~ 2026.12.16", pshort:"09.03 ~ 12.16", credit:"2027년 1월", degree:"2027년 2월", st:"ok"}
+];
+const PACKAGES = [
+  {id:"p1", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 — 가장 빠른 완성형", price:954800, orig:2400000, per:34200, disc:"60%",
+   benefits:["사회복지사 2급 취득 핵심 구성","사회복지현장실습 포함","가장 빠른 완성형 패키지"],
+   preview:"사회복지학개론 · 인간행동과사회환경 · 사회복지실천론 외 10과목 + 사회복지현장실습"},
+  {id:"p2", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
+  {id:"p3", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:1800000, per:36400, disc:"64%"},
+  {id:"p4", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:2600000, per:32800, disc:"60%"},
+  {id:"p5", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
+];
+const DEPTS = ["사회복지학","아동학","심리학"];
+const SUBJECTS = [
+  {id:1,g:"전필",name:"사회복지현장실습",prof:"박진영",price:300000,orig:500000,prac:true,hash:"#사회복지사"},
+  {id:2,g:"전필",name:"사회복지학개론",prof:"황환",price:49000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사 #교양"},
+  {id:3,g:"전필",name:"사회복지법제와실천",prof:"심석순",price:49000,orig:150000,hot:true,seats:4,hash:"#사회복지사"},
+  {id:4,g:"전필",name:"사회복지실천기술론",prof:"하태선",price:49000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
+  {id:5,g:"전필",name:"사회복지실천론",prof:"이인정",price:49000,orig:150000,done:true,hash:"#사회복지사 #건강가정사"},
+  {id:6,g:"전필",name:"사회복지정책론",prof:"황환",price:49000,orig:150000,done:true,hash:"#사회복지사"},
+  {id:7,g:"전필",name:"사회복지조사론",prof:"조기원",price:49000,orig:150000,hot:true,seats:2,hash:"#사회복지사 #건강가정사"},
+  {id:8,g:"전필",name:"사회복지행정론",prof:"김치건",price:49000,orig:150000,hot:true,seats:6,hash:"#사회복지사 #건강가정사"},
+  {id:9,g:"전필",name:"인간행동과사회환경",prof:"한서연",price:49000,orig:150000,hot:true,seats:3,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:10,g:"전필",name:"지역사회복지론",prof:"홍성희",price:49000,orig:150000,hot:true,seats:5,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:11,g:"전선",name:"가족복지론",prof:"최미경",price:49000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:12,g:"전선",name:"노인복지론",prof:"허은진",price:49000,orig:150000,hot:true,seats:4,hash:"#사회복지사 #건강가정사"},
+  {id:13,g:"전선",name:"사회심리학",prof:"박찬",price:37000,orig:150000,hash:"#심리학"},
+  {id:14,g:"전선",name:"아동복지론",prof:"박희숙",price:49000,orig:150000,hot:true,seats:2,hash:"#사회복지사 #건강가정사"},
+  {id:15,g:"전선",name:"자원봉사론",prof:"허은진",price:49000,orig:150000,hash:"#사회복지사 #건강가정사"},
+  {id:16,g:"전선",name:"장애인복지론",prof:"서진숙",price:49000,orig:150000,hot:true,seats:5,hash:"#사회복지사 #건강가정사"},
+  {id:17,g:"전선",name:"정신건강론",prof:"김은영",price:49000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:18,g:"전선",name:"청소년복지론",prof:"이연실",price:49000,orig:150000,hash:"#사회복지사 #청소년지도사 #건강가정사"}
+];
+
+let mode="pkg", roundSel="r1", deptSel=0;
+let picked=new Set();
+const fmt=n=>n.toLocaleString("ko-KR")+"원";
+const $=id=>document.getElementById(id);
+
+function setMode(m){
+  mode=m;
+  $("mPkg").classList.toggle("active",m==="pkg");
+  $("mSingle").classList.toggle("active",m==="single");
+  $("modeHint").textContent = m==="pkg"
+    ? "전체 과목 구성으로 과목당 가격이 가장 낮습니다"
+    : "필요한 과목만 선택합니다 — 패키지 할인은 전체 결제에만 적용";
+  $("pkgBody").style.display = m==="pkg"?"block":"none";
+  $("singleBody").classList.toggle("show",m==="single");
+  updateCartBar();
+}
+function renderRounds(){
+  $("roundTabs").innerHTML = ROUNDS.map(r=>`
+    <div class="round-tab ${roundSel===r.id?"act":""}" onclick="pickRound('${r.id}')">
+      <span class="rt-badge ${r.st}">${r.st==="hot"?"마감임박":"신청가능"}</span>
+      <div class="rt1">${r.term}</div><div class="rt2">${r.d}</div><div class="rt3">학습기간 ${r.pshort}</div>
+    </div>`).join("");
+  const r=ROUNDS.find(x=>x.id===roundSel);
+  $("roundInfo").innerHTML = `
+    <span>학점인정신청<b>${r.credit}</b></span>
+    <span>학위신청<b>${r.credit}</b></span>
+    <span>학위취득<b>${r.degree}</b></span>`;
+}
+function toggleGuide(){
+  const g=$("guideFull");
+  g.style.display = g.style.display==="none"?"block":"none";
+}
+function pickRound(id){ roundSel=id; renderRounds(); renderPkg(); }
+function renderPkg(){
+  const pkgs=curPkgs(), h=pkgs[0], rest=pkgs.slice(1);
+  let midBlock="";
+  if(h.credits){
+    const bar=(l,o)=>{const rp=o.r/o.t*100, pp=o.p/o.t*100;
+      return `<div class="cs-row"><span class="cs-l">${l}</span><div class="cs-bar"><i class="rec" style="width:${rp}%"></i><i class="plan" style="width:${pp}%"></i></div><span class="cs-v">${o.r}+${o.p} / ${o.t}학점</span></div>`;};
+    midBlock=`
+          <div class="benefits">${h.benefits.map(b=>`<span class="benefit">${b}</span>`).join("")}</div>
+          <div class="credit-sum">
+            <div class="cs-head">이 패키지로 채우는 학점 <b>${h.credits.total.p}학점</b> — 전적대 인정 ${h.credits.total.r}학점 가정 시 졸업 요건 충족</div>
+            ${bar("총계",h.credits.total)}${bar("전공",h.credits.major)}${bar("교양",h.credits.gen)}
+            <div class="cs-legend"><span><i class="rec"></i>인정 (전적대·자격증)</span><span><i class="plan"></i>패키지 배치</span></div>
+          </div>`;
+  } else {
+    midBlock=`
+          <div class="benefits">${h.benefits.map(b=>`<span class="benefit">${b}</span>`).join("")}</div>
+          <div class="compose-preview">${h.preview}</div>`;
+  }
+  $("pkgBody").innerHTML = `
+    <div class="pkg-hero">
+      <span class="ribbon">추천</span>
+      <div class="hero-grid">
+        <div class="hero-left">
+          ${h.hot?'<span class="pk-badge hot">마감임박 · 수강 신청 10명 미만 가능</span>':""}
+          <div style="margin-top:7px;">
+            <h3>${h.name}</h3>
+            <button class="btn-compose" onclick="openCompose('${h.id}')">구성과목보기</button>
+          </div>
+          <div class="pm">( ${h.comp} ) — ${h.desc}</div>
+          ${midBlock}
+        </div>
+        <div class="hero-right">
+          <div class="hero-price">
+            <div class="m-main">월 <b>${fmt(Math.round(h.price/12/100)*100)}</b><span class="m-from">부터</span></div>
+            <div class="m-sub">무이자 12개월 기준 · 총 ${fmt(h.price)}</div>
+            <div class="row-sub"><span class="d-sm">${h.disc} 할인</span><s>정가 ${fmt(h.orig)}</s></div>
+            <div class="per">${h.pl||"과목당 최저"} ${fmt(h.per)}</div>
+          </div>
+          <button class="pkg-apply" onclick="openConfirm('pkg','${h.id}')">${ROUNDS.find(x=>x.id===roundSel).d.replace(" 개강","")} 개강반으로 신청하기</button>
+        </div>
+      </div>
+    </div>
+    ${rest.map(p=>`
+      <div class="pkg-row">
+        <span class="pk-badge type">${p.tag}</span>
+        <div class="rn">
+          <span class="nm">${p.name}</span>
+          <button class="btn-compose" onclick="openCompose('${p.id}')">구성과목보기</button>
+          <div class="cm">( ${p.comp} ) — ${p.desc}</div>
+        </div>
+        <div class="rp">
+          <span class="o">${fmt(p.orig)}</span><span class="f">${fmt(p.price)}</span><span class="d">${p.disc}↓</span>
+          <div class="rper">${p.pl||"과목당 최저"} ${fmt(p.per)}</div>
+        </div>
+        <button class="apply-sm" onclick="openConfirm('pkg','${p.id}')">신청하기</button>
+      </div>`).join("")}
+    <span class="note">패키지 요약부는 과정 유형별 분기 — 자격: 구성과목 미리보기 / 학위: 학점 게이지(인정+배치). 유형은 패키지 속성이 아닌 과정 마스터 유형에서 파생 (패키지:과정 = N:M 매핑, 동시취득·학위연계 교차 상품 대응)</span>
+    <div class="prac-notice">
+      ※ 실습을 포함한 패키지 과정은 선이수 교과목 이수 후 실습 수강이 가능하며, 사전 미확인으로 인한 책임은 수강생 본인에게 있습니다.<br>
+      ※ 패키지 과정은 과목당 수강료가 상이할 수 있으며, [구성과목보기]에서 수강료 확인이 가능합니다.
+    </div>`;
+}
+const THEORY=["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지실천기술론","사회복지정책론","사회복지행정론","사회복지법제와실천","사회복지조사론","지역사회복지론","가족복지론","노인복지론","아동복지론","청소년복지론"];
+const th=n=>({n,c:3,p:150000});
+const PKG_SUBJ={
+  p1:{items:[...THEORY.map(th),{n:"사회복지현장실습",c:3,p:500000,prac:true}]},
+  p2:{items:THEORY.slice(0,8).map(th),extra:"※ 이론 과목 우선 구성 — 실습은 이후 학기 별도 신청"},
+  p3:{items:[...THEORY.map(th),th("건강가정론"),th("가족상담및가족치료"),th("가족생활교육")],extra:"※ 중복 과목 1회 수강으로 사회복지사 2급 + 건강가정사 동시 충족"},
+  p4:{items:[...THEORY.map(th),{n:"사회복지현장실습",c:3,p:500000,prac:true}],extra:"… 외 교양 10과목 포함 (전문학사 학점 구성)"},
+  p5:{items:THEORY.slice(0,8).map(th),extra:"※ 선택형 — 개설 과목 중 8과목 자유 선택"},
+  d1:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("조직행동론"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 14 · 교양 4 · 자유 1) — 학기당 24학점 한도 내 자동 분배"},
+  d2:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("생활속의통계"),th("조직행동론"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 — 이후 학기 이어 등록"},
+  d3:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("조직행동론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("경영전략")],extra:"… 외 6과목 — 전공 42학점 구성"}
+};
+function findPkg(id){ return [...PACKAGES,...DEG_PACKAGES].find(x=>x.id===id); }
+function openCompose(pid){
+  const p=findPkg(pid), d=PKG_SUBJ[pid];
+  $("cmTitle").textContent=p.name+" 구성과목";
+  $("cmSub").textContent="( "+p.comp+" ) · 정가는 과목별 단과 정가 기준";
+  $("cmBody").innerHTML=`
+    <table class="cm-table">
+      <thead><tr><th>과목명</th><th>학점</th><th>정가</th></tr></thead>
+      <tbody>${d.items.map(s=>`<tr><td>${s.n}${s.prac?' <span class="t-badge prac">실습</span>':""}</td><td style="text-align:center;">${s.c}</td><td style="text-align:right;">${fmt(s.p)}</td></tr>`).join("")}</tbody>
+    </table>
+    ${d.extra?`<div class="cm-extra">${d.extra}</div>`:""}
+    <div class="cm-sum">정가 합계 <s style="color:var(--gray-light);font-weight:500;">${fmt(p.orig)}</s> → 패키지가 <b>${fmt(p.price)}</b></div>`;
+  document.getElementById("composeModal").classList.add("open");
+}
+let confirmCtx=null;
+function openConfirm(type,id){
+  const r=ROUNDS.find(x=>x.id===roundSel);
+  const row=(k,v)=>`<div class="cf-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  let html="";
+  if(type==="pkg"){
+    const p=findPkg(id);
+    confirmCtx={type,name:p.name,round:r.d};
+    html = row("상품",p.name)
+      + row("개강일",`${r.term} ${r.d}`)
+      + row("학습기간",r.period)
+      + row("학점인정신청",r.credit)+row("학위취득",r.degree)
+      + row("결제금액",`${fmt(p.price)}`)
+      + `<div class="cf-hint">무이자 12개월 결제 시 월 ${fmt(Math.round(p.price/12/100)*100)} · 쿠폰은 결제 단계에서 적용됩니다${(PKG_SUBJ[id]&&PKG_SUBJ[id].items.some(s=>s.prac))?"<br>※ 실습 과목은 선이수 교과목 이수 후 수강 가능":""}</div>`;
+  } else {
+    const sum=[...picked].reduce((t,sid)=>t+SUBJECTS.find(s=>s.id===sid).price,0);
+    confirmCtx={type,name:picked.size+"과목 단과",round:r.d};
+    html = row("선택 과목",`${picked.size}과목 (단과)`)
+      + row("개강일",`${r.term} ${r.d}`)
+      + row("학습기간",r.period)
+      + row("합산 금액",fmt(sum))
+      + `<div class="cf-hint">실습포함 패키지 전체 결제 시 954,800원 — 패키지 할인은 전체 결제에만 적용됩니다<br>쿠폰 적용 가능 여부는 결제 단계에서 자동 판정됩니다</div>`;
+  }
+  $("cfBody").innerHTML=html;
+  document.getElementById("confirmModal").classList.add("open");
+}
+function doPay(){
+  document.getElementById("confirmModal").classList.remove("open");
+  alert(`결제 이동 (시연)\n${confirmCtx.name} · ${confirmCtx.round}\n→ 결제 유의사항 → 쿠폰 적용 → 결제`);
+}
+function renderDepts(){
+  $("deptTabs").innerHTML = DEPTS.map((d,i)=>`
+    <span class="dept-tab ${deptSel===i?"act":""}" onclick="deptSel=${i};renderDepts();">${d}</span>`).join("")
+    + `<button class="login-demo ${loginDemo?"on":""}" onclick="loginDemo=!loginDemo;renderDepts();renderTable();">시연: 로그인 상태 ${loginDemo?"ON — 기이수 표시":"OFF"}</button>`;
+}
+const FILTERS=[{id:"all",n:"전체"},{id:"전필",n:"전필"},{id:"전선",n:"전선"},{id:"open",n:"신청가능만"}];
+let filterSel="all", recogSel=null, loginDemo=false;
+function isDone(s){ return loginDemo && s.done; }
+function renderFilters(){
+  $("filterChips").innerHTML = FILTERS.map(f=>`
+    <button class="f-chip ${filterSel===f.id?"act":""}" onclick="filterSel='${f.id}';renderFilters();renderTable();">${f.n}</button>`).join("")
+    + (recogSel?`<button class="f-chip act" onclick="toggleRecog('${recogSel}')">인정: ${recogSel} ✕</button>`:"");
+}
+function toggleRecog(r){ recogSel = recogSel===r?null:r; renderFilters(); renderTable(); }
+function passFilter(s){
+  if(recogSel && !(s.hash||"").includes(recogSel)) return false;
+  if(filterSel==="전필"||filterSel==="전선") return s.g===filterSel;
+  if(filterSel==="open") return !s.closed && !isDone(s);
+  return true;
+}
+function renderTable(){
+  const groups=["전필","전선"];
+  $("subjBody").innerHTML = groups.map(g=>{
+    const list=SUBJECTS.filter(s=>s.g===g && passFilter(s));
+    if(list.length===0) return "";
+    return list.map((s,i)=>{
+      const done=isDone(s);
+      const st = done ? '<span class="st-txt done">이수완료</span>'
+        : s.closed ? `<span class="st-txt full">신청마감</span>${s.nextRound?`<div class="next-round" onclick="pickRound('${s.nextRound}')">${ROUNDS.find(r=>r.id===s.nextRound).d} 신청 가능 ›</div>`:""}`
+        : s.hot ? `<span class="st-txt hot">잔여 ${s.seats}석</span>`
+        : '<span class="st-txt ok">신청가능</span>';
+      const recogs=(s.hash||"").split(" ").map(t=>t.replace("#","")).filter(Boolean);
+      return `
+      <tr class="${picked.has(s.id)?"sel":""}">
+        ${i===0?`<td class="grp" rowspan="${list.length}">${g}</td>`:""}
+        <td class="chk">${s.closed?'<span class="closed-box"></span>':done?'<span class="done-mark">✓</span>':`<input type="checkbox" ${picked.has(s.id)?"checked":""} onchange="togglePick(${s.id})">`}</td>
+        <td>
+          <span class="subj-name ${s.closed||done?"dim":""}">${s.name}</span><span class="subj-prof">/ ${s.prof} 교수</span>
+          ${s.prac?'<span class="t-badge prac">실습</span><span class="t-badge pre">선이수 필요</span>':""}
+          <div class="recog-line">인정 과정: ${recogs.map(r=>`<span class="recog-chip ${recogSel===r?"act":""}" onclick="toggleRecog('${r}')">${r}</span>`).join('<span class="rc-sep">·</span>')}</div>
+        </td>
+        <td style="text-align:center;width:92px;">${st}</td>
+        <td class="fee"><span class="o">${fmt(s.orig)}</span><span class="f">${fmt(s.price)}</span></td>
+        <td class="icon-td" onclick="alert('수업계획서 (시연)')">📄</td>
+        <td class="icon-td" onclick="alert('미리보기 (시연)')">▶</td>
+      </tr>`;
+    }).join("");
+  }).join("");
+}
+function togglePick(id){ picked.has(id)?picked.delete(id):picked.add(id); renderTable(); updateCartBar(); }
+function updateCartBar(){
+  const sum=[...picked].reduce((t,id)=>t+SUBJECTS.find(s=>s.id===id).price,0);
+  $("cartCnt").textContent=picked.size;
+  $("cartSum").textContent=fmt(sum);
+  $("cartBar").classList.toggle("show", mode==="single" && picked.size>0);
+}
+function goCart(){ openConfirm("cart"); }
+
+renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderDepts(); renderFilters(); renderTable();
+</script>
+</body>
+</html>

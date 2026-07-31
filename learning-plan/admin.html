@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>설계보조도구 — 1단계 시연</title>
+<link rel="stylesheet" href="../assets/tokens.css">
 <style>
   :root{
-    --navy:#12435a; --blue:#0093D0; --blue-soft:#DEEBF7; --blue-line:#66BEE3;
-    --main:#0093D0; --mid:#66BEE3; --soft:#DEEBF7;
+    --navy:#12435a; --blue:var(--baeron-main); --blue-soft:var(--baeron-soft); --blue-line:var(--baeron-mid);
+    --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
     --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
     --bg:#f4f6fb; --card:#fff; --red:#e23b4e; --red-soft:#fdf1f2;
     --green:#1a9c6b; --green-soft:#e7f5ef; --amber:#b07c10; --amber-soft:#fdf3dc;
@@ -22,10 +23,6 @@
   .gnb-item:hover{background:var(--soft);color:var(--main);}
   .gnb-item.act{background:var(--main);color:#fff;}
   .gnb-tag{font-size:10.5px;font-weight:800;color:#fff;background:var(--main);border-radius:20px;padding:4px 11px;white-space:nowrap;}
-
-  .demo-nav{font-size:11px;color:var(--gray-light);margin-bottom:10px;}
-  .demo-nav a{color:inherit;font-weight:700;text-decoration:none;border-bottom:1px dotted;}
-  .demo-nav a:hover{color:#0093D0;}
 
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:1080px;margin:0 auto;padding:20px 20px 80px;}
@@ -229,7 +226,7 @@
         <div class="tabs">
           <button class="tab act" id="tabPkg" onclick="tmplTab('pkg')">패키지 연동 <span class="n">4</span></button>
           <button class="tab" id="tabMine" onclick="tmplTab('mine')">내 템플릿 <span class="n">3</span></button>
-          <button class="tab" id="tabTeam" onclick="tmplTab('team')">팀 공유 <span class="n">3</span></button>
+          <button class="tab" id="tabTeam" onclick="tmplTab('team')">팀 공유 <span class="n">2</span></button>
         </div>
 
         <!-- 패키지 연동 탭 -->
@@ -245,7 +242,7 @@
         <div id="paneMine" class="hidden">
           <div class="readonly-bar">빌더에서 <b>[내 템플릿 저장]</b>으로 생성됩니다 — 구조만 저장(상태 초기화, 권장) / 상태 포함 저장(같은 패턴 학생 전용) 구분</div>
           <div class="row"><span class="name">보육교사 자격 보유자 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span></span><span class="meta">사복 2급 · 전문대졸 · 06.02 저장 · 최근 사용 06.28</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line" onclick="alert('복제 (시연): 사본 생성 후 수정')">복제</button><button class="btn-green" onclick="alert('팀에 공유 (시연)\n승인 절차 없음 — 즉시 팀 공유 탭에 노출, 언제든 공유 해제 가능\n공유·수정 내역은 이력에 자동 기록')">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
-          <div class="row"><span class="name">전적대 사복 일부이수 패턴 <span class="tb mine">내 것</span><span class="tb state">상태 포함</span></span><span class="meta">사복 2급 · 전문대졸 · 06.15 저장</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line">복제</button><button class="btn-green">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">전적대 사복 재구성 패턴 <span class="tb mine">내 것</span><span class="tb state">상태 포함</span></span><span class="meta">사복 2급 · 전문대졸 · 06.15 저장</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line">복제</button><button class="btn-green">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
           <div class="row"><span class="name">학사 3학기 압축 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span><span class="tb team">공유 중</span></span><span class="meta">경영학사 · 06.08 저장 · 팀 공유 06.30</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('공유 해제 (시연): 팀 목록에서 제거 — 이미 사용된 설계에는 영향 없음')">공유 해제</button><button class="btn-danger">삭제</button></span></div>
         </div>
 

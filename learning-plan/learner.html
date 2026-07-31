@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>(주)배움 학습설계 — 학습자 메뉴 (1단계 시연)</title>
+<link rel="stylesheet" href="../assets/tokens.css">
 <style>
   :root{
-    --main:#0093D0; --mid:#66BEE3; --soft:#DEEBF7;
+    --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
     --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
     --bg:#f4f6fb; --green:#1a9c6b; --green-soft:#e7f5ef;
     --amber:#b07c10; --amber-soft:#fdf3dc; --red:#e23b4e;
@@ -19,10 +20,6 @@
   .gnb-item:hover{background:var(--soft);color:var(--main);}
   .gnb-item.act{background:var(--main);color:#fff;}
   .gnb-tag{font-size:10.5px;font-weight:800;color:#fff;background:var(--main);border-radius:20px;padding:4px 11px;white-space:nowrap;}
-
-  .demo-nav{font-size:11px;color:var(--gray-light);margin-bottom:10px;}
-  .demo-nav a{color:inherit;font-weight:700;text-decoration:none;border-bottom:1px dotted;}
-  .demo-nav a:hover{color:#0093D0;}
 
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
   .learner-stage{display:flex;flex-direction:column;align-items:center;padding:20px;}
