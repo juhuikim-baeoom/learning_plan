@@ -198,9 +198,13 @@
   table.subj th{background:var(--panel);border:1px solid var(--line);padding:10px 6px;font-size:12.5px;font-weight:700;}
   table.subj td{border:1px solid var(--line);padding:12px 10px;vertical-align:middle;}
   td.grp{text-align:center;font-weight:700;background:#fbfbfc;width:76px;}
-  td.chk{text-align:center;width:52px;}
+  td.chk{text-align:center;width:64px;}
   td.chk input{width:16px;height:16px;accent-color:var(--main);}
   td.chk .closed-box{display:inline-block;width:16px;height:16px;background:repeating-linear-gradient(45deg,#ddd,#ddd 3px,#f2f2f2 3px,#f2f2f2 6px);border:1px solid #ccc;}
+  td.chk .wait-btn{border:1px solid var(--main);background:#fff;color:var(--main);border-radius:3px;font-size:10.5px;font-weight:700;line-height:1.3;padding:4px 7px;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .region-line{font-size:11px;color:var(--gray);margin-top:4px;}
+  .region-line b{color:var(--ink);font-weight:700;margin-right:2px;}
+  .venue-link{color:var(--main);font-weight:600;cursor:pointer;text-decoration:underline;margin-left:4px;}
   .subj-name{font-weight:700;font-size:13.5px;}
   .subj-name.dim{color:var(--gray-light);font-weight:600;}
   .subj-prof{font-weight:400;color:var(--gray);font-size:12px;margin-left:6px;}
@@ -314,7 +318,7 @@
 <div class="cart-bar" id="cartBar">
   <div class="cart-in">
     <span class="c1">선택 <b id="cartCnt">0</b>과목 · <b id="cartSum">0원</b></span>
-    <span class="c2">실습포함 패키지 전체 결제 시 <b>954,800원</b> — 패키지 할인은 전체 결제에만 적용됩니다</span>
+    <span class="c2" id="cartHint"></span>
     <button class="cart-cta" onclick="goCart()">수강신청 바구니 담기</button>
   </div>
 </div>
@@ -414,39 +418,124 @@ const DEG_PACKAGES = [
 ];
 function curPkgs(){ return catSel==="deg" ? DEG_PACKAGES : PACKAGES; }
 
+// 개강 차수 — career.baeoom.com/lectureN 실제 값 (9월 개강반부터)
 const ROUNDS = [
-  {id:"r1", term:"2026년 2학기", d:"8월 6일 개강", period:"2026.08.06 ~ 2026.11.18", pshort:"08.06 ~ 11.18", credit:"2027년 1월", degree:"2027년 2월", st:"hot"},
-  {id:"r2", term:"2026년 2학기", d:"9월 3일 개강", period:"2026.09.03 ~ 2026.12.16", pshort:"09.03 ~ 12.16", credit:"2027년 1월", degree:"2027년 2월", st:"ok"}
+  {id:"r1", term:"2026년 2학기", d:"9월 4일 개강", period:"2026.09.04 ~ 2026.12.17", pshort:"09.04 ~ 12.17", credit:"2026년 12월", degree:"2027년 2월", st:"ok"},
+  {id:"r2", term:"2026년 2학기", d:"9월 17일 개강", period:"2026.09.17 ~ 2026.12.30", pshort:"09.17 ~ 12.30", credit:"2027년 1월", degree:"2027년 2월", st:"ok"},
+  {id:"r3", term:"2027년 1학기", d:"12월 31일 개강", period:"2026.12.31 ~ 2027.04.14", pshort:"12.31 ~ 04.14", credit:"2027년 4월", degree:"2027년 8월", st:"ok"}
 ];
+// 정가(orig)는 9월 4일 개강반 단과 정가 합계 (이론 150,000 / 실습 500,000) 기준
 const PACKAGES = [
-  {id:"p1", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 — 가장 빠른 완성형", price:954800, orig:2400000, per:34200, disc:"60%",
+  {id:"p1", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 — 가장 빠른 완성형", price:954800, orig:2450000, per:68200, disc:"61%",
    benefits:["사회복지사 2급 취득 핵심 구성","사회복지현장실습 포함","가장 빠른 완성형 패키지"],
    preview:"사회복지학개론 · 인간행동과사회환경 · 사회복지실천론 외 10과목 + 사회복지현장실습"},
   {id:"p2", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
-  {id:"p3", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:1800000, per:36400, disc:"64%"},
-  {id:"p4", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:2600000, per:32800, disc:"60%"},
+  {id:"p3", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
+  {id:"p4", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
   {id:"p5", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
 ];
-const DEPTS = ["사회복지학","아동학","심리학"];
+// 학과 탭 — 각 탭은 인정 과정 태그로 매핑
+const DEPTS = [
+  {n:"사회복지학", tag:"사회복지사"},
+  {n:"아동·보육", tag:"보육교사"},
+  {n:"심리학", tag:"심리학"},
+  {n:"경영학", tag:"경영학"}
+];
+// 과목 — career.baeoom.com/lectureN 2026년 2학기 9월 4일 개강반 실제 목록
+// g: 실습 / 대면 / 이론 (현행 이수구분 컬럼) · closed=신청마감(대기접수) · hot=마감임박
 const SUBJECTS = [
-  {id:1,g:"전필",name:"사회복지현장실습",prof:"박진영",price:300000,orig:500000,prac:true,hash:"#사회복지사"},
-  {id:2,g:"전필",name:"사회복지학개론",prof:"황환",price:49000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사 #교양"},
-  {id:3,g:"전필",name:"사회복지법제와실천",prof:"심석순",price:49000,orig:150000,hot:true,seats:4,hash:"#사회복지사"},
-  {id:4,g:"전필",name:"사회복지실천기술론",prof:"하태선",price:49000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
-  {id:5,g:"전필",name:"사회복지실천론",prof:"이인정",price:49000,orig:150000,done:true,hash:"#사회복지사 #건강가정사"},
-  {id:6,g:"전필",name:"사회복지정책론",prof:"황환",price:49000,orig:150000,done:true,hash:"#사회복지사"},
-  {id:7,g:"전필",name:"사회복지조사론",prof:"조기원",price:49000,orig:150000,hot:true,seats:2,hash:"#사회복지사 #건강가정사"},
-  {id:8,g:"전필",name:"사회복지행정론",prof:"김치건",price:49000,orig:150000,hot:true,seats:6,hash:"#사회복지사 #건강가정사"},
-  {id:9,g:"전필",name:"인간행동과사회환경",prof:"한서연",price:49000,orig:150000,hot:true,seats:3,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:10,g:"전필",name:"지역사회복지론",prof:"홍성희",price:49000,orig:150000,hot:true,seats:5,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:11,g:"전선",name:"가족복지론",prof:"최미경",price:49000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:12,g:"전선",name:"노인복지론",prof:"허은진",price:49000,orig:150000,hot:true,seats:4,hash:"#사회복지사 #건강가정사"},
-  {id:13,g:"전선",name:"사회심리학",prof:"박찬",price:37000,orig:150000,hash:"#심리학"},
-  {id:14,g:"전선",name:"아동복지론",prof:"박희숙",price:49000,orig:150000,hot:true,seats:2,hash:"#사회복지사 #건강가정사"},
-  {id:15,g:"전선",name:"자원봉사론",prof:"허은진",price:49000,orig:150000,hash:"#사회복지사 #건강가정사"},
-  {id:16,g:"전선",name:"장애인복지론",prof:"서진숙",price:49000,orig:150000,hot:true,seats:5,hash:"#사회복지사 #건강가정사"},
-  {id:17,g:"전선",name:"정신건강론",prof:"김은영",price:49000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:18,g:"전선",name:"청소년복지론",prof:"이연실",price:49000,orig:150000,hash:"#사회복지사 #청소년지도사 #건강가정사"}
+  // 실습과목
+  {id:1,g:"실습",name:"사회복지현장실습",prof:"박진영",price:300000,orig:500000,prac:true,pre:true,hot:true,seats:6,region:"수도권(서울,경기,인천)",hash:"#사회복지사"},
+  {id:2,g:"실습",name:"사회복지현장실습",prof:"박진영",price:400000,orig:500000,prac:true,pre:true,region:"전국(일부지역 제외)",hash:"#사회복지사"},
+  {id:3,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,closed:true,nextRound:"r2",region:"수도권 / 강원 / 충청",hash:"#보육교사"},
+  {id:4,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,region:"경상권(대구,부산,울산,경북,경남)",hash:"#보육교사"},
+  {id:5,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,region:"전라권(섬·산간지역 제외)",hash:"#보육교사"},
+  // 대면과목
+  {id:10,g:"대면",name:"보육교사론",prof:"김유나",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  {id:11,g:"대면",name:"아동관찰및행동연구",prof:"기현주",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  {id:12,g:"대면",name:"아동권리와복지",prof:"이기선",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  {id:13,g:"대면",name:"아동미술",prof:"강보라",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사 #교양"},
+  {id:14,g:"대면",name:"아동수학지도",prof:"김갑순",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  {id:15,g:"대면",name:"아동안전관리",prof:"김갑순",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  {id:16,g:"대면",name:"언어지도",prof:"윤주연",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
+  // 이론과목 — 사회복지
+  {id:20,g:"이론",name:"사회복지학개론",prof:"황환",price:70000,orig:150000,closed:true,nextRound:"r2",done:true,hash:"#사회복지사 #건강가정사 #교양"},
+  {id:21,g:"이론",name:"인간행동과사회환경",prof:"한서연",price:70000,orig:150000,closed:true,nextRound:"r2",done:true,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:22,g:"이론",name:"사회복지실천론",prof:"이인정",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
+  {id:23,g:"이론",name:"사회복지실천기술론",prof:"하태선",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
+  {id:24,g:"이론",name:"사회복지정책론",prof:"황환",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사"},
+  {id:25,g:"이론",name:"사회복지행정론",prof:"김치건",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
+  {id:26,g:"이론",name:"사회복지법제와실천",prof:"심석순",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사"},
+  {id:27,g:"이론",name:"사회복지조사론",prof:"조기원",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
+  {id:28,g:"이론",name:"지역사회복지론",prof:"홍성희",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:29,g:"이론",name:"가족복지론",prof:"최미경",price:70000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:30,g:"이론",name:"가족상담및가족치료",prof:"박진영",price:70000,orig:150000,hash:"#사회복지사 #건강가정사 #교양"},
+  {id:31,g:"이론",name:"노인복지론",prof:"이수천",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
+  {id:32,g:"이론",name:"아동복지론",prof:"박희숙",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
+  {id:33,g:"이론",name:"청소년복지론",prof:"이연실",price:70000,orig:150000,hash:"#사회복지사 #청소년지도사 #건강가정사"},
+  {id:34,g:"이론",name:"자원봉사론",prof:"박진영",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
+  {id:35,g:"이론",name:"장애인복지론",prof:"서진숙",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
+  {id:36,g:"이론",name:"정신건강론",prof:"김은영",price:70000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
+  {id:37,g:"이론",name:"산업복지론",prof:"이수천",price:70000,orig:150000,hash:"#사회복지사"},
+  {id:38,g:"이론",name:"의료사회복지론",prof:"이인정",price:70000,orig:150000,hash:"#사회복지사"},
+  {id:39,g:"이론",name:"학교사회복지론",prof:"이은진",price:70000,orig:150000,hash:"#사회복지사"},
+  // 이론과목 — 아동·보육
+  {id:40,g:"이론",name:"보육학개론",prof:"장윤정",price:55000,orig:150000,hash:"#보육교사 #건강가정사"},
+  {id:41,g:"이론",name:"보육과정",prof:"이영미",price:55000,orig:150000,hash:"#보육교사"},
+  {id:42,g:"이론",name:"영유아발달",prof:"김경윤",price:55000,orig:150000,hash:"#보육교사"},
+  {id:43,g:"이론",name:"영유아교수방법론",prof:"백진주",price:55000,orig:150000,hash:"#보육교사"},
+  {id:44,g:"이론",name:"영유아보육프로그램개발과평가",prof:"기현주",price:55000,orig:150000,hash:"#보육교사"},
+  {id:45,g:"이론",name:"부모교육론",prof:"백진주",price:55000,orig:150000,hash:"#보육교사 #건강가정사 #교양"},
+  {id:46,g:"이론",name:"가족관계론",prof:"김순기",price:55000,orig:150000,hash:"#보육교사 #건강가정사 #교양"},
+  {id:47,g:"이론",name:"특수아동이해",prof:"서은정",price:40000,orig:150000,hash:"#보육교사 #장애영유아"},
+  // 이론과목 — 심리
+  {id:50,g:"이론",name:"심리학개론",prof:"정형수",price:40000,orig:150000,hash:"#교양 #심리학 #경영학"},
+  {id:51,g:"이론",name:"발달심리",prof:"최경희",price:40000,orig:150000,hash:"#심리학"},
+  {id:52,g:"이론",name:"사회심리학",prof:"박찬",price:40000,orig:150000,hash:"#심리학"},
+  {id:53,g:"이론",name:"성격심리학",prof:"김순호",price:40000,orig:150000,hash:"#심리학"},
+  {id:54,g:"이론",name:"이상심리학",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
+  {id:55,g:"이론",name:"인지심리학",prof:"오창영",price:40000,orig:150000,hash:"#심리학"},
+  {id:56,g:"이론",name:"임상심리학",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
+  {id:57,g:"이론",name:"학습심리학",prof:"고인숙",price:40000,orig:150000,hash:"#심리학"},
+  {id:58,g:"이론",name:"정서심리학",prof:"송욱",price:40000,orig:150000,hash:"#심리학"},
+  {id:59,g:"이론",name:"상담심리학",prof:"김덕범",price:40000,orig:150000,hash:"#평생교육사 #건강가정사 #교양 #심리학"},
+  {id:60,g:"이론",name:"집단상담이론과실제",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
+  {id:61,g:"이론",name:"상담이론과실제",prof:"고인숙",price:40000,orig:150000,hash:"#건강가정사 #교양 #심리학"},
+  {id:62,g:"이론",name:"교육심리학",prof:"고인숙",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:63,g:"이론",name:"산업심리학",prof:"송관재",price:40000,orig:150000,hash:"#교양 #심리학 #경영학"},
+  {id:64,g:"이론",name:"조직심리학",prof:"송관재",price:40000,orig:150000,hash:"#심리학 #경영학"},
+  {id:65,g:"이론",name:"소비자심리학",prof:"이지훈",price:40000,orig:150000,hash:"#KICPA #심리학 #경영학"},
+  {id:66,g:"이론",name:"사이버심리학",prof:"진성오",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:67,g:"이론",name:"인간행동의심리학적이해",prof:"한민",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:68,g:"이론",name:"대인관계의심리학",prof:"한민",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:69,g:"이론",name:"생활지도와상담",prof:"정형수",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:70,g:"이론",name:"아동발달",prof:"기현주",price:40000,orig:150000,hash:"#교양 #심리학"},
+  {id:71,g:"이론",name:"유아발달",prof:"기현주",price:40000,orig:150000,hash:"#심리학"},
+  {id:72,g:"이론",name:"특수아상담",prof:"윤주연",price:40000,orig:150000,hash:"#장애영유아 #심리학"},
+  {id:73,g:"이론",name:"청소년이해론",prof:"김영애",price:40000,orig:150000,hash:"#심리학"},
+  {id:74,g:"이론",name:"행동수정",prof:"배영광",price:40000,orig:150000,hash:"#심리학"},
+  // 이론과목 — 경영
+  {id:80,g:"이론",name:"경영학개론",prof:"이우원",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
+  {id:81,g:"이론",name:"경제학개론",prof:"윤종인",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
+  {id:82,g:"이론",name:"회계원리",prof:"윤성용",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:83,g:"이론",name:"중급재무회계1",prof:"김영철",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:84,g:"이론",name:"원가관리회계1",prof:"이진훤",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:85,g:"이론",name:"원가관리회계2",prof:"박준령",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:86,g:"이론",name:"재무관리",prof:"이진훤",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:87,g:"이론",name:"마케팅원론",prof:"이재진",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:88,g:"이론",name:"마케팅관리론",prof:"이재환",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:89,g:"이론",name:"인적자원관리",prof:"박종혁",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:90,g:"이론",name:"생산관리",prof:"박보우",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:91,g:"이론",name:"경영통계학",prof:"허정",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:92,g:"이론",name:"경영분석",prof:"김영철",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:93,g:"이론",name:"경영정보시스템",prof:"채영일",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:94,g:"이론",name:"국제경영",prof:"신봉섭",price:40000,orig:150000,hash:"#KICPA #경영학"},
+  {id:95,g:"이론",name:"무역학개론",prof:"이재영",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
+  {id:96,g:"이론",name:"광고학",prof:"오세정",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
+  {id:97,g:"이론",name:"리더십",prof:"김영규",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
+  {id:98,g:"이론",name:"사회학개론",prof:"이태정",price:40000,orig:150000,hash:"#교양 #경영학"},
+  {id:99,g:"이론",name:"인간관계론",prof:"성충모",price:40000,orig:150000,hash:"#KICPA #교양 #심리학 #경영학"},
+  {id:100,g:"이론",name:"데이터베이스",prof:"오재우",price:40000,orig:150000,hash:"#경영학 #컴퓨터공학"}
 ];
 
 let mode="pkg", roundSel="r1", deptSel=0;
@@ -473,8 +562,8 @@ function renderRounds(){
     </div>`).join("");
   const r=ROUNDS.find(x=>x.id===roundSel);
   $("roundInfo").innerHTML = `
-    <span>학점인정신청<b>${r.credit}</b></span>
-    <span>학위신청<b>${r.credit}</b></span>
+    <span>학습기간<b>${r.period}</b></span>
+    <span>학점인정<b>${r.credit}</b></span>
     <span>학위취득<b>${r.degree}</b></span>`;
 }
 function toggleGuide(){
@@ -552,9 +641,9 @@ const PKG_SUBJ={
   p3:{items:[...THEORY.map(th),th("건강가정론"),th("가족상담및가족치료"),th("가족생활교육")],extra:"※ 중복 과목 1회 수강으로 사회복지사 2급 + 건강가정사 동시 충족"},
   p4:{items:[...THEORY.map(th),{n:"사회복지현장실습",c:3,p:500000,prac:true}],extra:"… 외 교양 10과목 포함 (전문학사 학점 구성)"},
   p5:{items:THEORY.slice(0,8).map(th),extra:"※ 선택형 — 개설 과목 중 8과목 자유 선택"},
-  d1:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("조직행동론"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 14 · 교양 4 · 자유 1) — 학기당 24학점 한도 내 자동 분배"},
-  d2:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("생활속의통계"),th("조직행동론"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 — 이후 학기 이어 등록"},
-  d3:{items:[th("경영학원론"),th("회계원리"),th("마케팅원론"),th("조직행동론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("경영전략")],extra:"… 외 6과목 — 전공 42학점 구성"}
+  d1:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 14 · 교양 4 · 자유 1) — 학기당 24학점 한도 내 자동 분배"},
+  d2:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("조직심리학"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 — 이후 학기 이어 등록"},
+  d3:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("마케팅관리론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("생산관리")],extra:"… 외 6과목 — 전공 42학점 구성"}
 };
 function findPkg(id){ return [...PACKAGES,...DEG_PACKAGES].find(x=>x.id===id); }
 function openCompose(pid){
@@ -581,17 +670,18 @@ function openConfirm(type,id){
     html = row("상품",p.name)
       + row("개강일",`${r.term} ${r.d}`)
       + row("학습기간",r.period)
-      + row("학점인정신청",r.credit)+row("학위취득",r.degree)
+      + row("학점인정",r.credit)+row("학위취득",r.degree)
       + row("결제금액",`${fmt(p.price)}`)
       + `<div class="cf-hint">무이자 12개월 결제 시 월 ${fmt(Math.round(p.price/12/100)*100)} · 쿠폰은 결제 단계에서 적용됩니다${(PKG_SUBJ[id]&&PKG_SUBJ[id].items.some(s=>s.prac))?"<br>※ 실습 과목은 선이수 교과목 이수 후 수강 가능":""}</div>`;
   } else {
-    const sum=[...picked].reduce((t,sid)=>t+SUBJECTS.find(s=>s.id===sid).price,0);
+    const sum=cartTotal(), saved=cartBase()-sum;
     confirmCtx={type,name:picked.size+"과목 단과",round:r.d};
     html = row("선택 과목",`${picked.size}과목 (단과)`)
       + row("개강일",`${r.term} ${r.d}`)
       + row("학습기간",r.period)
+      + (saved>0?row("단과 할인 이벤트",`− ${fmt(saved)}`):"")
       + row("합산 금액",fmt(sum))
-      + `<div class="cf-hint">실습포함 패키지 전체 결제 시 954,800원 — 패키지 할인은 전체 결제에만 적용됩니다<br>쿠폰 적용 가능 여부는 결제 단계에서 자동 판정됩니다</div>`;
+      + `<div class="cf-hint">${saved>0?`${picked.size>=5?"5과목":"3과목"} 이상 선택으로 과목당 할인이 적용되었습니다`:"3과목 이상 담으면 과목당 할인이 적용됩니다"}<br>쿠폰 적용 가능 여부는 결제 단계에서 자동 판정됩니다</div>`;
   }
   $("cfBody").innerHTML=html;
   document.getElementById("confirmModal").classList.add("open");
@@ -602,10 +692,10 @@ function doPay(){
 }
 function renderDepts(){
   $("deptTabs").innerHTML = DEPTS.map((d,i)=>`
-    <span class="dept-tab ${deptSel===i?"act":""}" onclick="deptSel=${i};renderDepts();">${d}</span>`).join("")
+    <span class="dept-tab ${deptSel===i?"act":""}" onclick="deptSel=${i};renderDepts();renderTable();">${d.n}</span>`).join("")
     + `<button class="login-demo ${loginDemo?"on":""}" onclick="loginDemo=!loginDemo;renderDepts();renderTable();">시연: 로그인 상태 ${loginDemo?"ON — 기이수 표시":"OFF"}</button>`;
 }
-const FILTERS=[{id:"all",n:"전체"},{id:"전필",n:"전필"},{id:"전선",n:"전선"},{id:"open",n:"신청가능만"}];
+const FILTERS=[{id:"all",n:"전체"},{id:"이론",n:"이론"},{id:"대면",n:"대면"},{id:"실습",n:"실습"},{id:"open",n:"신청가능만"}];
 let filterSel="all", recogSel=null, loginDemo=false;
 function isDone(s){ return loginDemo && s.done; }
 function renderFilters(){
@@ -615,13 +705,14 @@ function renderFilters(){
 }
 function toggleRecog(r){ recogSel = recogSel===r?null:r; renderFilters(); renderTable(); }
 function passFilter(s){
+  if(!(s.hash||"").includes(DEPTS[deptSel].tag)) return false;
   if(recogSel && !(s.hash||"").includes(recogSel)) return false;
-  if(filterSel==="전필"||filterSel==="전선") return s.g===filterSel;
+  if(filterSel==="이론"||filterSel==="대면"||filterSel==="실습") return s.g===filterSel;
   if(filterSel==="open") return !s.closed && !isDone(s);
   return true;
 }
 function renderTable(){
-  const groups=["전필","전선"];
+  const groups=["실습","대면","이론"];
   $("subjBody").innerHTML = groups.map(g=>{
     const list=SUBJECTS.filter(s=>s.g===g && passFilter(s));
     if(list.length===0) return "";
@@ -634,11 +725,12 @@ function renderTable(){
       const recogs=(s.hash||"").split(" ").map(t=>t.replace("#","")).filter(Boolean);
       return `
       <tr class="${picked.has(s.id)?"sel":""}">
-        ${i===0?`<td class="grp" rowspan="${list.length}">${g}</td>`:""}
-        <td class="chk">${s.closed?'<span class="closed-box"></span>':done?'<span class="done-mark">✓</span>':`<input type="checkbox" ${picked.has(s.id)?"checked":""} onchange="togglePick(${s.id})">`}</td>
+        ${i===0?`<td class="grp" rowspan="${list.length}">${g}과목</td>`:""}
+        <td class="chk">${done?'<span class="done-mark">✓</span>':s.closed?'<button class="wait-btn" onclick="alert(\'대기접수 (시연)\')">대기<br>접수</button>':`<input type="checkbox" ${picked.has(s.id)?"checked":""} onchange="togglePick(${s.id})">`}</td>
         <td>
           <span class="subj-name ${s.closed||done?"dim":""}">${s.name}</span><span class="subj-prof">/ ${s.prof} 교수</span>
-          ${s.prac?'<span class="t-badge prac">실습</span><span class="t-badge pre">선이수 필요</span>':""}
+          ${s.prac?'<span class="t-badge prac">실습</span>':""}${s.pre?'<span class="t-badge pre">선이수 필요</span>':""}
+          ${s.region?`<div class="region-line"><b>${s.g==="실습"?"실습":"대면"} ${s.closed?"마감":"신청"}</b> ${s.region} <span class="venue-link" onclick="alert('교육장 및 일정보기 (시연)')">교육장 및 일정보기 ›</span></div>`:""}
           <div class="recog-line">인정 과정: ${recogs.map(r=>`<span class="recog-chip ${recogSel===r?"act":""}" onclick="toggleRecog('${r}')">${r}</span>`).join('<span class="rc-sep">·</span>')}</div>
         </td>
         <td style="text-align:center;width:92px;">${st}</td>
@@ -649,12 +741,26 @@ function renderTable(){
     }).join("");
   }).join("");
 }
+// 단과 할인 이벤트 — 현행 정책 그대로 (수강료: [3과목 이상, 5과목 이상])
+const VOL_DISC={100000:[90000,80000],80000:[70000,60000],70000:[60000,50000],55000:[50000,45000],40000:[37000,35000]};
+function unitPrice(s,n){
+  const t=VOL_DISC[s.price]; if(!t) return s.price;
+  return n>=5?t[1]:n>=3?t[0]:s.price;
+}
+function cartTotal(){
+  const n=picked.size;
+  return [...picked].reduce((t,id)=>t+unitPrice(SUBJECTS.find(s=>s.id===id),n),0);
+}
+function cartBase(){ return [...picked].reduce((t,id)=>t+SUBJECTS.find(s=>s.id===id).price,0); }
 function togglePick(id){ picked.has(id)?picked.delete(id):picked.add(id); renderTable(); updateCartBar(); }
 function updateCartBar(){
-  const sum=[...picked].reduce((t,id)=>t+SUBJECTS.find(s=>s.id===id).price,0);
-  $("cartCnt").textContent=picked.size;
+  const n=picked.size, sum=cartTotal(), saved=cartBase()-sum;
+  $("cartCnt").textContent=n;
   $("cartSum").textContent=fmt(sum);
-  $("cartBar").classList.toggle("show", mode==="single" && picked.size>0);
+  $("cartHint").innerHTML = saved>0
+    ? `단과 할인 이벤트 <b>${n>=5?"5과목 이상":"3과목 이상"}</b> 적용 — <b>${fmt(saved)}</b> 할인`
+    : `<b>3과목</b> 이상 담으면 과목당 할인, <b>5과목</b> 이상은 추가 할인됩니다 (단과 할인 이벤트)`;
+  $("cartBar").classList.toggle("show", mode==="single" && n>0);
 }
 function goCart(){ openConfirm("cart"); }
 
