@@ -49,6 +49,13 @@
   .c-chip.act{background:var(--main);border-color:var(--main);color:#fff;}
   .c-chip .mb{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--main);color:var(--main);font-size:9.5px;font-weight:800;border-radius:9px;padding:0 7px;white-space:nowrap;}
   .c-chip.more{border-style:dashed;color:var(--gray-light);}
+  /* 학위 카테고리 — 학위 수준 라벨을 붙인 2행 칩 (깊이 추가 없이 병렬) */
+  .course-row.rows{flex-direction:column;align-items:stretch;gap:0;overflow-x:visible;padding:12px 16px;}
+  .chip-line{display:flex;align-items:flex-start;gap:14px;padding:6px 0;}
+  .chip-line + .chip-line{margin-top:8px;padding-top:12px;border-top:1px dashed var(--line);}
+  .chip-label{flex-shrink:0;width:142px;font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.3;padding-top:8px;}
+  .chip-label small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:2px;}
+  .chip-set{display:flex;gap:8px;flex-wrap:wrap;min-width:0;}
 
   /* ② 방식 + ③ 개강일 영역 */
   .select-zone{border:1px solid var(--line);border-top:none;padding:18px 20px;background:#fff;}
@@ -133,7 +140,7 @@
   .cs-bar{flex:1;height:8px;background:#e8ebef;border-radius:5px;overflow:hidden;display:flex;}
   .cs-bar i.rec{background:#8fd3b0;height:100%;}
   .cs-bar i.plan{background:var(--main);height:100%;}
-  .cs-v{width:86px;text-align:right;font-weight:700;color:var(--ink);flex-shrink:0;}
+  .cs-v{width:100px;text-align:right;font-weight:700;color:var(--ink);flex-shrink:0;white-space:nowrap;}
   .cs-legend{font-size:10.5px;color:var(--gray-light);margin-top:5px;display:flex;gap:14px;align-items:center;}
   .cs-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px;}
   .cs-legend i.rec{background:#8fd3b0;}
@@ -232,6 +239,9 @@
   @media(max-width:860px){
     .course-tabs{flex-wrap:wrap;}
     .course-tab{min-width:25%;}
+    .chip-line{flex-direction:column;gap:8px;}
+    .chip-label{width:auto;padding-top:0;}
+    .chip-label small{display:inline;margin-left:6px;}
     .hero-grid{flex-direction:column;}
     .hero-right{align-items:flex-start;}
     .pkg-row .rp{text-align:left;}
@@ -289,7 +299,7 @@
       </div>
     </div>
   </div>
-  <span class="note">과정 2단 구성 — 1행 카테고리 3개 고정(자격/학위/교양·단과), 2행 과정 칩. 과정이 늘어도 카테고리는 불변, 행당 8개 초과 시 대표 8개 + 전체 보기. 현행 첫 선택지였던 개강일 대형 탭은 형태 그대로 과정·방식 아래로 이동, 학습기간 스트립은 선택 개강일에 연동</span>
+  <span class="note">과정 2단 구성 — 1행 카테고리 3개 고정(자격/학위/교양·단과), 2행 과정 칩. 과정이 늘어도 카테고리는 불변. 가로 스크롤 1행(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 줄바꿈되는 학위 2행은 전공 전량 노출. 학위는 학위 수준(4년제/2년제)이 전공의 상위 계층이 아니라 직교하는 축이므로, 탭을 더 만들지 않고 라벨을 붙인 2행 칩으로 병렬 배치 — 깊이 추가 0, 각 행은 짧게 유지. 라벨에 요건 학점·최단 기간을 함께 노출(기관 언어인 전문학사/학사만으로는 판단 불가). 두 수준이 항상 동시에 보이므로 상품 단계의 별도 비교·전환 블록은 두지 않음 — 같은 선택을 두 번 묻지 않기 위함.현행 첫 선택지였던 개강일 대형 탭은 형태 그대로 과정·방식 아래로 이동, 학습기간 스트립은 선택 개강일에 연동</span>
 
   <!-- 패키지 모드 -->
   <div class="mode-body" id="pkgBody"></div>
@@ -362,22 +372,40 @@ const COURSES2={
     {id:"yt", name:"청소년지도사 2급"},
     {id:"le", name:"평생교육사 2급"}
   ],
+  // 학위: level(학위 수준) × major(전공) 두 축. 상하관계가 아니라 직교하므로 depth를 늘리지 않고 2행으로 병렬 배치.
+  // 전공은 career.baeoom.com/lectureN 의 학사(4년제)·전문학사(2년제) 분류 실제 목록.
+  // 행 라벨이 학위 수준을 말하므로 칩은 전공명만 표기 (현행 분류 표기와 동일).
+  // major는 두 수준을 잇는 조인 키 — 명칭이 달라 매핑이 자명하지 않음 (사회복지학↔사회복지, 아동학↔아동ㆍ가족, 경영학↔경영)
   deg:[
-    {id:"ba-biz", name:"경영학사", ready:true},
-    {id:"ba-sw", name:"사회복지학사"},
-    {id:"ba-psy", name:"심리학사"},
-    {id:"ba-child", name:"아동학사"},
-    {id:"ba-edu", name:"교육학사"},
-    {id:"ba-nur", name:"간호학사 (RN-BSN)"},
-    {id:"as-sw", name:"사회복지 전문학사"},
-    {id:"as-cc", name:"아동보육 전문학사"},
-    {id:"ba-re", name:"부동산학사"}
+    {id:"ba-psy", name:"심리학", level:"ba", major:"psy"},
+    {id:"ba-biz", name:"경영학", level:"ba", major:"biz", ready:true},
+    {id:"ba-cs", name:"컴퓨터공학", level:"ba", major:"cs"},
+    {id:"ba-ict", name:"정보통신공학", level:"ba", major:"ict"},
+    {id:"ba-sw", name:"사회복지학", level:"ba", major:"sw"},
+    {id:"ba-child", name:"아동학", level:"ba", major:"child"},
+    {id:"ba-youth", name:"청소년학", level:"ba", major:"youth"},
+    {id:"ba-kor", name:"외국어로서의한국어학", level:"ba", major:"kor"},
+    {id:"ba-couns", name:"상담학", level:"ba", major:"couns"},
+    {id:"as-sw", name:"사회복지", level:"as", major:"sw"},
+    {id:"as-child", name:"아동ㆍ가족", level:"as", major:"child"},
+    {id:"as-biz", name:"경영", level:"as", major:"biz", ready:true},
+    {id:"as-beauty", name:"미용", level:"as", major:"beauty"},
+    {id:"as-ip", name:"정보처리", level:"as", major:"ip"},
+    {id:"as-ict", name:"정보통신", level:"as", major:"ict"},
+    {id:"as-net", name:"컴퓨터네트워크", level:"as", major:"net"},
+    {id:"as-sec", name:"정보보호", level:"as", major:"sec"}
   ],
   free:[
     {id:"lib", name:"교양 과목"},
     {id:"all", name:"전체 과목"}
   ]
 };
+// 학위 수준 — 기관 언어(전문학사/학사) 대신 요건 학점·최단 기간을 라벨에 함께 노출.
+// 두 수준이 항상 동시에 보이므로 별도의 비교·전환 UI를 두지 않는다 (판단 지점 중복 방지)
+const DEG_LEVELS=[
+  {id:"ba", name:"4년제 학사", short:"140학점 · 최단 3학기"},
+  {id:"as", name:"2년제 전문학사", short:"80학점 · 최단 2학기"}
+];
 const MAX_CHIPS=8;
 let catSel="cert", courseSel="sw";
 function renderCats(){
@@ -390,33 +418,52 @@ function pickCat(id){
   catSel=id;
   const first=COURSES2[id].find(c=>c.ready)||COURSES2[id][0];
   courseSel=first.id;
-  if(!first.ready && id!=="free") alert("시연: 사회복지사 2급(자격)·경영학사(학위) 기준으로만 구성되어 있습니다");
+  if(!first.ready && id!=="free") alert("시연: 사회복지사 2급(자격) · 경영학(학사) · 경영(전문학사) 기준으로만 구성되어 있습니다");
   renderCats(); renderCourseRow();
   if(id==="free"){ setMode("single"); } else { renderPkg(); }
 }
-function renderCourseRow(){
-  const list=COURSES2[catSel];
-  const shown=list.slice(0,MAX_CHIPS);
-  const rest=list.length-shown.length;
-  $("courseRow").innerHTML = shown.map(c=>`
+// cap=null이면 전량 노출. 가로 스크롤 1행(자격/교양)에서는 MAX_CHIPS로 자르고,
+// 줄바꿈되는 학위 2행 레이아웃에서는 자를 이유가 없으므로 전공을 모두 보여준다
+function chipSet(list, cap){
+  const shown=cap?list.slice(0,cap):list, rest=list.length-shown.length;
+  return shown.map(c=>`
     <button class="c-chip ${courseSel===c.id?"act":""}" onclick="pickCourse('${c.id}')">
       ${c.badge?`<span class="mb">${c.badge}</span>`:""}${c.name}
     </button>`).join("")
-    + (rest>0?`<button class="c-chip more" onclick="alert('전체 보기 (시연): 카테고리 내 과정 ${list.length}개 전체 레이어 노출')">전체 보기 +${rest}</button>`:"");
+    + (rest>0?`<button class="c-chip more" onclick="alert('전체 보기 (시연): 과정 ${list.length}개 전체 레이어 노출')">전체 보기 +${rest}</button>`:"");
+}
+function renderCourseRow(){
+  const row=$("courseRow"), list=COURSES2[catSel];
+  // 학위는 학위 수준별로 라벨을 붙여 2행 — 탭을 더 만들지 않고도 각 행이 짧게 유지됨
+  row.classList.toggle("rows", catSel==="deg");
+  row.innerHTML = catSel==="deg"
+    ? DEG_LEVELS.map(l=>`
+        <div class="chip-line">
+          <span class="chip-label">${l.name}<small>${l.short}</small></span>
+          <div class="chip-set">${chipSet(list.filter(c=>c.level===l.id), null)}</div>
+        </div>`).join("")
+    : chipSet(list, MAX_CHIPS);
 }
 function pickCourse(id){
   const c=COURSES2[catSel].find(x=>x.id===id);
-  if(!c.ready){ alert("시연: 사회복지사 2급(자격)·경영학사(학위) 기준으로만 구성되어 있습니다"); return; }
+  if(!c.ready){ alert("시연: 사회복지사 2급(자격) · 경영학(학사) · 경영(전문학사) 기준으로만 구성되어 있습니다"); return; }
   courseSel=id; renderCourseRow(); renderPkg();
 }
 const DEG_PACKAGES = [
-  {id:"d1", reco:true, name:"경영학사 편입 완성 패키지", comp:"27과목 · 80학점", desc:"전문대졸 편입 기준 잔여 80학점 전체 구성 (3~4학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
+  // 4년제 학사 (ba-biz)
+  {id:"d1", course:"ba-biz", reco:true, name:"경영학사 편입 완성 패키지", comp:"27과목 · 80학점", desc:"전문대졸 편입 기준 잔여 80학점 전체 구성 (3~4학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
    benefits:["학사 학위 잔여학점 완성형","학기당 24학점 한도 내 자동 분배"],
+   creditNote:"전적대 인정 60학점 가정 시 졸업 요건 충족",
    credits:{total:{t:140,r:60,p:80}, major:{t:60,r:18,p:42}, gen:{t:30,r:12,p:18}}},
-  {id:"d2", tag:"인기", name:"경영학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"},
-  {id:"d3", tag:"전공집중", name:"경영학사 전공 집중 패키지", comp:"14과목 · 42학점 (전공)", desc:"전공 학점만 우선 완성", price:954800, orig:2100000, per:22700, pl:"학점당", disc:"55%"}
+  {id:"d2", course:"ba-biz", tag:"인기", name:"경영학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"},
+  {id:"d3", course:"ba-biz", tag:"전공집중", name:"경영학사 전공 집중 패키지", comp:"14과목 · 42학점 (전공)", desc:"전공 학점만 우선 완성", price:954800, orig:2100000, per:22700, pl:"학점당", disc:"55%"},
+  // 2년제 전문학사 (as-biz)
+  {id:"a1", course:"as-biz", reco:true, name:"경영 전문학사 완성 패키지", comp:"27과목 · 80학점", desc:"고졸 기준 전문학사 졸업 요건 80학점 전체 구성 (2~3학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
+   benefits:["전문학사 학위 완성형","학사 편입 시 그대로 인정","학기당 24학점 한도 내 자동 분배"],
+   creditNote:"보유 학점·자격증이 있으면 학습설계로 차감됩니다",
+   credits:{total:{t:80,r:0,p:80}, major:{t:45,r:0,p:45}, gen:{t:15,r:0,p:15}}},
+  {id:"a2", course:"as-biz", tag:"인기", name:"경영 전문학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"}
 ];
-function curPkgs(){ return catSel==="deg" ? DEG_PACKAGES : PACKAGES; }
 
 // 개강 차수 — career.baeoom.com/lectureN 실제 값 (9월 개강반부터)
 const ROUNDS = [
@@ -426,14 +473,16 @@ const ROUNDS = [
 ];
 // 정가(orig)는 9월 4일 개강반 단과 정가 합계 (이론 150,000 / 실습 500,000) 기준
 const PACKAGES = [
-  {id:"p1", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 — 가장 빠른 완성형", price:954800, orig:2450000, per:68200, disc:"61%",
+  {id:"p1", course:"sw", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 — 가장 빠른 완성형", price:954800, orig:2450000, per:68200, disc:"61%",
    benefits:["사회복지사 2급 취득 핵심 구성","사회복지현장실습 포함","가장 빠른 완성형 패키지"],
    preview:"사회복지학개론 · 인간행동과사회환경 · 사회복지실천론 외 10과목 + 사회복지현장실습"},
-  {id:"p2", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
-  {id:"p3", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
-  {id:"p4", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
-  {id:"p5", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
+  {id:"p2", course:"sw", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
+  {id:"p3", course:"sw", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
+  {id:"p4", course:"sw", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
+  {id:"p5", course:"sw", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
 ];
+const ALL_PKGS=[...PACKAGES,...DEG_PACKAGES];
+function curPkgs(){ const l=ALL_PKGS.filter(p=>p.course===courseSel); return l.length?l:PACKAGES; }
 // 학과 탭 — 각 탭은 인정 과정 태그로 매핑
 const DEPTS = [
   {n:"사회복지학", tag:"사회복지사"},
@@ -580,7 +629,7 @@ function renderPkg(){
     midBlock=`
           <div class="benefits">${h.benefits.map(b=>`<span class="benefit">${b}</span>`).join("")}</div>
           <div class="credit-sum">
-            <div class="cs-head">이 패키지로 채우는 학점 <b>${h.credits.total.p}학점</b> — 전적대 인정 ${h.credits.total.r}학점 가정 시 졸업 요건 충족</div>
+            <div class="cs-head">이 패키지로 채우는 학점 <b>${h.credits.total.p}학점</b> — ${h.creditNote||`전적대 인정 ${h.credits.total.r}학점 가정 시 졸업 요건 충족`}</div>
             ${bar("총계",h.credits.total)}${bar("전공",h.credits.major)}${bar("교양",h.credits.gen)}
             <div class="cs-legend"><span><i class="rec"></i>인정 (전적대·자격증)</span><span><i class="plan"></i>패키지 배치</span></div>
           </div>`;
@@ -643,9 +692,11 @@ const PKG_SUBJ={
   p5:{items:THEORY.slice(0,8).map(th),extra:"※ 선택형 — 개설 과목 중 8과목 자유 선택"},
   d1:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 14 · 교양 4 · 자유 1) — 학기당 24학점 한도 내 자동 분배"},
   d2:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("조직심리학"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 — 이후 학기 이어 등록"},
-  d3:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("마케팅관리론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("생산관리")],extra:"… 외 6과목 — 전공 42학점 구성"}
+  d3:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("마케팅관리론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("생산관리")],extra:"… 외 6과목 — 전공 42학점 구성"},
+  a1:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 15 · 교양 5 · 일반선택 4) — 전문학사 80학점 구성"},
+  a2:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("조직심리학"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 — 이후 학기 이어 등록"}
 };
-function findPkg(id){ return [...PACKAGES,...DEG_PACKAGES].find(x=>x.id===id); }
+function findPkg(id){ return ALL_PKGS.find(x=>x.id===id); }
 function openCompose(pid){
   const p=findPkg(pid), d=PKG_SUBJ[pid];
   $("cmTitle").textContent=p.name+" 구성과목";
