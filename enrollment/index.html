@@ -13,14 +13,15 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#fff;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px 120px;}
+  .wrap{max-width:1041px;margin:0 auto;padding:26px 20px 120px;}
   .note{display:inline-flex;align-items:center;gap:6px;background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;margin:8px 0;}
   .note::before{content:"기획";background:#f5b942;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
 
   /* 타이틀 + 안내 */
-  .page-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:0;}
+  .page-top{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:0;}
   .page-top h1{font-size:26px;font-weight:800;letter-spacing:-1px;}
-  .page-top h1 span{font-weight:400;}
+  .top-acts{margin-left:auto;display:flex;gap:6px;}
+  .top-btn{background:#fff;border:1px solid var(--line-dark);border-radius:14px;font-size:12px;font-weight:600;color:var(--ink);padding:4px 13px;cursor:pointer;font-family:inherit;}
   .guide{font-size:12px;color:var(--gray);margin-top:6px;line-height:1.6;}
   .guide b{color:var(--red);}
   .guide-chips{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap;}
@@ -32,8 +33,6 @@
   .sel-row + .sel-row{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
   .sel-label{width:66px;flex-shrink:0;font-size:13px;font-weight:800;padding-top:11px;}
   .sel-body{flex:1;min-width:0;}
-  .top-btns{display:flex;gap:8px;}
-  .top-btns button{background:#fff;border:1px solid var(--line-dark);border-radius:4px;font-size:12px;font-weight:600;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--ink);}
 
   /* ① 과정 탭 */
   .course-tabs{display:flex;border-left:1px solid var(--line);margin-top:0;}
@@ -197,6 +196,75 @@
   tr.na td{background:#fafbfc;}
   tr.na td.grp{background:#fbfbfc;}
   .dept-tabs{flex-wrap:wrap;gap:0 16px;}
+
+  /* ── 레이아웃 시안 C: 학기 플래너 ── */
+  #planShell{display:none;gap:16px;align-items:flex-start;margin-top:16px;}
+  .plan-pool{width:210px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:#fff;position:sticky;top:12px;display:flex;flex-direction:column;max-height:calc(100vh - 24px);}
+  .pp-head{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800;line-height:1.3;}
+  .pp-head small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:3px;}
+  .pp-pkg{border-bottom:1px solid var(--line);padding:9px 10px;background:var(--panel);}
+  .pp-pkg .ppk-t{font-size:11px;font-weight:800;color:var(--gray);margin-bottom:7px;}
+  .ppk{border:1px solid var(--line);border-radius:5px;background:#fff;padding:8px 10px;margin-bottom:6px;cursor:pointer;}
+  .ppk.on{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main);}
+  .ppk .k1{font-size:11.5px;font-weight:800;line-height:1.35;}
+  .ppk .k2{font-size:10.5px;color:var(--gray-light);margin-top:2px;}
+  .ppk .k3{font-size:11.5px;font-weight:800;color:var(--main);margin-top:3px;}
+  .ppk-clear{width:100%;border:1px solid var(--line-dark);background:#fff;border-radius:4px;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--gray);padding:5px;cursor:pointer;}
+  .pp-list{overflow-y:auto;padding:4px 0;}
+  .pay-alt{width:100%;border-top:1px dashed var(--line);margin-top:12px;padding-top:11px;font-size:12px;color:var(--gray);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .pay-alt b{color:var(--ink);font-weight:800;}
+  .pay-alt .cheaper{color:var(--red);font-weight:800;}
+  .pay-alt button{background:#fff;border:1px solid var(--main);color:var(--main);border-radius:5px;font-family:inherit;font-size:12.5px;font-weight:800;padding:8px 16px;cursor:pointer;margin-left:auto;}
+  .pp-item{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px dashed var(--line);}
+  .pp-item .ppn{flex:1;min-width:0;font-size:12px;font-weight:700;line-height:1.35;}
+  .pp-item .ppn small{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:1px;}
+  .pp-item.on{background:var(--soft);}
+  .pp-item.off .ppn{color:var(--gray-light);font-weight:600;}
+  .pp-add{border:1px solid var(--main);background:#fff;color:var(--main);border-radius:4px;font-family:inherit;font-size:11px;font-weight:800;padding:4px 9px;cursor:pointer;white-space:nowrap;}
+  .pp-item.on .pp-add{background:var(--main);color:#fff;}
+  .pp-item.off .pp-add{border-color:var(--line-dark);color:var(--gray-light);}
+  .plan-main{flex:1;min-width:0;}
+  .plan-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px;}
+  .plan-head label{font-size:12px;font-weight:800;color:var(--gray);}
+  .plan-head select{font-family:inherit;font-size:13px;font-weight:700;border:1px solid var(--line-dark);border-radius:4px;padding:7px 10px;background:#fff;color:var(--ink);cursor:pointer;}
+  .plan-top{border:1px solid var(--line);border-radius:8px;padding:12px 16px;background:var(--panel);font-size:12.5px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+  .plan-top b{color:var(--main);font-weight:800;}
+  .plan-warn{background:var(--red-soft);color:var(--red);font-weight:700;border-radius:3px;padding:3px 9px;}
+  .plan-tracks{display:flex;gap:8px;margin-top:12px;align-items:stretch;}
+  .track{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;background:#fff;display:flex;flex-direction:column;}
+  .track.cur{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main);}
+  .track.tbd{background:#fafbfc;border-style:dashed;}
+  .track.un{background:#fff8f0;border-color:#f0c98a;}
+  .track.un .tr-head{border-bottom-color:#f0c98a;}
+  .track.un .t2{color:#b07c10;}
+  .tr-head{padding:9px 10px;}
+  .tr-head .t2{font-size:13.5px;}
+  .tr-body{padding:7px;}
+  .tr-card{padding:6px 8px;}
+  .tr-foot{padding:8px 10px;font-size:11px;}
+  .tr-head{padding:10px 12px;border-bottom:1px solid var(--line);}
+  .tr-head .t1{font-size:11.5px;color:var(--gray);}
+  .tr-head .t2{font-size:14.5px;font-weight:800;margin-top:1px;letter-spacing:-.3px;}
+  .tr-head .t3{font-size:10.5px;color:var(--gray-light);margin-top:2px;}
+  .tr-body{padding:8px;flex:1;}
+  .tr-card{border:1px solid var(--line);border-radius:5px;padding:7px 9px;margin-bottom:6px;background:#fff;}
+  .tr-card .tc-n{font-size:11.5px;font-weight:700;line-height:1.35;}
+  .tr-card .tc-p{font-size:10.5px;color:var(--gray-light);margin-top:1px;}
+  .tr-card .tc-b{display:flex;gap:4px;margin-top:6px;}
+  .tr-card button{border:1px solid var(--line-dark);background:#fff;border-radius:3px;font-family:inherit;font-size:10px;font-weight:700;color:var(--gray);padding:2px 6px;cursor:pointer;}
+  .tr-empty{font-size:11px;color:var(--gray-light);text-align:center;padding:26px 6px;line-height:1.6;}
+  .tr-foot{border-top:1px solid var(--line);padding:9px 12px;font-size:11.5px;color:var(--gray);}
+  .tr-foot b{color:var(--ink);font-weight:800;}
+  .tr-bar{height:6px;background:#e8ebef;border-radius:4px;overflow:hidden;margin:6px 0 5px;}
+  .tr-bar i{display:block;height:100%;background:var(--main);}
+  .tr-bar i.over{background:var(--red);}
+  .tr-pay{font-weight:800;color:var(--main);}
+  .plan-pay{margin-top:14px;border:2px solid var(--main);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .plan-pay .pp-t{flex:1;min-width:240px;font-size:12.5px;color:var(--gray);}
+  .plan-pay .pp-t b{color:var(--ink);font-weight:700;}
+  .plan-pay .pp-s{font-size:21px;font-weight:800;letter-spacing:-.5px;}
+  .plan-pay button{background:var(--main);color:#fff;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:800;padding:12px 26px;cursor:pointer;}
+  .plan-pay button:disabled{background:var(--line-dark);cursor:default;}
   .st-txt.done{color:#1a9c6b;}
   .done-mark{color:#1a9c6b;font-weight:800;font-size:14px;}
   .pkg-none{border:1px dashed var(--line-dark);border-radius:8px;background:var(--panel);padding:34px 20px;text-align:center;}
@@ -238,13 +306,16 @@
   td.icon-td{text-align:center;width:76px;color:var(--gray);font-size:16px;cursor:pointer;}
 
   /* ── 레이아웃 시안 B: 좌측바형 ── */
-  .lay-switch{display:flex;align-items:center;gap:6px;margin:14px 0 2px;}
-  .lay-switch span{font-size:11px;font-weight:700;color:var(--gray-light);margin-right:2px;}
-  .lay-switch button{border:1px solid var(--line-dark);background:#fff;border-radius:14px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--gray);padding:5px 13px;cursor:pointer;}
-  .lay-switch button.act{background:var(--ink);border-color:var(--ink);color:#fff;}
-  body.lay-side .wrap{max-width:1280px;}
-  #sideShell{display:none;gap:22px;align-items:flex-start;margin-top:16px;}
-  .side-nav{width:214px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;padding:13px 0 8px;background:#fff;position:sticky;top:12px;}
+  /* 시연 전용 컨트롤 — 실제 서비스 UI가 아님을 색으로 구분 */
+  .lay-switch{display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:#fff0f6;border:1px solid #f3aecd;border-radius:8px;padding:10px 14px;margin-bottom:16px;}
+  .lay-switch span{font-size:12px;font-weight:800;color:#c2185b;margin-right:4px;}
+  .lay-switch em{font-style:normal;font-size:11px;font-weight:600;color:#d081a5;margin-left:4px;}
+  .lay-switch button{border:1px solid #f0a0c0;background:#fff;border-radius:15px;font-family:inherit;font-size:12.5px;font-weight:700;color:#c2185b;padding:6px 16px;cursor:pointer;}
+  .lay-switch button:hover{background:#ffe3ef;}
+  .lay-switch button.act{background:#e0316f;border-color:#e0316f;color:#fff;}
+  .lay-switch button.act:hover{background:#e0316f;}
+  #sideShell{display:none;gap:18px;align-items:flex-start;margin-top:16px;}
+  .side-nav{width:196px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;padding:13px 0 8px;background:#fff;position:sticky;top:12px;}
   .sn-title{font-size:11.5px;font-weight:800;color:var(--gray-light);padding:0 14px 10px;border-bottom:1px solid var(--line);}
   .sn-group{padding:11px 0 5px;}
   .sn-group + .sn-group{border-top:1px dashed var(--line);}
@@ -274,7 +345,7 @@
   /* 하단 고정 합산 바 */
   .cart-bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--main);box-shadow:0 -4px 18px rgba(0,0,0,.09);display:none;z-index:40;}
   .cart-bar.show{display:block;}
-  .cart-in{max-width:1100px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .cart-in{max-width:1041px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
   .cart-in .c1{font-size:13.5px;font-weight:700;}
   .cart-in .c1 b{color:var(--main);font-size:17px;}
   .cart-in .c2{flex:1;font-size:12px;color:var(--gray);}
@@ -299,33 +370,54 @@
 <body>
 <div class="wrap">
 
-  <!-- 타이틀 + 안내 (현행 유지) -->
-  <div class="page-top">
-    <div>
-      <h1>수강<span>신청</span></h1>
-      <div class="guide-chips">
-        <span class="g-chip">과목당 3학점</span>
-        <span class="g-chip strong">학기 최대 8과목 (24학점)</span>
-        <span class="g-chip">연간 최대 14과목 (42학점)</span>
-        <button class="g-more" onclick="toggleGuide()">ⓘ 상세</button>
-      </div>
-      <div class="guide guide-full" id="guideFull" style="display:none;">
-        평가인정학습과목 / 인정학점: 과목당 3학점 / <b>한 학기 최대 8과목(24학점), 1년 내 최대 14과목(42학점)</b>까지만 학점인정 가능<br>
-        (전문학사학위 과정의 경우 교육기관 최대 20과목, 학사학위 과정의 경우 최대 35과목 까지만 수강 가능)
-      </div>
-    </div>
-    <div class="top-btns">
-      <button onclick="alert('중복과목확인 (시연)')">중복과목확인 ›</button>
-      <button onclick="alert('무이자 안내 (시연)')">무이자 안내 ›</button>
-    </div>
-  </div>
-
-  <!-- 레이아웃 시안 전환 (시연용) -->
+  <!-- 레이아웃 시안 전환 (시연 전용 컨트롤 — 브랜드 컬러와 의도적으로 다른 톤) -->
   <div class="lay-switch">
     <span>레이아웃 시안</span>
     <button id="layStack" onclick="applyLayout('stack')">A. 현행 세로형</button>
     <button id="laySide" onclick="applyLayout('side')">B. 좌측바형</button>
+    <button id="layPlan" onclick="applyLayout('plan')">C. 학기 플래너</button>
+    <em>버튼을 눌러 세 시안을 비교하세요</em>
   </div>
+
+  <!-- 타이틀 + 안내 (현행 유지) -->
+  <div class="page-top">
+    <h1>수강신청</h1>
+    <div class="guide-chips">
+      <span class="g-chip">과목당 3학점</span>
+      <span class="g-chip strong">학기 최대 8과목 (24학점)</span>
+      <span class="g-chip">연간 최대 14과목 (42학점)</span>
+      <button class="g-more" onclick="toggleGuide()">ⓘ 상세</button>
+      <span class="top-acts">
+        <button class="top-btn" onclick="alert('중복과목확인 (시연)')">중복과목확인 ›</button>
+        <button class="top-btn" onclick="alert('무이자 안내 (시연)')">무이자 안내 ›</button>
+      </span>
+    </div>
+    <div class="guide guide-full" id="guideFull" style="display:none;">
+      평가인정학습과목 / 인정학점: 과목당 3학점 / <b>한 학기 최대 8과목(24학점), 1년 내 최대 14과목(42학점)</b>까지만 학점인정 가능<br>
+      (전문학사학위 과정의 경우 교육기관 최대 20과목, 학사학위 과정의 경우 최대 35과목 까지만 수강 가능)
+    </div>
+  </div>
+
+<!-- ══ C. 학기 플래너 — 개강일을 필터가 아니라 캔버스의 가로축으로 ══ -->
+<div id="planShell">
+  <aside class="plan-pool">
+    <div class="pp-head" id="planPoolHead"></div>
+    <div class="pp-pkg" id="planPkgs"></div>
+    <div class="pp-list" id="planPool"></div>
+  </aside>
+  <div class="plan-main">
+    <div class="plan-head">
+      <label for="planCourse">목표 과정</label>
+      <select id="planCourse" onchange="planPickCourse(this.value)"></select>
+      <label for="planRound">시작 개강일</label>
+      <select id="planRound" onchange="pickRound(this.value)"></select>
+    </div>
+    <div class="plan-top" id="planTop"></div>
+    <div class="plan-tracks" id="planTracks"></div>
+    <div class="plan-pay" id="planPay"></div>
+    <span class="note">개강일을 선택 축에서 빼고 캔버스의 가로축으로 전환 — 앞 시안들이 "개강일을 어디 둘까"로 씨름한 문제가 축이 되는 순간 소멸. 상단 안내에만 있던 학기 8과목(24학점)·연간 14과목(42학점) 한도를 화면이 직접 강제하고, 27과목 80학점짜리 패키지가 실제로 몇 학기인지를 상품이 스스로 설명함. 결제는 첫 학기분만 — 나머지는 계획으로 남겨 재방문 동선을 만듦. 단 learning-plan 학습설계 툴과 모델이 겹치므로 역할 정리가 선행되어야 함</span>
+  </div>
+</div>
 
 <!-- ══ A. 현행 세로형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
 <div id="stackShell">
@@ -799,7 +891,7 @@ function pickRound(id){
   roundSel=id; roundWarn="";
   // 차수를 바꾸면 그 차수에 신청 불가한 과목은 장바구니에서 자동 제외
   [...picked].forEach(pid=>{ const c=stOf(SUBJECTS.find(x=>x.id===pid)); if(c!=="O"&&c!=="H") picked.delete(pid); });
-  renderRounds(); renderRoundPicker(); renderPkg(); renderTable(); updateCartBar();
+  renderRounds(); renderRoundPicker(); renderPkg(); renderTable(); updateCartBar(); renderPlan();
 }
 // 과정을 고르면 단과 목록도 같은 인정 과정으로 맞춘다 (태그 없는 과정은 전체)
 function syncDept(){
@@ -882,17 +974,145 @@ function renderRoundPicker(){
   $("rrowSeg").innerHTML = roundTabsHTML();
   $("rrowInfo").innerHTML = roundInfoHTML();
 }
+/* ── 레이아웃 시안 C: 학기 플래너 ──
+   개강일이 필터가 아니라 캔버스의 가로축. 과목을 학기 트랙에 배치하고 첫 학기분만 결제한다.
+   학기 한도(8과목·24학점)와 연간 한도(14과목·42학점)는 현행 페이지 상단 안내에 명시된 실제 규칙 */
+const TERMS=[
+  {id:"t1", name:"2026년 2학기", rounds:["r1","r2"]},
+  {id:"t2", name:"2027년 1학기", rounds:["r3"]},
+  {id:"t3", name:"2027년 2학기", rounds:[], tbd:true},
+  {id:"tx", name:"미배치", rounds:[], un:true}   // 학기 한도·개설 제약으로 배치되지 않은 과목
+];
+const SEM_MAX_SUBJ=8, SEM_MAX_CR=24, YEAR_MAX_SUBJ=14, CREDIT_PER=3;
+let plan={};   // 과목 id → 학기 id
+function termAvail(s,t){
+  if(t.tbd||t.un) return true;   // 개설 미확정 학기 / 미배치함 — 계획에는 담되 결제는 불가
+  return t.rounds.some(rid=>{ const c=s.st[ROUNDS.findIndex(r=>r.id===rid)]; return c==="O"||c==="H"; });
+}
+function poolSubjects(){ return SUBJECTS.filter(s=>(s.hash||"").includes(courseTag()||"")); }
+function termList(tid){ return Object.keys(plan).filter(k=>plan[k]===tid).map(k=>SUBJECTS.find(s=>s.id===+k)); }
+function termPrice(tid){ const l=termList(tid); return l.reduce((a,s)=>a+unitPrice(s,l.length),0); }
+// 학기 한도(8과목)에 걸리거나 개설된 학기가 없으면 미배치함으로 — 조용히 사라지지 않게
+function firstFit(s){
+  for(const t of TERMS){
+    if(t.un) continue;
+    if(termAvail(s,t) && termList(t.id).length<SEM_MAX_SUBJ) return t.id;
+  }
+  return "tx";
+}
+function planAdd(id){
+  if(plan[id]) delete plan[id];
+  else plan[id]=firstFit(SUBJECTS.find(x=>x.id===id));
+  renderPlan();
+}
+function planMove(id,dir){
+  const s=SUBJECTS.find(x=>x.id===id), ni=TERMS.findIndex(t=>t.id===plan[id])+dir;
+  if(ni<0||ni>=TERMS.length) return;
+  const t=TERMS[ni];
+  if(!termAvail(s,t)){ alert(`${t.name}에는 이 과목이 개설되지 않습니다 (시연)`); return; }
+  if(!t.un && termList(t.id).length>=SEM_MAX_SUBJ){ alert(`${t.name}는 학기 한도 ${SEM_MAX_SUBJ}과목을 초과합니다 (시연)`); return; }
+  plan[id]=t.id; renderPlan();
+}
+function planRemove(id){ delete plan[id]; if(planPkg) planPkg=null; renderPlan(); }
+/* 패키지 = 계획 프리셋. 구성과목을 학기 트랙에 한 번에 배치해 "27과목 80학점"이 몇 학기인지 드러낸다 */
+let planPkg=null;
+function applyPkg(pid){
+  if(planPkg===pid){ planPkg=null; plan={}; renderPlan(); return; }
+  const d=PKG_SUBJ[pid]; if(!d) return;
+  plan={}; planPkg=pid;
+  d.items.forEach(it=>{
+    const cand=SUBJECTS.filter(s=>s.name===it.n);
+    const s=cand.find(x=>firstFit(x)) || cand[0];
+    if(!s) return;
+    const t=firstFit(s); if(t) plan[s.id]=t;
+  });
+  renderPlan();
+}
+function planTotal(){ return TERMS.filter(t=>!t.un).reduce((a,t)=>a+termPrice(t.id),0); }
+function planPickCourse(v){
+  const [cat,id]=v.split("|");
+  catSel=cat; courseSel=id; plan={}; planPkg=null;
+  renderCats(); renderCourseRow(); renderSideNav();
+  syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
+  syncDept(); renderDepts(); renderTable(); renderPlan();
+}
+function renderPlan(){
+  if(!$("planShell")) return;
+  const c=curCourse(), pool=poolSubjects();
+  $("planCourse").innerHTML = [["cert","자격증 취득"],["deg","학위 취득"],["free","교양 · 단과"]]
+    .map(([k,label])=>`<optgroup label="${label}">${COURSES2[k].map(x=>`<option value="${k}|${x.id}" ${courseSel===x.id?"selected":""}>${x.name}</option>`).join("")}</optgroup>`).join("");
+  $("planRound").innerHTML = ROUNDS.map(r=>`<option value="${r.id}" ${r.id===roundSel?"selected":""}>${r.term} · ${r.d}</option>`).join("");
+  $("planPoolHead").innerHTML = `${c?c.name:"전체"}<small>담을 과목 ${pool.length}개 · 담으면 자동 배치</small>`;
+  const pk=curPkgs();
+  $("planPkgs").innerHTML = pk.length
+    ? `<div class="ppk-t">패키지로 한 번에 채우기</div>` + pk.map(p=>`
+        <div class="ppk ${planPkg===p.id?"on":""}" onclick="applyPkg('${p.id}')">
+          <div class="k1">${p.name.replace(/^.*?(2급|학사|전문학사)\s*/,"")||p.name}</div>
+          <div class="k2">${p.comp}</div>
+          <div class="k3">${fmt(p.price)}</div>
+        </div>`).join("")
+      + (planPkg?`<button class="ppk-clear" onclick="applyPkg('${planPkg}')">구성 비우기</button>`:"")
+    : `<div class="ppk-t">이 과정은 패키지가 없습니다 — 과목을 직접 담아 계획하세요</div>`;
+  $("planPool").innerHTML = pool.map(s=>{
+    const on=!!plan[s.id], fit=on||firstFit(s);
+    return `<div class="pp-item ${on?"on":""} ${fit?"":"off"}">
+      <span class="ppn">${s.name}<small>${s.prof} 교수 · ${fmt(s.price)}</small></span>
+      <button class="pp-add" onclick="planAdd(${s.id})">${on?"빼기":"담기"}</button></div>`;
+  }).join("") || '<div class="tr-empty">이 과정의 과목이 없습니다</div>';
+
+  const total=Object.keys(plan).length, yearN=termList("t1").length+termList("t2").length, unN=termList("tx").length;
+  const last=[...TERMS].filter(t=>!t.un).reverse().find(t=>termList(t.id).length);
+  const pkg=planPkg?findPkg(planPkg):null;
+  $("planTop").innerHTML = (pkg?`<span><b>${pkg.name}</b> 구성 적용</span>`:"")
+    + `<span>담은 과목 <b>${total}</b>과목 · <b>${total*CREDIT_PER}</b>학점</span>`
+    + `<span>예상 완료 ${unN?"—":last?`<b>${last.name}</b>`:"—"}</span>`
+    + `<span>연간 한도 ${yearN}/${YEAR_MAX_SUBJ}과목</span>`
+    + (yearN>YEAR_MAX_SUBJ?`<span class="plan-warn">⚠ 1년 내 최대 ${YEAR_MAX_SUBJ}과목(${YEAR_MAX_SUBJ*CREDIT_PER}학점)을 초과했습니다</span>`:"")
+    + (unN?`<span class="plan-warn">⚠ ${unN}과목이 미배치 — 학기 한도(${SEM_MAX_SUBJ}과목) 또는 개설 차수 제약</span>`:"");
+
+  $("planTracks").innerHTML = TERMS.map((t,ti)=>{
+    const list=termList(t.id), n=list.length, over=n>SEM_MAX_SUBJ;
+    const r=t.rounds.includes(roundSel)?ROUNDS.find(x=>x.id===roundSel):ROUNDS.find(x=>t.rounds.includes(x.id));
+    return `<div class="track ${ti===0?"cur":""} ${t.tbd||t.un?"tbd":""} ${t.un?"un":""}">
+      <div class="tr-head"><div class="t1">${t.un?"학기 배정 필요":t.name}</div>
+        <div class="t2">${t.un?"미배치":r?r.d:"개강일 미정"}</div>
+        <div class="t3">${t.un?"한도·개설 제약으로 남은 과목":r?`학습기간 ${r.pshort}`:"개설 과목 미확정"}</div></div>
+      <div class="tr-body">${n?list.map(s=>`
+        <div class="tr-card"><div class="tc-n">${s.name}</div><div class="tc-p">${s.prof} 교수 · ${fmt(s.price)}</div>
+          <div class="tc-b">${ti>0?`<button onclick="planMove(${s.id},-1)">◀ 앞</button>`:""}${ti<TERMS.length-1?`<button onclick="planMove(${s.id},1)">뒤 ▶</button>`:""}<button onclick="planRemove(${s.id})">✕</button></div>
+        </div>`).join(""):`<div class="tr-empty">${t.un?"미배치 과목 없음":"왼쪽에서 과목을 담으면<br>여기에 자동 배치됩니다"}</div>`}</div>
+      <div class="tr-foot">${t.un
+        ? `<b>${n}</b>과목 대기<div class="tr-bar"></div>이후 학기 개설 시 배치`
+        : `<b>${n}</b>과목 · <b>${n*CREDIT_PER}</b>학점 <span style="color:var(--gray-light)">/ 한도 ${SEM_MAX_SUBJ}과목 ${SEM_MAX_CR}학점</span>
+           <div class="tr-bar"><i class="${over?"over":""}" style="width:${Math.min(100,n/SEM_MAX_SUBJ*100)}%"></i></div>
+           ${ti===0?`<span class="tr-pay">이번 결제 ${fmt(termPrice(t.id))}</span>`:t.tbd?"개설 확정 후 신청":"개강 전 재신청"}`}</div>
+    </div>`;
+  }).join("");
+
+  const n1=termList("t1").length, r1=ROUNDS.find(x=>x.id===roundSel);
+  const split=planTotal(), diff=pkg?split-pkg.price:0;
+  $("planPay").innerHTML = `<span class="pp-t">${TERMS[0].name} · <b>${r1.d}</b>분만 결제합니다 — 이후 학기는 계획으로 저장되고 개강 전에 다시 신청합니다</span>
+    <span class="pp-s">${fmt(termPrice("t1"))}</span>
+    <button ${n1?"":"disabled"} onclick="alert('결제 이동 (시연)\\n${TERMS[0].name} ${r1.d} · ${n1}과목')">${n1?`${n1}과목 신청하기`:"과목을 담아 주세요"}</button>`
+    + (pkg?`<div class="pay-alt">또는 <b>${pkg.name}</b> 전체 결제 <b>${fmt(pkg.price)}</b>
+        — 학기별로 나눠 단과 결제하면 합계 ${fmt(split)}로 <span class="cheaper">${diff>0?`${fmt(Math.abs(diff))} 비쌈`:diff<0?`${fmt(Math.abs(diff))} 저렴`:"동일"}</span>
+        <button onclick="openConfirm('pkg','${pkg.id}')">패키지 전체 결제</button></div>`:"");
+}
+
 let layout="stack";
 function applyLayout(l){
   layout=l;
-  const side=l==="side";
-  $("stackShell").style.display = side?"none":"block";
+  const side=l==="side", planL=l==="plan";
+  $("stackShell").style.display = (side||planL)?"none":"block";
   $("sideShell").style.display = side?"flex":"none";
+  $("planShell").style.display = planL?"flex":"none";
   (side?$("sideMount"):$("stackShell")).appendChild($("contentHolder"));
-  $("layStack").classList.toggle("act",!side);
+  $("layStack").classList.toggle("act",l==="stack");
   $("laySide").classList.toggle("act",side);
+  $("layPlan").classList.toggle("act",planL);
   document.body.classList.toggle("lay-side",side);
-  renderSideNav(); renderRoundPicker(); setMode(mode);
+  document.body.classList.toggle("lay-plan",planL);
+  renderSideNav(); renderRoundPicker(); renderPlan(); setMode(mode);
 }
 function renderPkg(){
   const pkgs=curPkgs();
@@ -1113,7 +1333,8 @@ function goCart(){ openConfirm("cart"); }
 
 syncDept();
 renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderDepts(); renderFilters(); renderTable();
-applyLayout(new URLSearchParams(location.search).get("layout")==="side" ? "side" : "stack");
+const _l=new URLSearchParams(location.search).get("layout");
+applyLayout(_l==="side"||_l==="plan" ? _l : "stack");
 </script>
 </body>
 </html>
