@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -111,6 +111,9 @@
   .rt-badge{position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;background:#fff;}
   .rt-badge.hot{color:var(--red);border:1px solid var(--red);}
   .rt-badge.ok{color:var(--main);border:1px solid var(--mid);}
+  .rt-badge.none{color:var(--gray-light);border:1px dashed var(--line-dark);}
+  .round-tab.off{background:#fafbfc;border-style:dashed;}
+  .round-tab.off .rt1,.round-tab.off .rt2,.round-tab.off .rt3{color:var(--gray-light);}
   .prac-notice{font-size:11.5px;color:var(--gray);margin-top:12px;line-height:1.7;}
   .round-tab + .round-tab{border-left:none;}
   .round-tab .rt1{font-size:12px;color:var(--gray);}
@@ -190,9 +193,17 @@
   .st-txt.ok{color:var(--gray);}
   .st-txt.hot{color:var(--red);border:1px solid var(--red);border-radius:3px;padding:2px 7px;font-size:11px;}
   .st-txt.full{color:var(--gray-light);}
+  .st-txt.na{color:var(--gray-light);border:1px dashed var(--line-dark);border-radius:3px;padding:2px 7px;font-size:11px;font-weight:600;}
+  tr.na td{background:#fafbfc;}
+  tr.na td.grp{background:#fbfbfc;}
+  .dept-tabs{flex-wrap:wrap;gap:0 16px;}
   .st-txt.done{color:#1a9c6b;}
   .done-mark{color:#1a9c6b;font-weight:800;font-size:14px;}
-  .next-round{font-size:10.5px;color:var(--main);font-weight:700;cursor:pointer;margin-top:4px;text-decoration:underline;white-space:nowrap;}
+  .pkg-none{border:1px dashed var(--line-dark);border-radius:8px;background:var(--panel);padding:34px 20px;text-align:center;}
+  .pkg-none .pn-t{font-size:16px;font-weight:800;letter-spacing:-.3px;}
+  .pkg-none .pn-d{font-size:12.5px;color:var(--gray);margin-top:7px;line-height:1.6;}
+  .pkg-none .pn-d b{color:var(--main);font-weight:800;}
+  .pkg-none .pn-go{margin-top:16px;background:var(--main);color:#fff;border:none;border-radius:5px;font-family:inherit;font-size:13px;font-weight:800;padding:11px 24px;cursor:pointer;}
   .t-badge.pre{background:#fdf3dc;color:#b07c10;}
   .recog-line{font-size:11px;color:var(--gray-light);margin-top:3px;}
   .recog-chip{cursor:pointer;}
@@ -226,6 +237,40 @@
   td.fee .f{font-size:14px;font-weight:800;}
   td.icon-td{text-align:center;width:76px;color:var(--gray);font-size:16px;cursor:pointer;}
 
+  /* ── 레이아웃 시안 B: 좌측바형 ── */
+  .lay-switch{display:flex;align-items:center;gap:6px;margin:14px 0 2px;}
+  .lay-switch span{font-size:11px;font-weight:700;color:var(--gray-light);margin-right:2px;}
+  .lay-switch button{border:1px solid var(--line-dark);background:#fff;border-radius:14px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--gray);padding:5px 13px;cursor:pointer;}
+  .lay-switch button.act{background:var(--ink);border-color:var(--ink);color:#fff;}
+  body.lay-side .wrap{max-width:1280px;}
+  #sideShell{display:none;gap:22px;align-items:flex-start;margin-top:16px;}
+  .side-nav{width:214px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;padding:13px 0 8px;background:#fff;position:sticky;top:12px;}
+  .sn-title{font-size:11.5px;font-weight:800;color:var(--gray-light);padding:0 14px 10px;border-bottom:1px solid var(--line);}
+  .sn-group{padding:11px 0 5px;}
+  .sn-group + .sn-group{border-top:1px dashed var(--line);}
+  .sn-head{font-size:12.5px;font-weight:800;padding:0 14px 7px;line-height:1.3;}
+  .sn-head small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:2px;}
+  .sn-item{display:block;width:100%;text-align:left;border:none;background:transparent;font-family:inherit;font-size:12.5px;color:var(--gray);padding:6px 14px;cursor:pointer;border-left:3px solid transparent;}
+  .sn-item:hover{background:var(--panel);color:var(--ink);}
+  .sn-item.act{background:var(--soft);color:var(--main);font-weight:800;border-left-color:var(--main);}
+  .sn-item em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--main);border:1px solid var(--mid);border-radius:8px;padding:0 6px;margin-left:5px;}
+  .side-main{flex:1;min-width:0;}
+  .main-top{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);flex-wrap:wrap;}
+  .mtabs{display:flex;}
+  .mtabs button{border:1px solid var(--line);border-bottom:none;background:var(--panel);font-family:inherit;font-size:14px;font-weight:800;color:var(--gray);padding:11px 28px 10px;cursor:pointer;line-height:1.25;text-align:center;}
+  .mtabs button small{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:1px;}
+  .mtabs button + button{border-left:none;}
+  .mtabs button.active{background:#fff;color:var(--main);border-top:2px solid var(--main);}
+  .mtabs button.active small{color:var(--main);opacity:.75;}
+  .side-caption{margin-left:auto;padding-bottom:9px;}
+  /* 개강일 = 과정 × 수강방식에 종속된 필터. 부모 바로 아래, 상단 블록 통째로 스티키 */
+  .side-top{position:sticky;top:0;z-index:30;background:#fff;}
+  .rrow{display:flex;align-items:flex-start;gap:16px;padding:14px 0 16px;border-bottom:1px solid var(--line);}
+  .rrow-label{flex-shrink:0;width:100px;font-size:13px;font-weight:800;line-height:1.3;padding-top:12px;}
+  .rrow-label small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:3px;}
+  .rrow-body{flex:1;min-width:0;}
+  .rrow-warn{display:inline-block;background:var(--red-soft);color:var(--red);font-weight:700;border-radius:3px;padding:2px 8px;margin-right:8px;}
+
   /* 하단 고정 합산 바 */
   .cart-bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--main);box-shadow:0 -4px 18px rgba(0,0,0,.09);display:none;z-index:40;}
   .cart-bar.show{display:block;}
@@ -242,6 +287,9 @@
     .chip-line{flex-direction:column;gap:8px;}
     .chip-label{width:auto;padding-top:0;}
     .chip-label small{display:inline;margin-left:6px;}
+    #sideShell{flex-direction:column;}
+    .side-nav{width:100%;position:static;}
+    .rpick{margin-left:0;width:100%;padding-bottom:10px;}
     .hero-grid{flex-direction:column;}
     .hero-right{align-items:flex-start;}
     .pkg-row .rp{text-align:left;}
@@ -272,6 +320,16 @@
     </div>
   </div>
 
+  <!-- 레이아웃 시안 전환 (시연용) -->
+  <div class="lay-switch">
+    <span>레이아웃 시안</span>
+    <button id="layStack" onclick="applyLayout('stack')">A. 현행 세로형</button>
+    <button id="laySide" onclick="applyLayout('side')">B. 좌측바형</button>
+  </div>
+
+<!-- ══ A. 현행 세로형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
+<div id="stackShell">
+
   <!-- ① 과정 선택 (2단: 카테고리 → 과정) -->
   <div class="course-tabs" id="catTabs"></div>
   <div class="course-row" id="courseRow"></div>
@@ -285,10 +343,6 @@
           <button id="mPkg" class="active" onclick="setMode('pkg')">패키지<small>추천 · 과목당 최저가</small></button>
           <button id="mSingle" onclick="setMode('single')">단과<small>필요한 과목만 선택</small></button>
         </div>
-        <div class="mode-caption">
-          <span class="mode-hint" id="modeHint">전체 과목 구성으로 과목당 가격이 가장 낮습니다</span>
-          <button class="design-link" onclick="alert('무료 학습설계 신청 (시연)\n학습설계 접수 페이지로 이동 — 설계 완료 시 맞춤 설계가로 이 페이지 재진입')">보유학점·자격증이 있다면? 무료 학습설계 ›</button>
-        </div>
       </div>
     </div>
     <div class="sel-row">
@@ -301,17 +355,44 @@
   </div>
   <span class="note">과정 2단 구성 — 1행 카테고리 3개 고정(자격/학위/교양·단과), 2행 과정 칩. 과정이 늘어도 카테고리는 불변. 가로 스크롤 1행(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 줄바꿈되는 학위 2행은 전공 전량 노출. 학위는 학위 수준(4년제/2년제)이 전공의 상위 계층이 아니라 직교하는 축이므로, 탭을 더 만들지 않고 라벨을 붙인 2행 칩으로 병렬 배치 — 깊이 추가 0, 각 행은 짧게 유지. 라벨에 요건 학점·최단 기간을 함께 노출(기관 언어인 전문학사/학사만으로는 판단 불가). 두 수준이 항상 동시에 보이므로 상품 단계의 별도 비교·전환 블록은 두지 않음 — 같은 선택을 두 번 묻지 않기 위함.현행 첫 선택지였던 개강일 대형 탭은 형태 그대로 과정·방식 아래로 이동, 학습기간 스트립은 선택 개강일에 연동</span>
 
+</div><!-- /stackShell -->
+
+<!-- ══ B. 좌측바형 — 선택 축을 성격별로 분배: 과정=좌측바 / 수강방식=본문 탭 / 개강일=우측 드롭다운 ══ -->
+<div id="sideShell">
+  <aside class="side-nav" id="sideNav"></aside>
+  <div class="side-main">
+    <!-- 선택 축은 의존 순서대로: 과정(좌측바) → 수강방식 → 개강일. 이 블록 전체가 스티키 -->
+    <div class="side-top">
+      <div class="main-top">
+        <div class="mtabs">
+          <button id="sPkg" onclick="setMode('pkg')">패키지<small>추천 · 과목당 최저가</small></button>
+          <button id="sSingle" onclick="setMode('single')">단과<small>필요한 과목만 선택</small></button>
+        </div>
+        <div class="side-caption">
+          <button class="design-link" onclick="alert('무료 학습설계 신청 (시연)\n학습설계 접수 페이지로 이동 — 설계 완료 시 맞춤 설계가로 이 페이지 재진입')">보유학점·자격증이 있다면? 무료 학습설계 ›</button>
+        </div>
+      </div>
+      <div class="rrow">
+        <span class="rrow-label">개강일<small>개설 차수만 표시</small></span>
+        <div class="rrow-body">
+          <div class="round-tabs" id="rrowSeg"></div>
+          <div class="round-info" id="rrowInfo"></div>
+        </div>
+      </div>
+    </div>
+    <span class="note">선택 축을 성격에 맞는 컨트롤에 분배 — 항목이 많고 계층이 있는 과정은 좌측바, 2택인 수강 방식은 본문 상단 탭, 개강일은 그 아래 세그먼트. 개강일은 과정 × 수강방식으로 개설 차수가 결정되는 종속 필터이므로 반드시 부모 아래에 둔다(부모를 바꿔 차수가 갱신되는 변화가 시야 안에서 일어나야 함 — 위에 두면 조용히 바뀌어 결제 사고로 이어짐). 미개설 차수는 숨기지 않고 비활성 + 사유 표기, 선택 중이던 차수가 미개설이 되면 자동 전환 후 경고. 상단 블록을 통째로 스티키 처리해 과목표 86행을 내려보는 동안에도 어느 차수를 보고 있는지 유지 — 축을 더해도 상품이 아래로 밀리지 않는 것이 세로형과의 핵심 차이</span>
+    <div id="sideMount"></div>
+  </div>
+</div><!-- /sideShell -->
+
+<!-- 상품 영역 — 두 레이아웃이 공유, 활성 셸로 이동 -->
+<div id="contentHolder">
   <!-- 패키지 모드 -->
   <div class="mode-body" id="pkgBody"></div>
 
   <!-- 단과 모드 -->
   <div class="mode-body single-body" id="singleBody">
-    <div class="design-banner">
-      <span class="db-t">어떤 과목을 담아야 할지 고민되시나요? 보유학점·자격증을 반영해 <b>필요한 과목만</b> 골라 드립니다</span>
-      <button onclick="alert('1분 자동 설계 (시연)\n모바일 학습설계 FLOW(경로 A)로 이동 — 과정·학력·개강일 선택 후 즉시 결과 확인')">1분 자동 설계 (바로 결과)</button>
-      <button class="db-pro" onclick="alert('맞춤 설계 신청 (시연)\n학습설계 빌더 접수 — 보유학점·성적증명서 반영, 영업일 1일 내 전달\n야간·주말 접수분은 다음 영업일 기준')">맞춤 설계 신청<small>영업일 1일 내 전달</small></button>
-    </div>
-    <span class="note">학습설계 빌더 연계 진입점 — 단과 이용자는 보유학점 케이스 가능성이 높아 설계 유도 효과가 가장 큰 위치. 설계 결과의 부분 결제 → 바구니 동선과 왕복 구조</span>
+    <!-- 학습설계 빌더 연계 진입점은 학습설계 확정 후 재검토 (보류) -->
     <div class="dept-tabs" id="deptTabs"></div>
     <div class="filter-chips" id="filterChips"></div>
     <table class="subj">
@@ -321,6 +402,7 @@
     <span class="note">상태 컬럼: 잔여석은 임계치(10석) 미만 시에만 자동 노출(마감임박 남발 방지), 마감 과목은 다음 차수 링크로 이탈 → 차수 전환 유도. 로그인 시 기이수 과목 "이수완료" 표시(중복 신청 방지). 해시태그 → "인정 과정" 라벨로 명확화, 클릭 시 해당 과정 필터</span>
     <div class="prac-notice">※ 사회복지현장실습은 선이수 교과목 이수 후 수강이 가능하며, 신청 시 지역(수도권/전국)·실습 차수 선택이 필요합니다.</div>
   </div>
+</div><!-- /contentHolder -->
 
 </div>
 
@@ -364,39 +446,40 @@ const CATEGORIES=[
 ];
 const COURSES2={
   cert:[
-    {id:"sw", name:"사회복지사 2급", badge:"최저 27,550", ready:true},
-    {id:"cc", name:"보육교사 2급"},
-    {id:"kr", name:"한국어교원 2급"},
-    {id:"di", name:"장애영유아보육교사"},
-    {id:"hf", name:"건강가정사"},
-    {id:"yt", name:"청소년지도사 2급"},
-    {id:"le", name:"평생교육사 2급"}
+    {id:"sw", name:"사회복지사 2급", tag:"사회복지사", badge:"최저 27,550", ready:true},
+    {id:"cc", name:"보육교사 2급", tag:"보육교사"},
+    {id:"kr", name:"한국어교원 2급", tag:"한국어"},
+    {id:"di", name:"장애영유아보육교사", tag:"장애영유아"},
+    {id:"hf", name:"건강가정사", tag:"건강가정사"},
+    {id:"yt", name:"청소년지도사 2급", tag:"청소년지도사"},
+    {id:"le", name:"평생교육사 2급", tag:"평생교육사"}
   ],
   // 학위: level(학위 수준) × major(전공) 두 축. 상하관계가 아니라 직교하므로 depth를 늘리지 않고 2행으로 병렬 배치.
   // 전공은 career.baeoom.com/lectureN 의 학사(4년제)·전문학사(2년제) 분류 실제 목록.
   // 행 라벨이 학위 수준을 말하므로 칩은 전공명만 표기 (현행 분류 표기와 동일).
   // major는 두 수준을 잇는 조인 키 — 명칭이 달라 매핑이 자명하지 않음 (사회복지학↔사회복지, 아동학↔아동ㆍ가족, 경영학↔경영)
   deg:[
-    {id:"ba-psy", name:"심리학", level:"ba", major:"psy"},
-    {id:"ba-biz", name:"경영학", level:"ba", major:"biz", ready:true},
-    {id:"ba-cs", name:"컴퓨터공학", level:"ba", major:"cs"},
-    {id:"ba-ict", name:"정보통신공학", level:"ba", major:"ict"},
-    {id:"ba-sw", name:"사회복지학", level:"ba", major:"sw"},
-    {id:"ba-child", name:"아동학", level:"ba", major:"child"},
-    {id:"ba-youth", name:"청소년학", level:"ba", major:"youth"},
-    {id:"ba-kor", name:"외국어로서의한국어학", level:"ba", major:"kor"},
-    {id:"ba-couns", name:"상담학", level:"ba", major:"couns"},
-    {id:"as-sw", name:"사회복지", level:"as", major:"sw"},
-    {id:"as-child", name:"아동ㆍ가족", level:"as", major:"child"},
-    {id:"as-biz", name:"경영", level:"as", major:"biz", ready:true},
-    {id:"as-beauty", name:"미용", level:"as", major:"beauty"},
-    {id:"as-ip", name:"정보처리", level:"as", major:"ip"},
-    {id:"as-ict", name:"정보통신", level:"as", major:"ict"},
-    {id:"as-net", name:"컴퓨터네트워크", level:"as", major:"net"},
-    {id:"as-sec", name:"정보보호", level:"as", major:"sec"}
+    // tag: 과목의 인정 과정 태그와 잇는 키 (단과 목록·개설 차수 산출에 사용)
+    {id:"ba-psy", name:"심리학", level:"ba", major:"psy", tag:"심리학"},
+    {id:"ba-biz", name:"경영학", level:"ba", major:"biz", tag:"경영학", ready:true},
+    {id:"ba-cs", name:"컴퓨터공학", level:"ba", major:"cs", tag:"컴퓨터공학"},
+    {id:"ba-ict", name:"정보통신공학", level:"ba", major:"ict", tag:"컴퓨터공학"},
+    {id:"ba-sw", name:"사회복지학", level:"ba", major:"sw", tag:"사회복지사"},
+    {id:"ba-child", name:"아동학", level:"ba", major:"child", tag:"보육교사"},
+    {id:"ba-youth", name:"청소년학", level:"ba", major:"youth", tag:"청소년지도사"},
+    {id:"ba-kor", name:"외국어로서의한국어학", level:"ba", major:"kor", tag:"한국어"},
+    {id:"ba-couns", name:"상담학", level:"ba", major:"couns", tag:"심리학"},
+    {id:"as-sw", name:"사회복지", level:"as", major:"sw", tag:"사회복지사"},
+    {id:"as-child", name:"아동ㆍ가족", level:"as", major:"child", tag:"보육교사"},
+    {id:"as-biz", name:"경영", level:"as", major:"biz", tag:"경영학", ready:true},
+    {id:"as-beauty", name:"미용", level:"as", major:"beauty", tag:"미용"},
+    {id:"as-ip", name:"정보처리", level:"as", major:"ip", tag:"컴퓨터공학"},
+    {id:"as-ict", name:"정보통신", level:"as", major:"ict", tag:"컴퓨터공학"},
+    {id:"as-net", name:"컴퓨터네트워크", level:"as", major:"net", tag:"컴퓨터공학"},
+    {id:"as-sec", name:"정보보호", level:"as", major:"sec", tag:"컴퓨터공학"}
   ],
   free:[
-    {id:"lib", name:"교양 과목"},
+    {id:"lib", name:"교양 과목", tag:"교양"},
     {id:"all", name:"전체 과목"}
   ]
 };
@@ -416,11 +499,13 @@ function renderCats(){
 }
 function pickCat(id){
   catSel=id;
+  // ready = 패키지 상품이 구성된 과정. 없으면 그 카테고리의 첫 과정으로 진입 (단과는 전 과정 신청 가능)
   const first=COURSES2[id].find(c=>c.ready)||COURSES2[id][0];
   courseSel=first.id;
-  if(!first.ready && id!=="free") alert("시연: 사회복지사 2급(자격) · 경영학(학사) · 경영(전문학사) 기준으로만 구성되어 있습니다");
-  renderCats(); renderCourseRow();
-  if(id==="free"){ setMode("single"); } else { renderPkg(); }
+  renderCats(); renderCourseRow(); renderSideNav();
+  syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
+  if(id==="free") setMode("single");
+  syncDept(); renderDepts(); renderTable();
 }
 // cap=null이면 전량 노출. 가로 스크롤 1행(자격/교양)에서는 MAX_CHIPS로 자르고,
 // 줄바꿈되는 학위 2행 레이아웃에서는 자를 이유가 없으므로 전공을 모두 보여준다
@@ -445,9 +530,9 @@ function renderCourseRow(){
     : chipSet(list, MAX_CHIPS);
 }
 function pickCourse(id){
-  const c=COURSES2[catSel].find(x=>x.id===id);
-  if(!c.ready){ alert("시연: 사회복지사 2급(자격) · 경영학(학사) · 경영(전문학사) 기준으로만 구성되어 있습니다"); return; }
-  courseSel=id; renderCourseRow(); renderPkg();
+  courseSel=id; renderCourseRow(); renderSideNav();
+  syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
+  syncDept(); renderDepts(); renderTable();
 }
 const DEG_PACKAGES = [
   // 4년제 학사 (ba-biz)
@@ -467,9 +552,9 @@ const DEG_PACKAGES = [
 
 // 개강 차수 — career.baeoom.com/lectureN 실제 값 (9월 개강반부터)
 const ROUNDS = [
-  {id:"r1", term:"2026년 2학기", d:"9월 4일 개강", period:"2026.09.04 ~ 2026.12.17", pshort:"09.04 ~ 12.17", credit:"2026년 12월", degree:"2027년 2월", st:"ok"},
-  {id:"r2", term:"2026년 2학기", d:"9월 17일 개강", period:"2026.09.17 ~ 2026.12.30", pshort:"09.17 ~ 12.30", credit:"2027년 1월", degree:"2027년 2월", st:"ok"},
-  {id:"r3", term:"2027년 1학기", d:"12월 31일 개강", period:"2026.12.31 ~ 2027.04.14", pshort:"12.31 ~ 04.14", credit:"2027년 4월", degree:"2027년 8월", st:"ok"}
+  {id:"r1", term:"2026년 2학기", d:"9월 4일 개강", date:"2026-09-04", period:"2026.09.04 ~ 2026.12.17", pshort:"09.04 ~ 12.17", credit:"2026년 12월", degree:"2027년 2월", st:"ok"},
+  {id:"r2", term:"2026년 2학기", d:"9월 17일 개강", date:"2026-09-17", period:"2026.09.17 ~ 2026.12.30", pshort:"09.17 ~ 12.30", credit:"2027년 1월", degree:"2027년 2월", st:"ok"},
+  {id:"r3", term:"2027년 1학기", d:"12월 31일 개강", date:"2026-12-31", period:"2026.12.31 ~ 2027.04.14", pshort:"12.31 ~ 04.14", credit:"2027년 4월", degree:"2027년 8월", st:"ok"}
 ];
 // 정가(orig)는 9월 4일 개강반 단과 정가 합계 (이론 150,000 / 실습 500,000) 기준
 const PACKAGES = [
@@ -482,110 +567,208 @@ const PACKAGES = [
   {id:"p5", course:"sw", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
 ];
 const ALL_PKGS=[...PACKAGES,...DEG_PACKAGES];
-function curPkgs(){ const l=ALL_PKGS.filter(p=>p.course===courseSel); return l.length?l:PACKAGES; }
-// 학과 탭 — 각 탭은 인정 과정 태그로 매핑
+function curPkgs(){ return ALL_PKGS.filter(p=>p.course===courseSel); }
+// 단과 필터 탭 — career.baeoom.com/lectureN 의 실제 인정 과정 태그 13종 (+ 전체)
 const DEPTS = [
-  {n:"사회복지학", tag:"사회복지사"},
-  {n:"아동·보육", tag:"보육교사"},
-  {n:"심리학", tag:"심리학"},
-  {n:"경영학", tag:"경영학"}
+  {n:"전체", tag:""},
+  {n:"사회복지사", tag:"사회복지사"}, {n:"보육교사", tag:"보육교사"},
+  {n:"건강가정사", tag:"건강가정사"}, {n:"청소년지도사", tag:"청소년지도사"},
+  {n:"평생교육사", tag:"평생교육사"}, {n:"장애영유아", tag:"장애영유아"},
+  {n:"한국어", tag:"한국어"}, {n:"심리학", tag:"심리학"},
+  {n:"경영학", tag:"경영학"}, {n:"컴퓨터공학", tag:"컴퓨터공학"},
+  {n:"KICPA", tag:"KICPA"}, {n:"미용", tag:"미용"}, {n:"교양", tag:"교양"}
 ];
-// 과목 — career.baeoom.com/lectureN 2026년 2학기 9월 4일 개강반 실제 목록
-// g: 실습 / 대면 / 이론 (현행 이수구분 컬럼) · closed=신청마감(대기접수) · hot=마감임박
-const SUBJECTS = [
-  // 실습과목
-  {id:1,g:"실습",name:"사회복지현장실습",prof:"박진영",price:300000,orig:500000,prac:true,pre:true,hot:true,seats:6,region:"수도권(서울,경기,인천)",hash:"#사회복지사"},
-  {id:2,g:"실습",name:"사회복지현장실습",prof:"박진영",price:400000,orig:500000,prac:true,pre:true,region:"전국(일부지역 제외)",hash:"#사회복지사"},
-  {id:3,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,closed:true,nextRound:"r2",region:"수도권 / 강원 / 충청",hash:"#보육교사"},
-  {id:4,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,region:"경상권(대구,부산,울산,경북,경남)",hash:"#보육교사"},
-  {id:5,g:"실습",name:"보육실습",prof:"전미경",price:300000,orig:500000,prac:true,region:"전라권(섬·산간지역 제외)",hash:"#보육교사"},
-  // 대면과목
-  {id:10,g:"대면",name:"보육교사론",prof:"김유나",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  {id:11,g:"대면",name:"아동관찰및행동연구",prof:"기현주",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  {id:12,g:"대면",name:"아동권리와복지",prof:"이기선",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  {id:13,g:"대면",name:"아동미술",prof:"강보라",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사 #교양"},
-  {id:14,g:"대면",name:"아동수학지도",prof:"김갑순",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  {id:15,g:"대면",name:"아동안전관리",prof:"김갑순",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  {id:16,g:"대면",name:"언어지도",prof:"윤주연",price:80000,orig:300000,region:"서울(영등포구청역), 인천, 부산",hash:"#보육교사"},
-  // 이론과목 — 사회복지
-  {id:20,g:"이론",name:"사회복지학개론",prof:"황환",price:70000,orig:150000,closed:true,nextRound:"r2",done:true,hash:"#사회복지사 #건강가정사 #교양"},
-  {id:21,g:"이론",name:"인간행동과사회환경",prof:"한서연",price:70000,orig:150000,closed:true,nextRound:"r2",done:true,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:22,g:"이론",name:"사회복지실천론",prof:"이인정",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
-  {id:23,g:"이론",name:"사회복지실천기술론",prof:"하태선",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
-  {id:24,g:"이론",name:"사회복지정책론",prof:"황환",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사"},
-  {id:25,g:"이론",name:"사회복지행정론",prof:"김치건",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
-  {id:26,g:"이론",name:"사회복지법제와실천",prof:"심석순",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사"},
-  {id:27,g:"이론",name:"사회복지조사론",prof:"조기원",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #건강가정사"},
-  {id:28,g:"이론",name:"지역사회복지론",prof:"홍성희",price:70000,orig:150000,closed:true,nextRound:"r2",hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:29,g:"이론",name:"가족복지론",prof:"최미경",price:70000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:30,g:"이론",name:"가족상담및가족치료",prof:"박진영",price:70000,orig:150000,hash:"#사회복지사 #건강가정사 #교양"},
-  {id:31,g:"이론",name:"노인복지론",prof:"이수천",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
-  {id:32,g:"이론",name:"아동복지론",prof:"박희숙",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
-  {id:33,g:"이론",name:"청소년복지론",prof:"이연실",price:70000,orig:150000,hash:"#사회복지사 #청소년지도사 #건강가정사"},
-  {id:34,g:"이론",name:"자원봉사론",prof:"박진영",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
-  {id:35,g:"이론",name:"장애인복지론",prof:"서진숙",price:70000,orig:150000,hash:"#사회복지사 #건강가정사"},
-  {id:36,g:"이론",name:"정신건강론",prof:"김은영",price:70000,orig:150000,hash:"#사회복지사 #보육교사 #건강가정사"},
-  {id:37,g:"이론",name:"산업복지론",prof:"이수천",price:70000,orig:150000,hash:"#사회복지사"},
-  {id:38,g:"이론",name:"의료사회복지론",prof:"이인정",price:70000,orig:150000,hash:"#사회복지사"},
-  {id:39,g:"이론",name:"학교사회복지론",prof:"이은진",price:70000,orig:150000,hash:"#사회복지사"},
-  // 이론과목 — 아동·보육
-  {id:40,g:"이론",name:"보육학개론",prof:"장윤정",price:55000,orig:150000,hash:"#보육교사 #건강가정사"},
-  {id:41,g:"이론",name:"보육과정",prof:"이영미",price:55000,orig:150000,hash:"#보육교사"},
-  {id:42,g:"이론",name:"영유아발달",prof:"김경윤",price:55000,orig:150000,hash:"#보육교사"},
-  {id:43,g:"이론",name:"영유아교수방법론",prof:"백진주",price:55000,orig:150000,hash:"#보육교사"},
-  {id:44,g:"이론",name:"영유아보육프로그램개발과평가",prof:"기현주",price:55000,orig:150000,hash:"#보육교사"},
-  {id:45,g:"이론",name:"부모교육론",prof:"백진주",price:55000,orig:150000,hash:"#보육교사 #건강가정사 #교양"},
-  {id:46,g:"이론",name:"가족관계론",prof:"김순기",price:55000,orig:150000,hash:"#보육교사 #건강가정사 #교양"},
-  {id:47,g:"이론",name:"특수아동이해",prof:"서은정",price:40000,orig:150000,hash:"#보육교사 #장애영유아"},
-  // 이론과목 — 심리
-  {id:50,g:"이론",name:"심리학개론",prof:"정형수",price:40000,orig:150000,hash:"#교양 #심리학 #경영학"},
-  {id:51,g:"이론",name:"발달심리",prof:"최경희",price:40000,orig:150000,hash:"#심리학"},
-  {id:52,g:"이론",name:"사회심리학",prof:"박찬",price:40000,orig:150000,hash:"#심리학"},
-  {id:53,g:"이론",name:"성격심리학",prof:"김순호",price:40000,orig:150000,hash:"#심리학"},
-  {id:54,g:"이론",name:"이상심리학",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
-  {id:55,g:"이론",name:"인지심리학",prof:"오창영",price:40000,orig:150000,hash:"#심리학"},
-  {id:56,g:"이론",name:"임상심리학",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
-  {id:57,g:"이론",name:"학습심리학",prof:"고인숙",price:40000,orig:150000,hash:"#심리학"},
-  {id:58,g:"이론",name:"정서심리학",prof:"송욱",price:40000,orig:150000,hash:"#심리학"},
-  {id:59,g:"이론",name:"상담심리학",prof:"김덕범",price:40000,orig:150000,hash:"#평생교육사 #건강가정사 #교양 #심리학"},
-  {id:60,g:"이론",name:"집단상담이론과실제",prof:"진성오",price:40000,orig:150000,hash:"#심리학"},
-  {id:61,g:"이론",name:"상담이론과실제",prof:"고인숙",price:40000,orig:150000,hash:"#건강가정사 #교양 #심리학"},
-  {id:62,g:"이론",name:"교육심리학",prof:"고인숙",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:63,g:"이론",name:"산업심리학",prof:"송관재",price:40000,orig:150000,hash:"#교양 #심리학 #경영학"},
-  {id:64,g:"이론",name:"조직심리학",prof:"송관재",price:40000,orig:150000,hash:"#심리학 #경영학"},
-  {id:65,g:"이론",name:"소비자심리학",prof:"이지훈",price:40000,orig:150000,hash:"#KICPA #심리학 #경영학"},
-  {id:66,g:"이론",name:"사이버심리학",prof:"진성오",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:67,g:"이론",name:"인간행동의심리학적이해",prof:"한민",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:68,g:"이론",name:"대인관계의심리학",prof:"한민",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:69,g:"이론",name:"생활지도와상담",prof:"정형수",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:70,g:"이론",name:"아동발달",prof:"기현주",price:40000,orig:150000,hash:"#교양 #심리학"},
-  {id:71,g:"이론",name:"유아발달",prof:"기현주",price:40000,orig:150000,hash:"#심리학"},
-  {id:72,g:"이론",name:"특수아상담",prof:"윤주연",price:40000,orig:150000,hash:"#장애영유아 #심리학"},
-  {id:73,g:"이론",name:"청소년이해론",prof:"김영애",price:40000,orig:150000,hash:"#심리학"},
-  {id:74,g:"이론",name:"행동수정",prof:"배영광",price:40000,orig:150000,hash:"#심리학"},
-  // 이론과목 — 경영
-  {id:80,g:"이론",name:"경영학개론",prof:"이우원",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
-  {id:81,g:"이론",name:"경제학개론",prof:"윤종인",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
-  {id:82,g:"이론",name:"회계원리",prof:"윤성용",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:83,g:"이론",name:"중급재무회계1",prof:"김영철",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:84,g:"이론",name:"원가관리회계1",prof:"이진훤",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:85,g:"이론",name:"원가관리회계2",prof:"박준령",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:86,g:"이론",name:"재무관리",prof:"이진훤",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:87,g:"이론",name:"마케팅원론",prof:"이재진",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:88,g:"이론",name:"마케팅관리론",prof:"이재환",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:89,g:"이론",name:"인적자원관리",prof:"박종혁",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:90,g:"이론",name:"생산관리",prof:"박보우",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:91,g:"이론",name:"경영통계학",prof:"허정",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:92,g:"이론",name:"경영분석",prof:"김영철",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:93,g:"이론",name:"경영정보시스템",prof:"채영일",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:94,g:"이론",name:"국제경영",prof:"신봉섭",price:40000,orig:150000,hash:"#KICPA #경영학"},
-  {id:95,g:"이론",name:"무역학개론",prof:"이재영",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
-  {id:96,g:"이론",name:"광고학",prof:"오세정",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
-  {id:97,g:"이론",name:"리더십",prof:"김영규",price:40000,orig:150000,hash:"#KICPA #교양 #경영학"},
-  {id:98,g:"이론",name:"사회학개론",prof:"이태정",price:40000,orig:150000,hash:"#교양 #경영학"},
-  {id:99,g:"이론",name:"인간관계론",prof:"성충모",price:40000,orig:150000,hash:"#KICPA #교양 #심리학 #경영학"},
-  {id:100,g:"이론",name:"데이터베이스",prof:"오재우",price:40000,orig:150000,hash:"#경영학 #컴퓨터공학"}
+// 과목 — career.baeoom.com/lectureN 실데이터. 3개 차수(9/4·9/17·12/31) 목록을 각각 수집해 병합.
+// [이수구분, 과목명, 교수, 할인가, 인정과정, 지역, 차수별상태]
+// 차수별상태 3글자 = [9/4, 9/17, 12/31] 순 · O=신청가능 H=마감임박 C=신청마감 -=해당 차수 미개설
+// 정가는 이수구분·할인가에서 도출 (실습 500,000 / 청소년·한국어 실습 600,000 / 대면 300,000 / 이론 150,000 / 미용계열 500,000)
+const RAW_SUBJECTS = [
+["실습","보육실습","전미경",300000,"#보육교사","수도권 / 강원 / 충청","C--"],
+["실습","보육실습","전미경",300000,"#보육교사","경상권(대구,부산,울산,경북,경남)","OOO"],
+["실습","보육실습","전미경",300000,"#보육교사","전라권(섬·산간지역 제외)","OOO"],
+["실습","청소년기관현장실습","하중래",500000,"#청소년지도사","전국(일부지역 제외)","OOO"],
+["실습","사회복지현장실습","박진영",300000,"#사회복지사","수도권(서울,경기,인천)","HO-"],
+["실습","사회복지현장실습","박진영",400000,"#사회복지사","전국(일부지역 제외)","OOH"],
+["실습","평생교육실습","최용범",300000,"#평생교육사","전국(일부지역 제외)","OHH"],
+["실습","평생교육실습","최용범",300000,"#평생교육사","수도권(서울,경기,인천)","OHH"],
+["실습","외국어로서의한국어교육실습","조형일",500000,"#한국어","전국","COC"],
+["대면","보육교사론","김유나",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","아동관찰및행동연구","기현주",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","아동권리와복지","이기선",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","아동미술","강보라",80000,"#보육교사 #교양","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","아동수학지도","김갑순",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","아동안전관리","김갑순",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["대면","언어지도","윤주연",80000,"#보육교사","서울(영등포구청역), 인천, 부산","OOO"],
+["이론","C언어1","유상현",40000,"#컴퓨터공학","","OOO"],
+["이론","가족복지론","최미경",70000,"#사회복지사 #보육교사 #건강가정사","","OOO"],
+["이론","가족상담및가족치료","박진영",70000,"#사회복지사 #건강가정사 #교양","","OOO"],
+["이론","결혼과가족","유춘자",40000,"#교양","","OOO"],
+["이론","경영분석","김영철",40000,"#KICPA #경영학","","OOO"],
+["이론","경영정보시스템","채영일",40000,"#KICPA #경영학","","OHH"],
+["이론","경영통계학","허정",40000,"#KICPA #경영학","","OOO"],
+["이론","경영학개론","이우원",40000,"#KICPA #교양 #경영학","","OHH"],
+["이론","경제학개론","윤종인",40000,"#KICPA #교양 #경영학","","OOO"],
+["이론","공중보건학","김효정",100000,"#미용","","OOO"],
+["이론","광고학","오세정",40000,"#KICPA #교양 #경영학","","OOO"],
+["이론","교육사회학","허은주",55000,"#평생교육사 #교양","","OOO"],
+["이론","교육심리학","고인숙",40000,"#교양 #심리학","","OOH"],
+["이론","국제경영","신봉섭",40000,"#KICPA #경영학","","OOO"],
+["이론","네트워크1","신우철",40000,"#컴퓨터공학","","OOO"],
+["이론","노인교육론","배철우",55000,"#평생교육사","","OOO"],
+["이론","데이터베이스","오재우",40000,"#경영학 #컴퓨터공학","","OHH"],
+["이론","데이터통신","신우철",40000,"#컴퓨터공학","","OOO"],
+["이론","디지털공학개론","장홍종",40000,"#컴퓨터공학","","OOO"],
+["이론","리더십","김영규",40000,"#KICPA #교양 #경영학","","OOO"],
+["이론","마이크로프로세서1","박찬길",40000,"#컴퓨터공학","","OOO"],
+["이론","마케팅관리론","이재환",40000,"#KICPA #경영학","","OOO"],
+["이론","마케팅원론","이재진",40000,"#KICPA #경영학","","OHH"],
+["이론","멀티미디어개론","임순빈",40000,"#교양 #컴퓨터공학","","OOO"],
+["이론","모발과학","김지현",100000,"#미용","","OOO"],
+["이론","무역학개론","이재영",40000,"#KICPA #교양 #경영학","","OOO"],
+["이론","미용경영학","하준호",100000,"#미용","","OOO"],
+["이론","미용과건강","임성혜",100000,"#미용","","OOO"],
+["이론","미용문화사","이상욱",100000,"#미용","","OOO"],
+["이론","미용색채학","강은지",100000,"#미용","","OOO"],
+["이론","미용학개론","이미춘",100000,"#미용","","OOO"],
+["이론","복식문화","조현정",100000,"#미용","","OOO"],
+["이론","부모교육론","백진주",55000,"#보육교사 #건강가정사 #교양","","OOO"],
+["이론","사이버심리학","진성오",40000,"#교양 #심리학","","OOO"],
+["이론","사진학개론1","김이삭",100000,"#미용","","OOO"],
+["이론","사회복지법제와실천","심석순",70000,"#사회복지사","","CC-"],
+["이론","사회복지실천기술론","하태선",70000,"#사회복지사 #건강가정사","","CC-"],
+["이론","사회복지실천론","이인정",70000,"#사회복지사 #건강가정사","","CC-"],
+["이론","사회복지정책론","황환",70000,"#사회복지사","","CC-"],
+["이론","사회복지조사론","조기원",70000,"#사회복지사 #건강가정사","","CC-"],
+["이론","사회복지학개론","황환",70000,"#사회복지사 #건강가정사 #교양","","CC-"],
+["이론","사회복지행정론","김치건",70000,"#사회복지사 #건강가정사","","CC-"],
+["이론","사회학개론","이태정",40000,"#교양 #경영학","","OOO"],
+["이론","산업복지론","이수천",70000,"#사회복지사","","OOO"],
+["이론","산업심리학","송관재",40000,"#교양 #심리학 #경영학","","OOO"],
+["이론","상담이론과실제","고인숙",40000,"#건강가정사 #교양 #심리학","","OOO"],
+["이론","생산관리","박보우",40000,"#KICPA #경영학","","OHH"],
+["이론","생활예절","유정윤",40000,"#교양","","OOO"],
+["이론","성인학습및상담","김환영",55000,"#평생교육사","","OOO"],
+["이론","성장기자녀의이해와부모역할","조영미",40000,"#교양","","OOO"],
+["이론","성행동의심리학","유춘자",40000,"#교양","","OOO"],
+["이론","소독법과전염병학","김희정",100000,"#미용","","OOO"],
+["이론","소비자심리학","이지훈",40000,"#KICPA #심리학 #경영학","","OOO"],
+["이론","소프트웨어공학","오재우",40000,"#컴퓨터공학","","OOO"],
+["이론","시스템프로그래밍","신우철",40000,"#컴퓨터공학","","OOO"],
+["이론","아동복지론","박희숙",70000,"#사회복지사 #건강가정사","","OOO"],
+["이론","알고리즘","황숙희",40000,"#컴퓨터공학","","OOO"],
+["이론","언어발달장애","고선희",40000,"#장애영유아","","OOO"],
+["이론","언어학개론","목정수",55000,"#한국어","","OOO"],
+["이론","영아발달","기현주",55000,"","","OOO"],
+["이론","영유아교수방법론","백진주",55000,"#보육교사","","OOO"],
+["이론","영유아보육프로그램개발과평가","기현주",55000,"#보육교사","","OOO"],
+["이론","외국어로서의한국어교육개론","신필여",55000,"#한국어","","HOH"],
+["이론","외국어로서의한국어교육과정및교수요목설계","박선옥",55000,"#한국어","","COH"],
+["이론","외국어로서의한국어교재론","김가람",55000,"#한국어","","OHH"],
+["이론","외국어로서의한국어문법교육론","안경화",55000,"#한국어","","HOH"],
+["이론","외국어로서의한국어발음교육론","박기영",55000,"#한국어","","OOO"],
+["이론","외국어로서의한국어어휘교육론","이소영",55000,"#한국어","","OOH"],
+["이론","외국어로서의한국어이해교육론","윤지원",55000,"#한국어","","COO"],
+["이론","외국어로서의한국어표현교육론","정미진",55000,"#한국어","","CHO"],
+["이론","외국어로서의한국어학개론","강남욱",55000,"#한국어","","OHH"],
+["이론","외국어습득론","김가람",55000,"#한국어","","OOO"],
+["이론","운영체제","박찬길",40000,"#컴퓨터공학","","OOO"],
+["이론","원가관리회계1","이진훤",40000,"#KICPA #경영학","","OOO"],
+["이론","원가관리회계2","박준령",40000,"#KICPA #경영학","","OOO"],
+["이론","원격교육론","김효선",55000,"#평생교육사","","OOO"],
+["이론","유아발달","기현주",40000,"#심리학","","OOO"],
+["이론","의상학","조현정",100000,"#미용","","OOO"],
+["이론","이상심리학","진성오",40000,"#심리학","","OOO"],
+["이론","인간행동과사회환경","한서연",70000,"#사회복지사 #보육교사 #건강가정사","","CC-"],
+["이론","인간행동의심리학적이해","한민",40000,"#교양 #심리학","","OOO"],
+["이론","인적자원개발론","박선효",55000,"#평생교육사","","OOO"],
+["이론","인적자원관리","박종혁",40000,"#KICPA #경영학","","OHH"],
+["이론","인체생리학","이남지",100000,"#미용","","OOO"],
+["이론","자료구조","곽후근",40000,"#컴퓨터공학","","OOO"],
+["이론","자폐장애교육","최경순",40000,"#장애영유아","","OOO"],
+["이론","장애영유아교수방법론","조현정",40000,"#장애영유아","","OOO"],
+["이론","재무관리","이진훤",40000,"#KICPA #경영학","","OOO"],
+["이론","정보통신개론","유상현",40000,"#교양 #컴퓨터공학","","OOO"],
+["이론","정서장애아교육","이은영",40000,"#장애영유아","","OHH"],
+["이론","정신건강론","김은영",70000,"#사회복지사 #보육교사 #건강가정사","","OOO"],
+["이론","지적장애아교육","김현숙",40000,"#장애영유아","","OHH"],
+["이론","조직심리학","송관재",40000,"#심리학 #경영학","","OOO"],
+["이론","중급재무회계1","김영철",40000,"#KICPA #경영학","","OOO"],
+["이론","지역사회복지론","홍성희",70000,"#사회복지사 #보육교사 #건강가정사","","CC-"],
+["이론","직업·진로설계","박소영",55000,"#평생교육사","","OOO"],
+["이론","청소년문제와보호","하중래",55000,"#청소년지도사","","OOO"],
+["이론","청소년문화","조미영",55000,"#청소년지도사 #교양","","OOH"],
+["이론","청소년복지론","이연실",70000,"#사회복지사 #청소년지도사 #건강가정사","","OOO"],
+["이론","청소년심리및상담","권아현",55000,"#청소년지도사","","OOO"],
+["이론","청소년육성제도론","김영애",55000,"#청소년지도사","","OOO"],
+["이론","청소년지도방법론","김정태",55000,"#청소년지도사 #교양","","OOH"],
+["이론","청소년프로그램개발및평가","최진이",55000,"#청소년지도사","","OOO"],
+["이론","청소년활동론","최진이",55000,"#청소년지도사","","OOO"],
+["이론","컴퓨터개론","김성규",40000,"#교양 #컴퓨터공학","","OOO"],
+["이론","컴퓨터구조","김동욱",40000,"#컴퓨터공학","","OOO"],
+["이론","컴퓨터시스템","한병준",40000,"#컴퓨터공학","","OOO"],
+["이론","코디네이트미학","최인실",100000,"#교양 #미용","","OOO"],
+["이론","특수아동이해","서은정",40000,"#보육교사 #장애영유아","","OOO"],
+["이론","특수아부모교육론","조현정",40000,"#장애영유아","","OHH"],
+["이론","특수아상담","윤주연",40000,"#장애영유아 #심리학","","OOO"],
+["이론","특수아통합교육","조정숙",40000,"#장애영유아","","OOO"],
+["이론","평생교육경영론","최용범",55000,"#평생교육사","","OOO"],
+["이론","평생교육론","김주경",55000,"#평생교육사 #교양","","OOO"],
+["이론","평생교육방법론","배철우",55000,"#평생교육사","","OOO"],
+["이론","평생교육프로그램개발론","송정희",55000,"#평생교육사","","OOO"],
+["이론","피부미용학","서지혜",100000,"#미용","","OOO"],
+["이론","한국문학개론","김혜진",55000,"#교양 #한국어","","OOO"],
+["이론","한국어문법론","조형일",55000,"#한국어","","OHO"],
+["이론","한국의현대문화","박선옥",55000,"#한국어","","OOO"],
+["이론","현대인의정신건강","박순혜",40000,"#교양","","OOO"],
+["이론","화장품학","정소명",100000,"#미용","","OOO"],
+["이론","회계원리","윤성용",40000,"#KICPA #경영학","","OOO"],
+["이론","가족관계론","김순기",55000,"#보육교사 #건강가정사 #교양","","OOO"],
+["이론","가족생활교육","박지영",55000,"#건강가정사","","OOO"],
+["이론","건강가정론","김순기",55000,"#건강가정사","","OOO"],
+["이론","노인복지론","이수천",70000,"#사회복지사 #건강가정사","","OOO"],
+["이론","대인관계의심리학","한민",40000,"#교양 #심리학","","OOO"],
+["이론","대조언어학","목정수",55000,"#한국어","","OOO"],
+["이론","발달심리","최경희",40000,"#심리학","","OOO"],
+["이론","보육과정","이영미",55000,"#보육교사","","OOO"],
+["이론","보육학개론","장윤정",55000,"#보육교사 #건강가정사","","OOO"],
+["이론","사회심리학","박찬",40000,"#심리학","","OOO"],
+["이론","상담심리학","김덕범",40000,"#평생교육사 #건강가정사 #교양 #심리학","","OOO"],
+["이론","생활지도와상담","정형수",40000,"#교양 #심리학","","OOO"],
+["이론","성격심리학","김순호",40000,"#심리학","","OOO"],
+["이론","심리학개론","정형수",40000,"#교양 #심리학 #경영학","","OOH"],
+["이론","아동발달","기현주",40000,"#교양 #심리학","","OOO"],
+["이론","영유아발달","김경윤",55000,"#보육교사","","OOO"],
+["이론","외국어로서의한국어능력평가론","장은아",55000,"#한국어","","OOO"],
+["이론","의료사회복지론","이인정",70000,"#사회복지사","","OOO"],
+["이론","인간관계론","성충모",40000,"#KICPA #교양 #심리학 #경영학","","OOO"],
+["이론","인지심리학","오창영",40000,"#심리학","","OOO"],
+["이론","임상심리학","진성오",40000,"#심리학","","OOO"],
+["이론","자원봉사론","박진영",70000,"#사회복지사 #건강가정사","","OOO"],
+["이론","장애인복지론","서진숙",70000,"#사회복지사 #건강가정사","","OOO"],
+["이론","정보통신기기1","임순빈",40000,"","","OOO"],
+["이론","정서심리학","송욱",40000,"#심리학","","OOO"],
+["이론","집단상담이론과실제","진성오",40000,"#심리학","","OOO"],
+["이론","청소년이해론","김영애",40000,"#심리학","","OOO"],
+["이론","컴퓨터네트워크","오재우",40000,"#컴퓨터공학","","OOO"],
+["이론","학교사회복지론","이은진",70000,"#사회복지사","","OOO"],
+["이론","학습심리학","고인숙",40000,"#심리학","","OOO"],
+["이론","한국사의이해","주진오",55000,"#한국어","","OOO"],
+["이론","행동수정","배영광",40000,"#심리학","","OOO"]
 ];
+function origOf(g,price){
+  if(g==="실습") return price>=500000?600000:500000;
+  if(g==="대면") return 300000;
+  return price===100000?500000:150000;
+}
+// 로그인 시연용 기이수 과목 (loginDemo 토글)
+const DONE_SUBJECTS=["사회복지학개론","인간행동과사회환경"];
+const SUBJECTS = RAW_SUBJECTS.map((r,i)=>({
+  id:i+1, g:r[0], name:r[1], prof:r[2], price:r[3], orig:origOf(r[0],r[3]),
+  hash:r[4], region:r[5], st:r[6],
+  prac:r[0]==="실습", pre:r[1]==="사회복지현장실습",
+  done:DONE_SUBJECTS.includes(r[1]),
+  seats:2+(r[1].length%8)   // 잔여석은 개편안 제안 항목 — 현행은 "마감임박"만 노출하므로 예시값
+}));
 
 let mode="pkg", roundSel="r1", deptSel=0;
 let picked=new Set();
@@ -596,32 +779,136 @@ function setMode(m){
   mode=m;
   $("mPkg").classList.toggle("active",m==="pkg");
   $("mSingle").classList.toggle("active",m==="single");
-  $("modeHint").textContent = m==="pkg"
-    ? "전체 과목 구성으로 과목당 가격이 가장 낮습니다"
-    : "필요한 과목만 선택합니다 — 패키지 할인은 전체 결제에만 적용";
+  $("sPkg").classList.toggle("active",m==="pkg");
+  $("sSingle").classList.toggle("active",m==="single");
   $("pkgBody").style.display = m==="pkg"?"block":"none";
   $("singleBody").classList.toggle("show",m==="single");
+  // 수강방식도 개설 차수 집합을 바꾸는 부모 축
+  syncRound(); renderRounds(); renderRoundPicker();
   updateCartBar();
 }
 function renderRounds(){
-  $("roundTabs").innerHTML = ROUNDS.map(r=>`
-    <div class="round-tab ${roundSel===r.id?"act":""}" onclick="pickRound('${r.id}')">
-      <span class="rt-badge ${r.st}">${r.st==="hot"?"마감임박":"신청가능"}</span>
-      <div class="rt1">${r.term}</div><div class="rt2">${r.d}</div><div class="rt3">학습기간 ${r.pshort}</div>
-    </div>`).join("");
-  const r=ROUNDS.find(x=>x.id===roundSel);
-  $("roundInfo").innerHTML = `
-    <span>학습기간<b>${r.period}</b></span>
-    <span>학점인정<b>${r.credit}</b></span>
-    <span>학위취득<b>${r.degree}</b></span>`;
+  $("roundTabs").innerHTML = roundTabsHTML();
+  $("roundInfo").innerHTML = roundInfoHTML();
 }
 function toggleGuide(){
   const g=$("guideFull");
   g.style.display = g.style.display==="none"?"block":"none";
 }
-function pickRound(id){ roundSel=id; renderRounds(); renderPkg(); }
+function pickRound(id){
+  roundSel=id; roundWarn="";
+  // 차수를 바꾸면 그 차수에 신청 불가한 과목은 장바구니에서 자동 제외
+  [...picked].forEach(pid=>{ const c=stOf(SUBJECTS.find(x=>x.id===pid)); if(c!=="O"&&c!=="H") picked.delete(pid); });
+  renderRounds(); renderRoundPicker(); renderPkg(); renderTable(); updateCartBar();
+}
+// 과정을 고르면 단과 목록도 같은 인정 과정으로 맞춘다 (태그 없는 과정은 전체)
+function syncDept(){
+  const i=DEPTS.findIndex(d=>d.tag===(courseTag()||""));
+  if(i>=0) deptSel=i;
+}
+
+/* ── 레이아웃 시안 B: 좌측바형 ──
+   과정(항목 많음·계층 있음) → 좌측바 / 수강방식(2택) → 본문 탭 / 개강일(3택·저빈도) → 드롭다운.
+   상품 영역(#contentHolder)은 두 시안이 공유하며 활성 셸로 이동시킨다 — 데이터·렌더 함수는 완전히 동일 */
+const SIDE_GROUPS=[
+  {cat:"cert", label:"자격증 취득", sub:"과정 이수로 자격증 취득", pick:()=>COURSES2.cert},
+  {cat:"deg", label:"4년제 학사", sub:"140학점 · 최단 3학기", pick:()=>COURSES2.deg.filter(c=>c.level==="ba")},
+  {cat:"deg", label:"2년제 전문학사", sub:"80학점 · 최단 2학기", pick:()=>COURSES2.deg.filter(c=>c.level==="as")},
+  {cat:"free", label:"교양 · 단과", sub:"과정 없이 과목만 신청", pick:()=>COURSES2.free}
+];
+function renderSideNav(){
+  $("sideNav").innerHTML = `<div class="sn-title">과정</div>` + SIDE_GROUPS.map(g=>`
+    <div class="sn-group">
+      <div class="sn-head">${g.label}<small>${g.sub}</small></div>
+      ${g.pick().map(c=>`<button class="sn-item ${courseSel===c.id?"act":""}" onclick="pickSide('${g.cat}','${c.id}')">${c.name}${c.badge?`<em>${c.badge}</em>`:""}</button>`).join("")}
+    </div>`).join("");
+}
+function pickSide(cat,id){
+  catSel=cat; courseSel=id;
+  renderCats(); renderCourseRow(); renderSideNav();
+  syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
+  if(cat==="free") setMode("single");
+  syncDept(); renderDepts(); renderTable();
+}
+function ddayOf(r){
+  const t=new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(r.date+"T00:00:00")-t)/86400000);
+}
+/* 개설 차수 = 과정 × 수강방식으로 산출 — 하드코딩이 아니라 실제 과목 데이터에서 도출.
+   그 과정(인정 과정 태그)의 과목 중 해당 차수에 신청 가능한 것이 하나라도 있으면 개설.
+   실데이터 확인 결과 13개 태그 전부 3개 차수에 개설되어 있어 현재는 미개설 과정이 없다.
+   차수마다 달라지는 것은 과정 단위 개설 여부가 아니라 과목 단위 마감·미개설 현황이다. */
+function curCourse(){ return (COURSES2[catSel]||[]).find(x=>x.id===courseSel); }
+function courseTag(){ const c=curCourse(); return c && c.tag; }
+function roundStat(i){
+  const tag=courseTag(); if(!tag) return null;
+  const listed=SUBJECTS.filter(s=>(s.hash||"").includes(tag) && s.st[i]!=="-");
+  return {ok:listed.filter(s=>s.st[i]!=="C").length, all:listed.length};
+}
+function openRoundIds(){
+  const tag=courseTag();
+  if(!tag) return ROUNDS.map(r=>r.id);
+  return ROUNDS.filter((r,i)=>{ const v=roundStat(i); return v && v.ok>0; }).map(r=>r.id);
+}
+let roundWarn="";
+function syncRound(){
+  const open=openRoundIds();
+  if(open.includes(roundSel)){ roundWarn=""; return; }
+  const prev=ROUNDS.find(r=>r.id===roundSel);
+  roundSel=open[0];
+  roundWarn=`${prev.d}은 이 과정에 개설되지 않아 ${ROUNDS.find(r=>r.id===roundSel).d}으로 변경했습니다`;
+}
+/* 개강일 탭 마크업은 A·B 시안이 공유 — 두 시안의 텍스트 배치를 동일하게 유지 */
+function roundTabsHTML(){
+  const open=openRoundIds();
+  return ROUNDS.map(r=>{
+    const ok=open.includes(r.id), d=ddayOf(r);
+    const badge = !ok ? {c:"none", t:"미개설"}
+      : d>0 && d<=7 ? {c:"hot", t:`신청마감 D-${d}`}
+      : d>0 && d<=30 ? {c:"ok", t:`신청마감 D-${d}`}
+      : {c:"ok", t:"신청가능"};
+    return `<div class="round-tab ${roundSel===r.id?"act":""} ${ok?"":"off"}"
+      onclick="${ok?`pickRound('${r.id}')`:`alert('이 과정에는 개설되지 않은 차수입니다 (시연)')`}">
+      <span class="rt-badge ${badge.c}">${badge.t}</span>
+      <div class="rt1">${r.term}</div><div class="rt2">${r.d}</div><div class="rt3">학습기간 ${r.pshort}</div>
+    </div>`;}).join("");
+}
+function roundInfoHTML(){
+  const r=ROUNDS.find(x=>x.id===roundSel);
+  return (roundWarn?`<span class="rrow-warn">⚠ ${roundWarn}</span>`:"")
+    + `<span>학습기간<b>${r.period}</b></span><span>학점인정<b>${r.credit}</b></span><span>학위취득<b>${r.degree}</b></span>`;
+}
+function renderRoundPicker(){
+  $("rrowSeg").innerHTML = roundTabsHTML();
+  $("rrowInfo").innerHTML = roundInfoHTML();
+}
+let layout="stack";
+function applyLayout(l){
+  layout=l;
+  const side=l==="side";
+  $("stackShell").style.display = side?"none":"block";
+  $("sideShell").style.display = side?"flex":"none";
+  (side?$("sideMount"):$("stackShell")).appendChild($("contentHolder"));
+  $("layStack").classList.toggle("act",!side);
+  $("laySide").classList.toggle("act",side);
+  document.body.classList.toggle("lay-side",side);
+  renderSideNav(); renderRoundPicker(); setMode(mode);
+}
 function renderPkg(){
-  const pkgs=curPkgs(), h=pkgs[0], rest=pkgs.slice(1);
+  const pkgs=curPkgs();
+  // 패키지 상품이 아직 구성되지 않은 과정 — 단과로 유도 (과목은 실데이터로 전 과정 신청 가능)
+  if(!pkgs.length){
+    const c=curCourse(), v=roundStat(roundIdx());
+    $("pkgBody").innerHTML = `
+      <div class="pkg-none">
+        <div class="pn-t">${c?c.name:""} 패키지는 준비 중입니다</div>
+        <div class="pn-d">${v?`이 과정 과목은 <b>${ROUNDS.find(r=>r.id===roundSel).d}</b> 기준 <b>${v.ok}과목</b> 신청 가능합니다 — 단과로 필요한 과목만 선택하세요`:"단과로 필요한 과목만 선택하실 수 있습니다"}</div>
+        <button class="pn-go" onclick="setMode('single')">단과로 과목 보기 ›</button>
+      </div>
+      <span class="note">패키지:과정 = N:M 매핑이므로 과정마다 편성 여부가 다름 — 미편성 과정은 빈 화면 대신 단과 동선으로 연결. 시연에서는 사회복지사 2급 · 경영학(학사) · 경영(전문학사) 3개 과정에만 패키지를 구성</span>`;
+    return;
+  }
+  const h=pkgs[0], rest=pkgs.slice(1);
   let midBlock="";
   if(h.credits){
     const bar=(l,o)=>{const rp=o.r/o.t*100, pp=o.p/o.t*100;
@@ -755,11 +1042,19 @@ function renderFilters(){
     + (recogSel?`<button class="f-chip act" onclick="toggleRecog('${recogSel}')">인정: ${recogSel} ✕</button>`:"");
 }
 function toggleRecog(r){ recogSel = recogSel===r?null:r; renderFilters(); renderTable(); }
+/* 선택 차수 기준 과목 상태 — O 신청가능 / H 마감임박 / C 신청마감 / - 해당 차수 미개설 */
+function roundIdx(){ return ROUNDS.findIndex(r=>r.id===roundSel); }
+function stOf(s){ return s.st[roundIdx()] || "-"; }
+// 이 과목이 다음으로 신청 가능한 차수
+function nextOpenRound(s){
+  for(let i=roundIdx()+1;i<ROUNDS.length;i++){ if(s.st[i]==="O"||s.st[i]==="H") return ROUNDS[i]; }
+  return null;
+}
 function passFilter(s){
   if(!(s.hash||"").includes(DEPTS[deptSel].tag)) return false;
   if(recogSel && !(s.hash||"").includes(recogSel)) return false;
   if(filterSel==="이론"||filterSel==="대면"||filterSel==="실습") return s.g===filterSel;
-  if(filterSel==="open") return !s.closed && !isDone(s);
+  if(filterSel==="open") return (stOf(s)==="O"||stOf(s)==="H") && !isDone(s);
   return true;
 }
 function renderTable(){
@@ -768,23 +1063,24 @@ function renderTable(){
     const list=SUBJECTS.filter(s=>s.g===g && passFilter(s));
     if(list.length===0) return "";
     return list.map((s,i)=>{
-      const done=isDone(s);
+      const done=isDone(s), c=stOf(s), na=c==="-", closed=c==="C";
       const st = done ? '<span class="st-txt done">이수완료</span>'
-        : s.closed ? `<span class="st-txt full">신청마감</span>${s.nextRound?`<div class="next-round" onclick="pickRound('${s.nextRound}')">${ROUNDS.find(r=>r.id===s.nextRound).d} 신청 가능 ›</div>`:""}`
-        : s.hot ? `<span class="st-txt hot">잔여 ${s.seats}석</span>`
+        : na ? '<span class="st-txt na">이 차수 미개설</span>'
+        : closed ? '<span class="st-txt full">신청마감</span>'
+        : c==="H" ? `<span class="st-txt hot">잔여 ${s.seats}석</span>`
         : '<span class="st-txt ok">신청가능</span>';
       const recogs=(s.hash||"").split(" ").map(t=>t.replace("#","")).filter(Boolean);
       return `
-      <tr class="${picked.has(s.id)?"sel":""}">
+      <tr class="${picked.has(s.id)?"sel":""} ${na?"na":""}">
         ${i===0?`<td class="grp" rowspan="${list.length}">${g}과목</td>`:""}
-        <td class="chk">${done?'<span class="done-mark">✓</span>':s.closed?'<button class="wait-btn" onclick="alert(\'대기접수 (시연)\')">대기<br>접수</button>':`<input type="checkbox" ${picked.has(s.id)?"checked":""} onchange="togglePick(${s.id})">`}</td>
+        <td class="chk">${done?'<span class="done-mark">✓</span>':na?'<span class="closed-box"></span>':closed?'<button class="wait-btn" onclick="alert(\'대기접수 (시연)\')">대기<br>접수</button>':`<input type="checkbox" ${picked.has(s.id)?"checked":""} onchange="togglePick(${s.id})">`}</td>
         <td>
-          <span class="subj-name ${s.closed||done?"dim":""}">${s.name}</span><span class="subj-prof">/ ${s.prof} 교수</span>
+          <span class="subj-name ${closed||na||done?"dim":""}">${s.name}</span><span class="subj-prof">/ ${s.prof} 교수</span>
           ${s.prac?'<span class="t-badge prac">실습</span>':""}${s.pre?'<span class="t-badge pre">선이수 필요</span>':""}
-          ${s.region?`<div class="region-line"><b>${s.g==="실습"?"실습":"대면"} ${s.closed?"마감":"신청"}</b> ${s.region} <span class="venue-link" onclick="alert('교육장 및 일정보기 (시연)')">교육장 및 일정보기 ›</span></div>`:""}
+          ${s.region?`<div class="region-line"><b>${s.g==="실습"?"실습":"대면"} ${na?"미개설":closed?"마감":"신청"}</b> ${s.region}${na?"":` <span class="venue-link" onclick="alert('교육장 및 일정보기 (시연)')">교육장 및 일정보기 ›</span>`}</div>`:""}
           <div class="recog-line">인정 과정: ${recogs.map(r=>`<span class="recog-chip ${recogSel===r?"act":""}" onclick="toggleRecog('${r}')">${r}</span>`).join('<span class="rc-sep">·</span>')}</div>
         </td>
-        <td style="text-align:center;width:92px;">${st}</td>
+        <td style="text-align:center;width:96px;">${st}</td>
         <td class="fee"><span class="o">${fmt(s.orig)}</span><span class="f">${fmt(s.price)}</span></td>
         <td class="icon-td" onclick="alert('수업계획서 (시연)')">📄</td>
         <td class="icon-td" onclick="alert('미리보기 (시연)')">▶</td>
@@ -815,7 +1111,9 @@ function updateCartBar(){
 }
 function goCart(){ openConfirm("cart"); }
 
+syncDept();
 renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderDepts(); renderFilters(); renderTable();
+applyLayout(new URLSearchParams(location.search).get("layout")==="side" ? "side" : "stack");
 </script>
 </body>
 </html>
