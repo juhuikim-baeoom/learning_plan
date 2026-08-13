@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>패키지 화면 개선 — 시안 (현행 / A / B / C)</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  :root{
+    --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
+    --ink:#222; --gray:#666; --gray-light:#999; --line:#ddd; --line-dark:#bbb;
+    --bg:#fff; --panel:#f7f8fa; --red:#d9232e; --red-soft:#fdeeee;
+    --ok:#1a9c6b; --ok-soft:#e8f6f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#fff;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1041px;margin:0 auto;padding:26px 20px 120px;}
+
+  /* ── 시연 전용 컨트롤 (브랜드 컬러와 의도적으로 다른 톤) ── */
+  .lay-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff5f9;border:1px solid #f3c4d8;border-radius:8px;padding:10px 14px;margin-bottom:12px;}
+  .lay-switch>span{font-size:12.5px;font-weight:800;color:#c2185b;}
+  .lay-switch em{font-style:normal;font-size:11px;font-weight:600;color:#d081a5;margin-left:4px;}
+  .lay-switch button{border:1px solid #f0a0c0;background:#fff;border-radius:15px;font-family:inherit;font-size:12.5px;font-weight:700;color:#c2185b;padding:6px 16px;cursor:pointer;}
+  .lay-switch button:hover{background:#ffe3ef;}
+  .lay-switch button.act{background:#e0316f;border-color:#e0316f;color:#fff;}
+  .lay-switch .dev{margin-left:auto;display:flex;background:#fff;border:1px solid #f0a0c0;border-radius:15px;padding:2px;}
+  .lay-switch .dev button{border:none;padding:5px 13px;font-size:11.5px;}
+  .lay-switch .dev button.act{background:#e0316f;color:#fff;}
+
+  /* 2차 전환 — 개강일 배치 비교 */
+  .sub-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#f4f7ff;border:1px solid #c9d6f5;border-radius:8px;padding:9px 14px;margin-bottom:12px;}
+  .sub-switch>span{font-size:12.5px;font-weight:800;color:#2b4b9b;}
+  .sub-switch em{font-style:normal;font-size:11px;font-weight:600;color:#7f92c4;margin-left:4px;}
+  .sub-switch button{border:1px solid #a8bcea;background:#fff;border-radius:15px;font-family:inherit;font-size:12.5px;font-weight:700;color:#2b4b9b;padding:6px 15px;cursor:pointer;}
+  .sub-switch button:hover{background:#e6edff;}
+  .sub-switch button.act{background:#2b4b9b;border-color:#2b4b9b;color:#fff;}
+  .sub-switch .rec{font-size:10px;font-weight:800;background:#2b4b9b;color:#fff;border-radius:8px;padding:1px 6px;margin-left:4px;}
+
+  /* 기획설명 */
+  .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:0 0 18px;}
+  .ln-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #f2e0ac;}
+  .ln-tag{background:#e0a71e;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.02em;}
+  .ln-head b{font-size:13.5px;font-weight:800;color:#8a6212;}
+  .ln-hyp{font-size:12px;font-weight:600;color:#a08a54;}
+  .ln-tog{margin-left:auto;border:1px solid #e6c878;background:#fff;border-radius:13px;font-family:inherit;font-size:11.5px;font-weight:700;color:#8a6212;padding:4px 12px;cursor:pointer;}
+  .ln-tog:hover{background:#fdf3d8;}
+  .ln-sec{padding:11px 14px 12px;}
+  .ln-sec.shade{background:#fff8e2;border-bottom:1px solid #f2e0ac;}
+  .ln-sec h4{font-size:10.5px;font-weight:800;color:#8a6212;letter-spacing:.03em;margin-bottom:7px;}
+  .ln-sec ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+  .ln-sec li{font-size:12.5px;line-height:1.58;color:#4a4436;padding-left:11px;position:relative;}
+  .ln-sec li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:#e5bf5e;}
+  .ln-sec li b{font-weight:800;color:#2b2b2b;}
+  .ln-foot{padding:9px 14px;border-top:1px solid #f2e0ac;font-size:12px;line-height:1.6;color:#8d7d5b;font-weight:600;}
+  .ln-foot b{color:#8a6212;font-weight:800;}
+
+  /* ── 디바이스 프레임 ── */
+  #stage{margin-top:4px;}
+  #shellA,#shellB,#shellC{display:none;}
+  #stage.mo{max-width:390px;margin:4px auto 0;border:9px solid #2c3038;border-radius:30px;padding:14px 12px 22px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.14);}
+  #stage.mo .sec-head h2{font-size:19px;}
+  #stage.mo .cards{grid-template-columns:1fr;}
+  #stage.mo .rounds{flex-direction:column;}
+  #stage.mo .q-opts{flex-direction:column;}
+  #stage.mo .cur-row{flex-direction:column;align-items:stretch;gap:8px;}
+  #stage.mo .cur-row .cur-cta{width:100%;}
+  #stage.mo .alts{grid-template-columns:1fr;}
+  #stage.mo .cfg-grid{grid-template-columns:1fr;}
+  #stage.mo .gauge{grid-template-columns:1fr;}
+  #stage.mo .rb-detail{flex-direction:column;gap:7px;}
+  #stage.mo .rb-detail div{border-left:none;padding:0;display:flex;justify-content:space-between;align-items:baseline;}
+  #stage.mo .rb-detail div i{margin-bottom:0;}
+  #stage.mo .sub-pick button{font-size:11px;white-space:nowrap;padding:8px 2px;}
+  #stage.mo .perks div{border-left:none;border-top:1px solid var(--line);}
+  #stage.mo .perks div:first-child{border-top:none;}
+  #stage.mo .pc-only{display:none;}
+
+  /* ── 공통 섹션 헤더 ── */
+  .sec-head{text-align:center;margin-bottom:16px;}
+  .sec-head .kicker{display:inline-block;background:var(--soft);color:var(--main);font-size:11px;font-weight:800;border-radius:12px;padding:3px 11px;margin-bottom:7px;}
+  .sec-head h2{font-size:24px;font-weight:800;letter-spacing:-.8px;}
+  .sec-head p{font-size:12.5px;color:var(--gray);margin-top:5px;}
+  .demo-note{font-size:11px;color:var(--gray-light);text-align:center;margin-top:8px;line-height:1.6;}
+
+  /* ══ 현행 재현 ══ */
+  .cur-pkg{border:1px solid var(--line);border-radius:10px;margin-bottom:16px;position:relative;padding:20px 22px 8px;}
+  .cur-badge{position:absolute;left:-6px;top:-10px;width:56px;height:56px;border-radius:50%;background:#eaf6fc;border:2px solid var(--mid);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;}
+  .cur-badge i{font-style:normal;font-size:9px;font-weight:700;color:var(--gray);}
+  .cur-badge b{font-size:15px;font-weight:800;color:var(--main);}
+  .cur-badge s{text-decoration:none;font-size:9px;font-weight:700;color:var(--gray);}
+  .cur-pkg h3{font-size:19px;font-weight:800;padding-left:44px;padding-bottom:12px;border-bottom:1px solid var(--ink);}
+  .cur-price{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fafbfc;padding:12px 4px;font-size:13px;}
+  .cur-price .per{font-weight:700;}
+  .cur-price .right s{color:var(--gray-light);}
+  .cur-price .right b{font-size:20px;font-weight:800;color:#e8590c;margin-left:4px;}
+  .cur-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #f0f0f0;font-size:13px;}
+  .cur-row:last-child{border-bottom:none;}
+  .cur-cta{background:#132a4a;color:#fff;border:none;border-radius:4px;font-family:inherit;font-size:13px;font-weight:800;padding:11px 44px;cursor:pointer;}
+  .cur-count{background:var(--red-soft);border:1px solid #f3b5b8;border-radius:8px;padding:11px 14px;font-size:12.5px;font-weight:700;color:#a3161f;margin-bottom:14px;text-align:center;}
+
+  /* ══ 개강일 독립 바 (A·B·C 공통) ══ */
+  .round-bar{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:18px;background:var(--panel);}
+  .rb-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:11px;}
+  .rb-top b{font-size:13px;font-weight:800;}
+  .rb-top span{font-size:11.5px;color:var(--gray);}
+  .rounds{display:flex;gap:8px;}
+  .round{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px;cursor:pointer;font-family:inherit;text-align:left;}
+  .round.act{border-color:var(--main);background:#eef7fc;}
+  .round .r1{font-size:10.5px;color:var(--gray-light);font-weight:700;}
+  .round .r2{font-size:16px;font-weight:800;color:var(--gray);margin-top:1px;}
+  .round.act .r2{color:var(--main);}
+  .round .r3{font-size:10.5px;color:var(--gray-light);margin-top:3px;}
+  .rb-detail{display:flex;gap:0;margin-top:11px;border-top:1px dashed var(--line);padding-top:10px;flex-wrap:wrap;}
+  .rb-detail div{flex:1;min-width:110px;font-size:11.5px;padding:0 10px;border-left:1px solid var(--line);}
+  .rb-detail div:first-child{border-left:none;padding-left:0;}
+  .rb-detail div i{font-style:normal;display:block;color:var(--gray-light);font-size:10.5px;font-weight:700;margin-bottom:2px;}
+  .rb-detail div b{font-weight:800;}
+  .rb-hint{font-size:10.5px;color:var(--gray-light);margin-top:8px;}
+  .rb-fake{background:var(--red-soft);border:1px solid #f3b5b8;border-radius:6px;padding:8px 11px;font-size:11.5px;font-weight:700;color:#a3161f;margin-top:10px;line-height:1.55;}
+
+  /* 개강일 — 얇은 공지 띠 (권고안) */
+  .round-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-left:4px solid var(--main);border-radius:6px;background:var(--panel);padding:10px 15px;margin-bottom:16px;}
+  .round-strip .rs-term{font-size:11.5px;font-weight:800;color:var(--main);}
+  .round-strip .rs-main{font-size:13px;font-weight:800;}
+  .round-strip .rs-hot{font-size:10.5px;font-weight:800;color:var(--red);border:1px solid var(--red);border-radius:3px;padding:1px 6px;}
+  .round-strip .rs-next{font-size:11.5px;color:var(--gray);margin-left:auto;}
+  .round-strip .rs-next b{color:var(--ink);font-weight:700;}
+
+  /* 개강일 — 카드 내 드롭다운 (권고안) */
+  .round-pick{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);}
+  .round-pick label{display:block;font-size:11px;font-weight:800;color:var(--gray);margin-bottom:5px;}
+  .round-pick select{width:100%;border:1.5px solid var(--line-dark);border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ink);padding:9px 10px;background:#fff;cursor:pointer;}
+  .round-pick .rp-dates{font-size:11px;color:var(--gray);margin-top:6px;line-height:1.55;}
+  .round-pick .rp-dates b{color:var(--main);font-weight:800;}
+
+  /* ══ 요건 게이지 ══ */
+  .req{border:1.5px solid var(--main);border-radius:10px;padding:15px 17px;margin-bottom:18px;}
+  .req-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:12px;}
+  .req-head b{font-size:13.5px;font-weight:800;}
+  .req-head span{font-size:11.5px;color:var(--gray);}
+  .req-head .tot{margin-left:auto;font-size:12px;font-weight:800;color:var(--main);}
+  .gauge{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+  .g-item .g-lab{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:5px;}
+  .g-item .g-lab i{font-style:normal;font-weight:700;}
+  .g-item .g-lab b{font-weight:800;color:var(--gray-light);font-size:12.5px;}
+  .g-item.fill .g-lab b{color:var(--ok);}
+  .g-bar{height:8px;border-radius:5px;background:#eef0f3;overflow:hidden;}
+  .g-bar i{display:block;height:100%;background:var(--main);border-radius:5px;transition:width .25s;}
+  .g-item.fill .g-bar i{background:var(--ok);}
+  .g-item .g-sub{font-size:10.5px;color:var(--gray-light);margin-top:4px;}
+
+  /* ══ 공통 혜택 스트립 (카드 밖) ══ */
+  .perks{display:flex;gap:0;border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-bottom:16px;flex-wrap:wrap;}
+  .perks div{flex:1;min-width:150px;font-size:11.5px;color:var(--gray);padding:10px 14px;border-left:1px solid var(--line);}
+  .perks div:first-child{border-left:none;}
+  .perks div b{color:var(--ink);font-weight:700;}
+
+  /* ══ 개선 카드 (A·B 공통) ══ */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .pcard{border:1.5px solid var(--line);border-radius:10px;padding:17px 18px;display:flex;flex-direction:column;background:#fff;}
+  .pcard.hero{grid-column:1/-1;border-color:var(--main);border-width:2px;background:#fbfdff;}
+  .pcard .compo{font-size:11.5px;font-weight:700;color:var(--gray);}
+  .pcard h3{font-size:18px;font-weight:800;letter-spacing:-.4px;margin:2px 0 8px;}
+  .pcard.hero h3{font-size:22px;}
+  .pcard .who{display:inline-block;align-self:flex-start;background:var(--soft);color:var(--main);font-size:11px;font-weight:700;border-radius:12px;padding:3px 10px;margin-bottom:11px;}
+  .pcard .price{margin-top:auto;padding-top:11px;border-top:1px dashed var(--line);}
+  .pcard .price s{font-size:12px;color:var(--gray-light);}
+  .pcard .price b{display:block;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.6px;}
+  .pcard .price .per{font-size:11.5px;color:var(--gray);margin-top:2px;}
+  .pcard .price2{display:flex;gap:0;margin-top:9px;border:1px solid var(--line);border-radius:7px;overflow:hidden;}
+  .pcard .price2 div{flex:1;padding:8px 10px;border-left:1px solid var(--line);}
+  .pcard .price2 div:first-child{border-left:none;}
+  .pcard .price2 i{font-style:normal;display:block;font-size:10.5px;color:var(--gray-light);font-weight:700;}
+  .pcard .price2 b{font-size:15px;font-weight:800;}
+  .pcard .price2 s{font-size:10.5px;color:var(--gray-light);display:block;}
+  .pcard .ctas{display:flex;gap:7px;margin-top:12px;}
+  .pcard .ctas button{flex:1;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:800;padding:11px 6px;cursor:pointer;}
+  .btn-ask{background:var(--main);border:none;color:#fff;}
+  .btn-buy{background:#fff;border:1.5px solid var(--ink);color:var(--ink);}
+  .mini-g{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+  .mini-g span{font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 7px;background:#eef0f3;color:var(--gray);}
+  .mini-g span.ok{background:var(--ok-soft);color:var(--ok);}
+  .mini-g span.no{background:var(--red-soft);color:var(--red);}
+
+  /* 애드온 설명 밴드 (건강가정사 — 상품 대신 설명) */
+  .addon-band{display:flex;align-items:center;gap:14px;border:1px solid var(--mid);background:var(--soft);border-radius:9px;padding:13px 17px;margin-top:14px;flex-wrap:wrap;}
+  .addon-band .ab-t{flex:1;min-width:240px;font-size:12.5px;line-height:1.6;}
+  .addon-band .ab-t b{color:var(--main);font-weight:800;}
+  .addon-band button{background:#fff;border:1px solid var(--main);color:var(--main);border-radius:6px;font-family:inherit;font-size:12px;font-weight:800;padding:9px 15px;cursor:pointer;}
+
+  /* 트랙 분리 */
+  .tracks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+  .track{border:1.5px solid var(--line);border-radius:10px;padding:15px 17px;}
+  .track.sel{border-color:var(--main);background:#fbfdff;}
+  .track h4{font-size:14.5px;font-weight:800;margin-bottom:4px;}
+  .track .tsub{font-size:11.5px;color:var(--gray);margin-bottom:10px;}
+  .track ul{list-style:none;font-size:12px;color:var(--gray);line-height:1.75;}
+  .track ul li::before{content:"· ";color:var(--main);font-weight:800;}
+  .track .tprice{font-size:13px;font-weight:800;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);}
+  .track .tprice b{color:var(--main);font-size:16px;}
+  @media(max-width:760px){.tracks{grid-template-columns:1fr;}.cards{grid-template-columns:1fr;}}
+
+  /* ══ B안 셀렉터 ══ */
+  .sel-box{border:1.5px solid var(--main);border-radius:12px;padding:18px 20px;margin-bottom:18px;background:#fbfdff;}
+  .sel-box h3{font-size:15px;font-weight:800;margin-bottom:3px;}
+  .sel-box .sh{font-size:12px;color:var(--gray);margin-bottom:14px;}
+  .q{margin-bottom:13px;}
+  .q .qt{font-size:12.5px;font-weight:800;margin-bottom:6px;}
+  .q .qt em{font-style:normal;font-weight:600;color:var(--gray-light);font-size:11px;margin-left:5px;}
+  .q-opts{display:flex;gap:7px;}
+  .q-opts button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--gray);padding:11px 8px;cursor:pointer;line-height:1.35;}
+  .q-opts button small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:2px;}
+  .q-opts button.act{background:var(--main);border-color:var(--main);color:#fff;}
+  .q-opts button.act small{color:rgba(255,255,255,.85);}
+  .sel-warn{background:#fff8e2;border:1px solid #ecd28a;border-radius:7px;padding:10px 13px;font-size:12px;line-height:1.6;color:#7a5a12;margin-top:4px;}
+  .sel-warn b{font-weight:800;}
+  .rec-lead{display:flex;align-items:baseline;gap:8px;margin:20px 0 10px;flex-wrap:wrap;}
+  .rec-lead b{font-size:14.5px;font-weight:800;}
+  .rec-lead span{font-size:11.5px;color:var(--gray);}
+  .alts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px;}
+  .alt{border:1px solid var(--line);border-radius:9px;padding:13px 15px;}
+  .alt .compo{font-size:11px;color:var(--gray-light);font-weight:700;}
+  .alt h4{font-size:14px;font-weight:800;margin:1px 0 6px;}
+  .alt .ap{font-size:15px;font-weight:800;}
+  .alt .ap s{font-size:11px;color:var(--gray-light);font-weight:600;margin-left:5px;}
+  .alt .aw{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.5;}
+  .alt button{width:100%;margin-top:9px;border:1px solid var(--line-dark);background:#fff;border-radius:6px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--gray);padding:8px;cursor:pointer;}
+  .see-all{width:100%;border:1px dashed var(--line-dark);background:#fff;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--gray);padding:12px;cursor:pointer;margin-top:12px;}
+  /* 학기 플랜 미리보기 */
+  .plan-prev{border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-top:12px;}
+  .plan-prev .pp-t{font-size:12.5px;font-weight:800;margin-bottom:10px;}
+  .pp-track{display:flex;gap:7px;align-items:stretch;flex-wrap:wrap;}
+  .pp-step{flex:1;min-width:110px;border:1px solid var(--line);border-radius:7px;padding:9px 11px;background:var(--panel);}
+  .pp-step i{font-style:normal;display:block;font-size:10.5px;font-weight:800;color:var(--main);}
+  .pp-step b{display:block;font-size:12.5px;font-weight:800;margin-top:2px;}
+  .pp-step small{display:block;font-size:10.5px;color:var(--gray-light);margin-top:1px;}
+  .pp-step.goal{background:var(--ok-soft);border-color:#b7e2d1;}
+  .pp-step.goal i{color:var(--ok);}
+
+  /* ══ C안 구성기 ══ */
+  .cfg-grid{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start;}
+  .cfg-main{border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;}
+  .cfg-base{border:1.5px solid var(--main);border-radius:9px;padding:14px 16px;background:#fbfdff;margin-bottom:8px;}
+  .cfg-base .cb-t{font-size:11.5px;font-weight:800;color:var(--main);}
+  .cfg-base h4{font-size:16px;font-weight:800;margin:2px 0 3px;}
+  .cfg-base p{font-size:11.5px;color:var(--gray);}
+  .base-sw{display:flex;gap:7px;margin-top:10px;}
+  .base-sw button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;color:var(--gray);padding:9px 6px;cursor:pointer;line-height:1.3;}
+  .base-sw button small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);}
+  .base-sw button.act{background:var(--main);border-color:var(--main);color:#fff;}
+  .base-sw button.act small{color:rgba(255,255,255,.85);}
+  .cfg-plus{text-align:center;font-size:16px;font-weight:800;color:var(--line-dark);margin:6px 0;}
+  .addon{display:flex;align-items:flex-start;gap:11px;border:1.5px solid var(--line);border-radius:9px;padding:13px 15px;margin-bottom:8px;cursor:pointer;}
+  .addon.on{border-color:var(--main);background:#fbfdff;}
+  .addon input{width:17px;height:17px;accent-color:var(--main);margin-top:2px;flex-shrink:0;cursor:pointer;}
+  .addon .ad-b{flex:1;min-width:0;}
+  .addon .ad-b b{font-size:13.5px;font-weight:800;display:block;}
+  .addon .ad-b small{font-size:11.5px;color:var(--gray);display:block;margin-top:2px;line-height:1.5;}
+  .addon .ad-p{text-align:right;font-size:13px;font-weight:800;white-space:nowrap;}
+  .addon .ad-p s{display:block;font-size:10.5px;color:var(--gray-light);font-weight:600;}
+  .sub-pick{display:flex;gap:6px;margin-top:9px;}
+  .sub-pick button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:6px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--gray);padding:8px 4px;cursor:pointer;}
+  .sub-pick button.act{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .cfg-side{border:1.5px solid var(--ink);border-radius:12px;padding:17px 19px;position:sticky;top:12px;}
+  .cfg-side h4{font-size:13.5px;font-weight:800;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--line);}
+  .cs-row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:6px 0;}
+  .cs-row .k{color:var(--gray);}
+  .cs-row .v{font-weight:700;text-align:right;}
+  .cs-row.dim .k,.cs-row.dim .v{color:var(--gray-light);}
+  .cs-tot{border-top:2px solid var(--ink);margin-top:9px;padding-top:11px;}
+  .cs-tot .l{font-size:11.5px;color:var(--gray-light);text-align:right;}
+  .cs-tot .l s{color:var(--gray-light);}
+  .cs-tot .big{font-size:27px;font-weight:800;text-align:right;letter-spacing:-.8px;color:var(--main);}
+  .cs-tot .per{font-size:11.5px;color:var(--gray);text-align:right;margin-top:1px;}
+  .cs-state{border-radius:7px;padding:10px 12px;font-size:12px;font-weight:700;line-height:1.55;margin-top:12px;}
+  .cs-state.ok{background:var(--ok-soft);color:var(--ok);}
+  .cs-state.no{background:var(--red-soft);color:var(--red);}
+  .cs-match{font-size:11px;color:var(--gray-light);margin-top:8px;line-height:1.55;}
+  .cfg-side .ctas{display:flex;flex-direction:column;gap:7px;margin-top:13px;}
+  .cfg-side .ctas button{border-radius:6px;font-family:inherit;font-size:13px;font-weight:800;padding:12px;cursor:pointer;}
+  @media(max-width:900px){.cfg-grid{grid-template-columns:1fr;}.cfg-side{position:static;}}
+
+  /* 단과 비교 */
+  .single-box{border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-top:16px;background:var(--panel);}
+  .single-box b{font-size:12.5px;font-weight:800;}
+  .single-box p{font-size:11.5px;color:var(--gray);margin-top:5px;line-height:1.6;}
+  .single-box table{width:100%;border-collapse:collapse;font-size:12px;margin-top:9px;background:#fff;}
+  .single-box th,.single-box td{border:1px solid var(--line);padding:7px 9px;text-align:center;}
+  .single-box th{background:#fff;font-size:11px;color:var(--gray);font-weight:700;}
+  .single-box td.win{background:var(--ok-soft);color:var(--ok);font-weight:800;}
+
+  .foot-note{font-size:11px;color:var(--gray-light);line-height:1.75;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);}
+  .foot-note b{color:var(--gray);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 시안 전환 (시연 전용) -->
+  <div class="lay-switch">
+    <span>패키지 화면 시안</span>
+    <button id="layCur" onclick="applyLayout('cur')">현행</button>
+    <button id="layA" onclick="applyLayout('a')">A. 표기 정리</button>
+    <button id="layB" onclick="applyLayout('b')">B. 조건 선택형</button>
+    <button id="layC" onclick="applyLayout('c')">C. 모듈 구성형</button>
+    <em>현행과 비교하세요</em>
+    <span class="dev">
+      <button id="devPc" onclick="setDevice('pc')">PC</button>
+      <button id="devMo" onclick="setDevice('mo')">모바일</button>
+    </span>
+  </div>
+
+  <!-- 개강일 배치 비교 (시연 전용) -->
+  <div class="sub-switch">
+    <span>개강일 배치</span>
+    <button id="rmTop" onclick="setRoundMode('top')">상단 선택기</button>
+    <button id="rmCard" onclick="setRoundMode('card')">카드 내 드롭다운<span class="rec">권고</span></button>
+    <em id="rmHint"></em>
+  </div>
+
+  <!-- 기획설명 -->
+  <div class="lay-note">
+    <div class="ln-head">
+      <span class="ln-tag">기획설명</span>
+      <b id="lnTitle"></b>
+      <span class="ln-hyp" id="lnHyp"></span>
+      <button class="ln-tog" onclick="toggleNote()">접기</button>
+    </div>
+    <div id="lnWrap">
+      <div class="ln-sec shade">
+        <h4>네 화면 공통 전제</h4>
+        <ul id="lnCommon"></ul>
+      </div>
+      <div class="ln-sec">
+        <h4 id="lnH1"></h4>
+        <ul id="lnList"></ul>
+      </div>
+      <div class="ln-foot" id="lnFoot"></div>
+    </div>
+  </div>
+
+  <div id="stage">
+
+    <!-- ══════════ 현행 재현 ══════════ -->
+    <div id="shellCur">
+      <div class="sec-head">
+        <span class="kicker">현행 재현</span>
+        <h2>배움 하나로 패키지</h2>
+        <p>커리큘럼에 따라 세팅된 과목을 간편하게 결제!</p>
+      </div>
+      <div class="cur-count" id="curCount"></div>
+      <div id="curList"></div>
+      <div class="single-box">
+        <b>단과할인 이벤트</b>
+        <p>듣고싶은 과목만 골라서 많이 신청할수록 더 많이 할인! — 1과목 70,000원 / 3과목 이상 과목당 60,000원 / 5과목 이상 과목당 50,000원</p>
+        <p style="color:var(--red);font-weight:700;">※ 현행에서는 이 블록이 패키지 아래에 아무 연결 없이 놓여 있어, 패키지와 단과 중 무엇이 유리한지 사용자가 직접 계산해야 함</p>
+      </div>
+    </div>
+
+    <!-- ══════════ A안 ══════════ -->
+    <div id="shellA">
+      <div class="sec-head">
+        <span class="kicker">A안 · 표기 정리</span>
+        <h2>사회복지사 2급 패키지</h2>
+        <p>상품은 그대로, 카드 표현만 정리 — 최대 77% 할인</p>
+      </div>
+      <div id="aRound"></div>
+      <div id="aReq"></div>
+      <div id="aPerks"></div>
+      <div class="cards" id="aCards"></div>
+      <div class="addon-band">
+        <div class="ab-t"><b>2과목만 더 들으면 자격증이 하나 더</b> — 이론 16과목에 가족상담및가족치료·가족복지론 2과목을 얹으면 <b>건강가정사</b>까지 함께 취득할 수 있어요. (+48,000원)</div>
+        <button onclick="alert('건강가정사 안내 (시연)')">건강가정사 안내 ›</button>
+      </div>
+      <div id="aSingle"></div>
+    </div>
+
+    <!-- ══════════ B안 ══════════ -->
+    <div id="shellB">
+      <div class="sec-head">
+        <span class="kicker">B안 · 조건 선택형</span>
+        <h2>나에게 맞는 패키지 찾기</h2>
+        <p>3가지만 고르면 딱 맞는 패키지를 알려드려요</p>
+      </div>
+      <div id="bRound"></div>
+      <div class="sel-box">
+        <h3>3가지만 알려주세요</h3>
+        <div class="sh">최종학력·목표·실습 여부에 따라 들어야 할 과목 수가 달라집니다.</div>
+        <div class="q">
+          <div class="qt">① 최종학력이 어떻게 되세요?</div>
+          <div class="q-opts" id="qEdu"></div>
+        </div>
+        <div class="q">
+          <div class="qt">② 무엇을 목표로 하세요?</div>
+          <div class="q-opts" id="qGoal"></div>
+        </div>
+        <div class="q">
+          <div class="qt">③ 현장실습도 배움에서 들으실 건가요?<em>실습처 권역에 따라 금액이 달라요</em></div>
+          <div class="q-opts" id="qPrac"></div>
+        </div>
+        <div id="bWarn"></div>
+      </div>
+      <div id="bResult"></div>
+      <div class="tracks">
+        <div class="track sel">
+          <h4>상담받고 시작하기</h4>
+          <div class="tsub">1:1 담당자가 이수 내역을 확인하고 맞춤 설계</div>
+          <ul>
+            <li>기존 이수 과목·보유 학점 반영</li>
+            <li>최단기 커리큘럼 안내</li>
+            <li>상담 시 추가할인 적용</li>
+          </ul>
+          <div class="tprice">패키지가 → <b>추천 결과 참고</b></div>
+        </div>
+        <div class="track">
+          <h4>혼자 골라서 더 싸게</h4>
+          <div class="tsub">들을 과목을 이미 알고 있다면 단과로 직접 선택</div>
+          <ul>
+            <li>과목당 최저 50,000원 (5과목 이상)</li>
+            <li>학습설계 상담은 제공되지 않음</li>
+            <li>학기·연간 이수 제한 학점 직접 확인 필요</li>
+          </ul>
+          <div class="tprice">5과목 기준 → <b>250,000원</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ C안 ══════════ -->
+    <div id="shellC">
+      <div class="sec-head">
+        <span class="kicker">C안 · 모듈 구성형</span>
+        <h2>내 패키지 만들기</h2>
+        <p>기본 이론에 필요한 것만 얹으면 금액과 이수 계획이 바로 계산돼요</p>
+      </div>
+      <div id="cRound"></div>
+      <div class="cfg-grid">
+        <div class="cfg-main">
+          <div class="cfg-base">
+            <div class="cb-t">STEP 1 · 기본 구성</div>
+            <h4 id="cBaseName"></h4>
+            <p id="cBaseDesc"></p>
+            <div class="base-sw">
+              <button id="cB16" onclick="setBase(16)">이론 16과목<small>자격증 이론 전 과목</small></button>
+              <button id="cB8" onclick="setBase(8)">이론 8과목<small>한 학기만 먼저</small></button>
+            </div>
+          </div>
+          <div class="cfg-plus">＋</div>
+          <div id="cAddons"></div>
+          <div id="cReq" style="margin-top:16px;"></div>
+        </div>
+        <div class="cfg-side">
+          <h4>내 구성</h4>
+          <div id="cLines"></div>
+          <div class="cs-tot">
+            <div class="l" id="cList"></div>
+            <div class="big" id="cSale"></div>
+            <div class="per" id="cPer"></div>
+          </div>
+          <div id="cState"></div>
+          <div class="cs-match" id="cMatch"></div>
+          <div id="cPick"></div>
+          <div class="ctas">
+            <button class="btn-ask" onclick="alert('상담 신청 (시연)')">상담받고 추가할인</button>
+            <button class="btn-buy" onclick="alert('바로 신청 (시연)')">이 구성으로 바로 신청</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-note" id="footNote"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   실데이터 — 2026-08-13 career.baeoom.com/landing/socialwork.asp 캡처
+   ══════════════════════════════════════════════════════════ */
+
+/* 현행 패키지 6종 (화면 표기 그대로) */
+const CUR_PKGS = [
+  {name:"이론 16과목 패키지",            off:76, per:"과목 당 36,400원",      list:1120000, sale:582400},
+  {name:"이론 20과목 전문학사 패키지",    off:77, per:"과목 평균 33,920원",    list:1280000, sale:678400},
+  {name:"이론 18과목 건강가정사 패키지",  off:77, per:"과목 평균 35,022원",    list:1230000, sale:630400},
+  {name:"이론+실습 17과목 패키지(수도권반)", off:76, per:"이론 과목 당 36,400원", list:1420000, sale:882400},
+  {name:"이론+실습 17과목 패키지(전국반)",   off:76, per:"이론 과목 당 36,400원", list:1520000, sale:982400},
+  {name:"이론 8과목 패키지",             off:75, per:"과목 당 38,000원",      list:560000,  sale:304000},
+];
+
+/* 개강일 3종. 개강일만 실데이터 — 신청·학습 기간과 이후 일정은 예시 */
+const ROUNDS = [
+  {id:"r1", term:"2026년 2학기", d:"8월 14일",  apply:"~ 8월 13일",  study:"8/14 ~ 11/26",  credit:"2027년 1월", cert:"2027년 2월"},
+  {id:"r2", term:"2026년 2학기", d:"9월 4일",   apply:"~ 9월 3일",   study:"9/4 ~ 12/17",   credit:"2027년 1월", cert:"2027년 2월"},
+  {id:"r3", term:"2026년 2학기", d:"9월 17일",  apply:"~ 9월 16일",  study:"9/17 ~ 12/30",  credit:"2027년 4월", cert:"2027년 5월"},
+];
+
+/* 조합 단가 — 할인가 기준으로 현행 6종 중 5종이 정확히 재현됨
+   582,400(이론16) + 24,000×추가과목 + 실습(수도권 300,000 / 전국 400,000)   */
+const P = {
+  base16:{list:1120000, sale:582400, n:16},
+  base8: {list:560000,  sale:304000, n:8},
+  extraSale:24000,          // 추가 과목 할인가 (교양·건강가정사 공통)
+  genList:40000,            // 전문학사 교양 과목 정가
+  hgjList:55000,            // 건강가정사 과목 정가
+  prac:{metro:{list:300000, sale:300000, label:"수도권"},
+        nation:{list:400000, sale:400000, label:"전국"}},
+};
+const SINGLE_TIER = [{n:1, p:70000},{n:3, p:60000},{n:5, p:50000}];
+
+/* 요건 — 사회복지사 2급 17과목 51학점 (필수 10 = 이론 9 + 실습 1, 선택 7) */
+const REQ = [
+  {k:"req",  label:"필수 이론",   need:9, unit:"과목"},
+  {k:"elec", label:"선택 이론",   need:7, unit:"과목"},
+  {k:"prac", label:"현장실습",    need:1, unit:"과목", sub:"세미나 30시간 + 현장 160시간"},
+];
+
+/* 개선안 카드 4종 (A안) — 현행 6종 중 실습 2종은 한 카드 두 가격, 건강가정사는 설명 밴드로 */
+const CARDS = [
+  {id:"full",  compo:"이론 16과목 + 실습 1과목", name:"자격증 한 번에 패키지",
+   who:"전문대졸 이상 · 실습까지 배움에서",
+   fill:{req:9, elec:7, prac:1}, dual:true, hero:true},
+  {id:"th16",  compo:"이론 16과목", name:"이론 완성 패키지",
+   who:"실습은 다른 기관에서 들을 분",
+   fill:{req:9, elec:7, prac:0}, list:P.base16.list, sale:P.base16.sale, n:16},
+  {id:"deg",   compo:"이론 16과목 + 교양 4과목", name:"전문학사 함께 패키지",
+   who:"고졸 · 학위까지 함께 필요한 분",
+   fill:{req:9, elec:7, prac:0}, list:1280000, sale:678400, n:20},
+  {id:"start", compo:"이론 8과목", name:"한 학기 스타트 패키지",
+   who:"부담 없이 한 학기만 먼저",
+   fill:{req:6, elec:2, prac:0}, list:P.base8.list, sale:P.base8.sale, n:8},
+];
+
+const PERKS = ["<b>전과목 모바일 수강</b> 안드로이드·iOS 지원","<b>학사일정 SMS</b> 안내","<b>과목 이수만으로</b> 민간자격증 취득 가능","<b>교안·가이드북</b> 무료 제공"];
+
+const won = n => n.toLocaleString("ko-KR") + "원";
+
+/* ══════════ 상태 ══════════ */
+let layout = "cur";
+let device = "pc";
+let round  = "r1";                 // 상단 선택기 모드에서 쓰는 전역 개강일
+let roundMode = "card";            // top(상단 선택기) | card(카드 내 드롭다운 — 권고)
+let cardRound = {};                // 카드별 개강일 — 카드 드롭다운 모드에서 사용
+/* B안 */
+let bEdu = null, bGoal = null, bPrac = null, bAll = false;
+/* C안 */
+let cBase = 16, cPrac = null, cGen = false, cHgj = false;
+
+/* ══════════ 기획설명 ══════════ */
+const NOTE_COMMON = [
+  "현행 = <b>패키지 6개 × 개강일 3개 = CTA 18개</b>. 선택 축 3개(목표 / 실습 포함·권역 / 분량)가 1차원 목록으로 평면화되어 사용자가 자기 좌표를 찾지 못함",
+  "업계 5개사 중 개강일을 <b>상품 위 선택기로 올린 곳은 없음</b> — 메가원격은 아예 없음(마감일만), 중앙사이버는 얇은 스티키 바, 휴사평은 카운트다운 바(패키지엔 없고 단과 목록에만), 여기스터디는 선택기가 아니라 '최단기 취득' 설득 장치",
+  "할인가 기준으로 현행 6종 중 5종이 <b>582,400 + 24,000×추가과목 + 실습(300,000/400,000)</b> 으로 정확히 재현 — 카탈로그는 이미 조합형",
+  "A·B안은 <b>상품 데이터를 바꾸지 않음</b>. 화면 표현과 탐색 경로만 변경 → 결제·정산 영향 없음",
+];
+const NOTE_ROUND = {
+  top:"<b>개강일 = 상단 선택기</b> (비교용) — 중복은 없앴지만 <b>위계를 뒤집었음</b>. 개강반 3개가 상품·가격·정원이 전부 같아 아무것도 거르지 않는 <b>가짜 필터</b>가 최상단을 차지함. 관심 없는 질문에 먼저 답하게 만듦",
+  card:"<b>개강일 = 카드 내 드롭다운</b> (권고) — 현행 위계 유지(패키지가 메인, 개강일이 하위). <b>3행 반복만 제거</b>하고 상단엔 선택기 대신 얇은 공지 띠. 계열사 <b>배론이 이미 쓰는 방식</b>이라 그룹 내 정합성 명분도 있음",
+};
+const NOTES = {
+  cur:{t:"현행 — 무엇이 문제인가", hyp:"가설: 복잡함의 최대 기여 요인은 개강일 복제와 가격 4중 표기",
+    h:"현행 화면에서 관찰되는 것",
+    l:["카드마다 개강일 3행이 <b>동일하게 복제</b>되어 CTA가 6개→18개로 3배가 됨. 개강일은 '무엇을 사나'가 아니라 '언제 시작하나'이므로 상품 축과 직교함",
+       "가격이 <b>배지(최대 76%) + 과목당 단가 + 정가 취소선 + 최대할인가</b> 4중 표기인데, 정작 <b>'최대할인'을 받는 조건이 화면에 없음</b>",
+       "할인율이 75~77%로 6장이 거의 같아 <b>배지가 변별 정보로 기능하지 않음</b> — 정보가 아니라 노이즈",
+       "분모가 제각각 — 어떤 카드는 '과목 당', 어떤 카드는 '과목 평균', 실습 포함 카드는 '이론 과목 당'",
+       "상품명이 공급자 언어('이론 20과목 전문학사'). 자격 요건 <b>17과목 51학점</b>은 페이지 한참 아래 별도 섹션에 있어 '16과목만 사면 자격증이 안 된다'가 연결되지 않음",
+       "16 vs 17 vs 18 vs 20의 <b>차이가 무엇인지 카드에서 알 수 없음</b>. 수도권반·전국반은 이름만 다르고 10만원 차이인데 설명이 없음"],
+    f:"이 화면의 CTA <b>18개</b>는 실제로는 <b>선택지 4~6개 × 개강일 1회 선택</b>이면 충분함 → A안"},
+  a:{t:"A. 표기 정리 — 상품은 그대로, 카드 표현만", hyp:"가설: 개강일 분리 + 가격 슬롯 압축만으로 체감 복잡도 절반",
+    h:"이 시안이 하는 것",
+    l:["개강일을 <b>섹션 상단 독립 바 1개</b>로 분리 → CTA 18개 → 8개(카드 4장 × 2). 휴사평처럼 <b>신청기간·학습기간·학점인정·자격증 수령</b> 4개 시점을 함께 표기해 '언제 자격증이 나오나'를 선택 기준으로 제공",
+       "<b>카드 6 → 4장</b>. 실습 수도권/전국은 중앙사이버처럼 <b>한 카드 안 두 가격</b>으로 병합, 건강가정사는 카드 대신 <b>설명 밴드</b>로 이동 (상품 데이터는 그대로 6개 유지)",
+       "카드 구조를 메가원격형으로 통일 — <b>구성 라벨(작게) / 상품명(크게) / 정가 취소선 → 판매가 / 과목당 환산</b>. 할인율 배지는 카드에서 제거하고 헤더에 1회만",
+       "CTA를 <b>상담받고 추가할인 / 바로 신청</b>으로 분리 → '최대할인' 조건 문제를 문구가 아니라 <b>동선</b>으로 해결",
+       "카드마다 <b>요건 충족 배지</b>(필수 9/9 · 선택 7/7 · 실습 0/1)를 붙여 카드 간 diff를 즉시 보이게 함 — 현행의 '비교 불가' 해소",
+       "공통 혜택은 <b>카드 밖 공용 스트립</b>으로. 카드 안에는 차이만 남김 (중앙사이버가 실패한 지점)",
+       "자격 요건을 문장 대신 <b>진행률 게이지</b>로 섹션 상단에 배치 (중앙사이버형)"],
+    f:"개발 없이 <b>퍼블리싱만으로 대부분 구현 가능</b>. 다만 선택 축이 뒤섞인 근본 문제는 남음 → B안"},
+  b:{t:"B. 조건 선택형 — 좁혀준 뒤 보여주기", hyp:"가설: 3문항 셀렉터가 6개 나열보다 빠르고 오구매가 적다",
+    h:"이 시안이 하는 것",
+    l:["A안 위에 <b>3문항 셀렉터</b>(최종학력 · 목표 · 실습 여부)를 얹고, 결과로 <b>추천 1개를 크게 + 대안 2개를 작게</b>. 나머지는 '전체 패키지 보기'로 접음",
+       "고졸 선택 시 <b>전문학사 병행이 필요하다는 안내를 즉시</b> 노출 — 현행에서 가장 큰 오구매 원인으로 의심되는 지점",
+       "추천 하단에 <b>학기별 이수 플랜 미리보기</b>를 붙여 '왜 이 패키지인지'를 설명 (여기스터디 패턴)",
+       "<b>패키지 ↔ 단과 트랙 분리</b>(휴사평 모델) — '상담받고 맞춤 설계' vs '혼자 골라서 더 싸게'. 현행에서 단과할인 이벤트가 패키지 아래 무맥락으로 놓인 문제를 구조로 해결",
+       "선례: 메가원격 <b>메가 다이렉트 학습설계</b>가 같은 구조를 7단계 위저드로 이미 운영 중(목표선택 → 최종학력 → 학점이수내역 → 결과 → 추천상품). B안은 랜딩에 들어가는 경량판"],
+    f:"상품 6개를 그대로 두고 <b>탐색 경로만 변경</b> — 시스템 영향 없음. 5개사 중 3개사가 이미 셀프 진단 도구 운영 중이고 <b>배움만 없음</b>"},
+  c:{t:"C. 모듈 구성형 — 조합을 그대로 노출", hyp:"가설: 6개 패키지는 실은 베이스 1개 + 애드온 3개다",
+    h:"이 시안이 하는 것",
+    l:["<b>기본(이론 16 또는 8과목) + 애드온(현장실습 권역 / 전문학사 교양 4과목 / 건강가정사 2과목)</b> 구성기로 전환. 카드가 사라지고 화면 1개가 됨",
+       "가격 근거: 할인가 기준 <b>582,400 + 24,000×추가과목 + 실습(300,000/400,000)</b> 으로 현행 6종 중 5종이 <b>정확히 재현됨</b> (8과목만 별도 티어). 즉 <b>이미 조합형 가격 체계</b>",
+       "체크할 때마다 <b>과목 수·정가·판매가·요건 게이지</b>가 실시간 갱신. 조합 결과가 기존 패키지와 일치하면 그 상품명을 함께 표기해 정산·마케팅과의 접점을 유지",
+       "전제 조건: <b>과목 단위 태깅</b>이 필요 (휴사평의 <code>건</code>/<code>교</code>/민간자격증 배지처럼 각 과목이 어느 목표에 쓰이는지). 이 태깅은 A·B안의 과목 목록 노출에도 쓰이므로 선행 투자로 정당화 가능",
+       "<code>learning-plan/builder.html</code>(학습설계 툴)과 <b>도메인 모델을 공유</b> 가능 — 과목/영역/학점 구조가 이미 동일"],
+    f:"가장 깔끔하지만 <b>상품 등록 체계·결제·정산·마케팅 소재까지 영향</b>. 중장기안으로 제시"},
+};
+
+function renderNote(){
+  const n = NOTES[layout];
+  document.getElementById("lnTitle").textContent = n.t;
+  document.getElementById("lnHyp").textContent = n.hyp;
+  document.getElementById("lnH1").textContent = n.h;
+  const common = layout==="cur" ? NOTE_COMMON : NOTE_COMMON.concat([NOTE_ROUND[roundMode]]);
+  document.getElementById("lnCommon").innerHTML = common.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("lnList").innerHTML = n.l.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("lnFoot").innerHTML = n.f;
+}
+let noteOpen = true;
+function toggleNote(){
+  noteOpen = !noteOpen;
+  document.getElementById("lnWrap").style.display = noteOpen ? "block" : "none";
+  document.querySelector(".ln-tog").textContent = noteOpen ? "접기" : "펼치기";
+}
+
+/* ══════════ 전환 ══════════ */
+function applyLayout(k){
+  layout = k;
+  ["cur","a","b","c"].forEach(x=>{
+    document.getElementById("lay"+(x==="cur"?"Cur":x.toUpperCase())).classList.toggle("act", x===k);
+    document.getElementById("shell"+(x==="cur"?"Cur":x.toUpperCase())).style.display = (x===k?"block":"none");
+  });
+  /* 현행은 개강일이 카드 안에 하드코딩된 3행이므로 배치 토글 대상이 아님 */
+  document.querySelector(".sub-switch").style.display = (k==="cur") ? "none" : "flex";
+  renderNote(); renderAll();
+}
+function setDevice(d){
+  device = d;
+  document.getElementById("devPc").classList.toggle("act", d==="pc");
+  document.getElementById("devMo").classList.toggle("act", d==="mo");
+  document.getElementById("stage").classList.toggle("mo", d==="mo");
+}
+function pickRound(id){ round = id; renderAll(); }
+function setRoundMode(m){
+  roundMode = m;
+  document.getElementById("rmTop").classList.toggle("act", m==="top");
+  document.getElementById("rmCard").classList.toggle("act", m==="card");
+  document.getElementById("rmHint").textContent = m==="top"
+    ? "개강일을 상품 위 선택기로 — 아래 상품이 바뀌지 않는데도 최상위 자리를 차지함"
+    : "위계는 현행 유지(패키지가 메인) · 3행 반복만 제거 — 배론이 쓰는 방식";
+  renderNote(); renderAll();
+}
+/* 카드별 개강일 */
+function getCardRound(key){ return cardRound[key] || "r1"; }
+function setCardRound(key, id){ cardRound[key] = id; renderAll(); }
+/* 현재 유효 개강일 — 모드에 따라 전역 또는 카드별 */
+function effRound(key){ return roundMode==="top" ? round : getCardRound(key); }
+
+/* ══════════ 부품 ══════════ */
+
+/* [모드 top] 상단 독립 선택기 — 비교용 */
+function roundBarTop(){
+  const r = ROUNDS.find(x=>x.id===round);
+  return `<div class="round-bar">
+    <div class="rb-top"><b>개강일 선택</b><span>먼저 시작할 개강반을 고르면 아래 모든 상품에 적용됩니다</span></div>
+    <div class="rounds">${ROUNDS.map(x=>`
+      <button class="round ${x.id===round?"act":""}" onclick="pickRound('${x.id}')">
+        <div class="r1">${x.term}</div><div class="r2">${x.d} 개강</div><div class="r3">신청 ${x.apply}</div>
+      </button>`).join("")}</div>
+    <div class="rb-detail">
+      <div><i>신청기간</i><b>${r.apply}</b></div>
+      <div><i>학습기간</i><b>${r.study}</b></div>
+      <div><i>학점인정신청</i><b>${r.credit}</b></div>
+      <div><i>자격증 수령</i><b>${r.cert}</b></div>
+    </div>
+    <div class="rb-hint">※ 개강일은 실데이터, 이후 일정은 예시 — 실제 학사일정 연동 필요</div>
+    <div class="rb-fake">가짜 필터 — 개강반 3개가 상품·가격·정원이 전부 동일해서 무엇을 골라도 아래가 바뀌지 않습니다.
+      바뀌지 않는 선택기가 화면 최상단을 차지하고, 사용자는 관심 없는 질문에 먼저 답해야 합니다.</div>
+  </div>`;
+}
+
+/* [모드 card] 얇은 공지 띠 — 선택기가 아니라 공지 */
+function roundStrip(){
+  const first = ROUNDS[0], rest = ROUNDS.slice(1);
+  return `<div class="round-strip">
+    <span class="rs-term">${first.term}</span>
+    <span class="rs-main">모집 중 · 가장 빠른 개강 ${first.d}</span>
+    <span class="rs-hot">신청 ${first.apply}</span>
+    <span class="rs-next">다음 개강 <b>${rest.map(x=>x.d).join(" · ")}</b></span>
+  </div>`;
+}
+
+/* [모드 card] 카드 안 개강일 드롭다운 */
+function roundPick(key){
+  const cur = getCardRound(key);
+  const r = ROUNDS.find(x=>x.id===cur);
+  return `<div class="round-pick">
+    <label>개강일</label>
+    <select onchange="setCardRound('${key}', this.value)">
+      ${ROUNDS.map(x=>`<option value="${x.id}" ${x.id===cur?"selected":""}>[${x.term}] ${x.d} 개강 · 신청 ${x.apply}</option>`).join("")}
+    </select>
+    <div class="rp-dates">학습 ${r.study} · 학점인정 ${r.credit} · <b>자격증 수령 ${r.cert}</b></div>
+  </div>`;
+}
+
+/* 시안 상단에 놓일 개강일 블록 */
+function roundHeader(){ return roundMode==="top" ? roundBarTop() : roundStrip(); }
+/* 카드 안에 놓일 개강일 블록 — top 모드에서는 없음 */
+function roundInCard(key){ return roundMode==="top" ? "" : roundPick(key); }
+
+function reqGauge(fill, title){
+  const f = fill || {req:0, elec:0, prac:0};
+  const done = REQ.every(r => f[r.k] >= r.need);
+  return `<div class="req">
+    <div class="req-head"><b>${title||"사회복지사 2급 자격 요건"}</b><span>17과목 51학점 (필수 10 · 선택 7)</span>
+      <span class="tot">${done?"요건 충족 ✓":"채워야 할 항목이 남았어요"}</span></div>
+    <div class="gauge">${REQ.map(r=>{
+      const v = Math.min(f[r.k]||0, r.need), pct = Math.round(v/r.need*100);
+      return `<div class="g-item ${v>=r.need?"fill":""}">
+        <div class="g-lab"><i>${r.label}</i><b>${v} / ${r.need}${r.unit}</b></div>
+        <div class="g-bar"><i style="width:${pct}%"></i></div>
+        ${r.sub?`<div class="g-sub">${r.sub}</div>`:""}
+      </div>`;}).join("")}</div>
+  </div>`;
+}
+
+function perksStrip(){ return `<div class="perks">${PERKS.map(p=>`<div>${p}</div>`).join("")}</div>`; }
+
+function miniGauge(f){
+  return `<div class="mini-g">
+    <span class="${f.req>=9?"ok":""}">필수 ${f.req}/9</span>
+    <span class="${f.elec>=7?"ok":""}">선택 ${f.elec}/7</span>
+    <span class="${f.prac>=1?"ok":"no"}">실습 ${f.prac}/1</span>
+  </div>`;
+}
+
+function singleCompare(){
+  const rows = SINGLE_TIER.map(t=>`<tr><td>${t.n}과목${t.n>1?" 이상":""}</td><td>${won(t.p)}</td><td>${won(t.p*8)}</td>
+    <td class="${P.base8.sale < t.p*8 ? "win":""}">${P.base8.sale < t.p*8 ? "패키지가 저렴" : "단과가 저렴"}</td></tr>`).join("");
+  return `<div class="single-box">
+    <b>단과로 들으면? — 8과목 기준 비교</b>
+    <p>패키지 <b>이론 8과목 ${won(P.base8.sale)}</b> (과목당 38,000원) vs 단과 8과목</p>
+    <table><thead><tr><th>단과 구간</th><th>과목당</th><th>8과목 합계</th><th>비교</th></tr></thead><tbody>${rows}</tbody></table>
+    <p>※ 현행에서는 이 비교가 화면에 없어 사용자가 직접 계산해야 했음</p>
+  </div>`;
+}
+
+/* ══════════ 현행 ══════════ */
+function renderCur(){
+  document.getElementById("curCount").innerHTML =
+    `이 화면의 CTA <b>${CUR_PKGS.length} × ${ROUNDS.length} = ${CUR_PKGS.length*ROUNDS.length}개</b> · 가격 표기 슬롯 카드당 <b>4개</b> · 선택 가이드 <b>없음</b>`;
+  document.getElementById("curList").innerHTML = CUR_PKGS.map(p=>`
+    <div class="cur-pkg">
+      <div class="cur-badge"><i>최대</i><b>${p.off}<s>%</s></b><i>할인</i></div>
+      <h3>${p.name}</h3>
+      <div class="cur-price">
+        <span class="per">최대할인 적용 시 ${p.per}</span>
+        <span class="right"><s>할인 전 ${won(p.list)}</s> / 최대할인 적용 시 → <b>${won(p.sale)}</b></span>
+      </div>
+      ${ROUNDS.map(r=>`<div class="cur-row"><span>[${r.term}] ${r.d} 개강</span>
+        <button class="cur-cta" onclick="alert('패키지 신청 (시연)')">패키지 신청 ›</button></div>`).join("")}
+    </div>`).join("");
+}
+
+/* ══════════ A안 ══════════ */
+function renderA(){
+  document.getElementById("aRound").innerHTML = roundHeader();
+  document.getElementById("aReq").innerHTML = reqGauge({req:0,elec:0,prac:0}, "먼저 확인 — 사회복지사 2급이 되려면");
+  document.getElementById("aPerks").innerHTML = perksStrip();
+  document.getElementById("aCards").innerHTML = CARDS.map(c=>{
+    let priceHtml;
+    if(c.dual){
+      const m = P.base16.sale + P.prac.metro.sale, n = P.base16.sale + P.prac.nation.sale;
+      priceHtml = `<div class="price">
+        <div style="font-size:11.5px;color:var(--gray);font-weight:700;">실습 권역에 따라 금액이 달라요</div>
+        <div class="price2">
+          <div><i>수도권 실습</i><s>${won(P.base16.list + P.prac.metro.list)}</s><b>${won(m)}</b></div>
+          <div><i>전국 실습</i><s>${won(P.base16.list + P.prac.nation.list)}</s><b>${won(n)}</b></div>
+        </div>
+        <div class="per" style="margin-top:6px;">이론 과목당 36,400원 + 실습 ${won(P.prac.metro.sale)}~${won(P.prac.nation.sale)}</div>
+      </div>`;
+    } else {
+      priceHtml = `<div class="price"><s>${won(c.list)}</s>
+        <b>${won(c.sale)}</b>
+        <div class="per">과목당 ${won(Math.round(c.sale/c.n))} · 총 ${c.n}과목</div></div>`;
+    }
+    return `<div class="pcard ${c.hero?"hero":""}">
+      <div class="compo">${c.compo}</div>
+      <h3>${c.name}</h3>
+      <span class="who">${c.who}</span>
+      ${miniGauge(c.fill)}
+      ${priceHtml}
+      ${roundInCard(c.id)}
+      <div class="ctas">
+        <button class="btn-ask" onclick="alert('상담 신청 (시연) — 이수 내역 확인 후 추가할인 적용')">상담받고 추가할인</button>
+        <button class="btn-buy" onclick="alert('바로 신청 (시연)')">바로 신청</button>
+      </div>
+    </div>`;
+  }).join("");
+  document.getElementById("aSingle").innerHTML = singleCompare();
+}
+
+/* ══════════ B안 ══════════ */
+const B_EDU  = [{v:"hs", t:"고등학교 졸업", s:"학위 취득 병행 필요"},{v:"col", t:"전문대졸 이상", s:"과목만 이수하면 됨"}];
+const B_GOAL = [{v:"cert", t:"사회복지사만", s:"17과목 51학점"},{v:"deg", t:"전문학사도 함께", s:"교양 포함 80학점"},{v:"hgj", t:"건강가정사도 함께", s:"2과목 추가"}];
+const B_PRAC = [{v:"metro", t:"네 · 수도권", s:"+300,000원"},{v:"nation", t:"네 · 전국", s:"+400,000원"},{v:"no", t:"아니오", s:"다른 기관에서"}];
+
+function pickB(k,v){
+  if(k==="edu"){ bEdu=v; if(v==="hs" && bGoal==="cert") bGoal="deg"; }
+  if(k==="goal") bGoal=v;
+  if(k==="prac") bPrac=v;
+  renderB();
+}
+function toggleAll(){ bAll=!bAll; renderB(); }
+
+/* 조합 → 상품 산출 */
+function composePkg(goal, prac){
+  const extra = goal==="deg" ? 4 : goal==="hgj" ? 2 : 0;
+  const extraListUnit = goal==="deg" ? P.genList : P.hgjList;
+  const pr = (prac==="metro"||prac==="nation") ? P.prac[prac] : null;
+  const list = P.base16.list + extra*extraListUnit + (pr?pr.list:0);
+  const sale = P.base16.sale + extra*P.extraSale + (pr?pr.sale:0);
+  const n = 16 + extra + (pr?1:0);
+  const compo = ["이론 16과목",
+    goal==="deg"?"교양 4과목":goal==="hgj"?"건강가정사 2과목":null,
+    pr?`실습 1과목(${pr.label})`:null].filter(Boolean).join(" + ");
+  const name = goal==="deg" ? "전문학사 함께 패키지" : goal==="hgj" ? "건강가정사 함께 패키지"
+             : pr ? "자격증 한 번에 패키지" : "이론 완성 패키지";
+  const fill = {req:9, elec:7, prac: pr?1:0};
+  return {compo, name, list, sale, n, fill, prac:pr, goal};
+}
+/* 조합이 현행 판매 상품과 일치하는지 */
+function matchExisting(sale){
+  const m = CUR_PKGS.find(p=>p.sale===sale);
+  return m ? m.name : null;
+}
+
+function renderB(){
+  document.getElementById("bRound").innerHTML = roundHeader();
+  const opt = (arr,k,cur)=>arr.map(o=>`<button class="${cur===o.v?"act":""}" onclick="pickB('${k}','${o.v}')">${o.t}<small>${o.s}</small></button>`).join("");
+  document.getElementById("qEdu").innerHTML  = opt(B_EDU,"edu",bEdu);
+  document.getElementById("qGoal").innerHTML = opt(B_GOAL,"goal",bGoal);
+  document.getElementById("qPrac").innerHTML = opt(B_PRAC,"prac",bPrac);
+
+  document.getElementById("bWarn").innerHTML = (bEdu==="hs")
+    ? `<div class="sel-warn"><b>고등학교 졸업이시면 자격증 과목만으로는 취득할 수 없어요.</b> 전문대학과 동등한 학력이 필요하므로 <b>전문학사 학위(80학점)</b>를 함께 취득해야 합니다. 목표를 '전문학사도 함께'로 맞춰 안내드릴게요.</div>` : "";
+
+  const res = document.getElementById("bResult");
+  if(!bEdu || !bGoal || !bPrac){
+    res.innerHTML = `<div class="rec-lead"><b>3가지를 모두 고르면 추천 결과가 나와요</b><span>현재 ${[bEdu,bGoal,bPrac].filter(Boolean).length}/3 선택</span></div>`;
+    return;
+  }
+  const rec = composePkg(bGoal, bPrac);
+  const match = matchExisting(rec.sale);
+  /* 대안 2개 */
+  const altDefs = [];
+  if(bPrac!=="no") altDefs.push({...composePkg(bGoal,"no"), why:"실습은 다른 기관에서 들을 예정이라면"});
+  else altDefs.push({...composePkg(bGoal,"metro"), why:"실습까지 배움에서 한 번에 하려면"});
+  altDefs.push({...composePkg("cert", bPrac), why:"우선 자격증만 목표로 한다면"});
+  const alts = altDefs.filter(a=>a.sale!==rec.sale).slice(0,2);
+
+  /* 학기 플랜 */
+  const semN = rec.n<=8 ? 1 : rec.n<=16 ? 2 : 3;
+  const steps = semN===3 ? [["1학기","8과목","24학점"],["2학기","6과목","18학점"],["3학기",`${rec.n-14}과목`,`${(rec.n-14)*3}학점`]]
+              : semN===2 ? [["1학기","8과목","24학점"],["2학기",`${rec.n-8}과목`,`${(rec.n-8)*3}학점`]]
+              : [["1학기",`${rec.n}과목`,`${rec.n*3}학점`]];
+  const r = ROUNDS.find(x=>x.id===effRound("rec"));
+
+  res.innerHTML = `
+    <div class="rec-lead"><b>이 패키지를 추천드려요</b><span>선택하신 조건 기준 · 상담 시 이수 내역을 확인해 조정됩니다</span></div>
+    <div class="cards"><div class="pcard hero">
+      <div class="compo">${rec.compo}</div>
+      <h3>${rec.name}</h3>
+      <span class="who">${B_EDU.find(x=>x.v===bEdu).t} · ${B_GOAL.find(x=>x.v===bGoal).t} · 실습 ${B_PRAC.find(x=>x.v===bPrac).t}</span>
+      ${miniGauge(rec.fill)}
+      <div class="price"><s>${won(rec.list)}</s><b>${won(rec.sale)}</b>
+        <div class="per">총 ${rec.n}과목${match?` · 판매 상품: <b style="display:inline;font-size:11.5px;">${match}</b>`:""}</div></div>
+      ${roundInCard("rec")}
+      <div class="ctas">
+        <button class="btn-ask" onclick="alert('상담 신청 (시연)')">상담받고 추가할인</button>
+        <button class="btn-buy" onclick="alert('바로 신청 (시연)')">${r.d} 개강반으로 바로 신청</button>
+      </div>
+    </div></div>
+    ${!match?`<div class="sel-warn" style="margin-top:10px;">이 조합은 현재 <b>단일 상품으로 판매되지 않습니다</b> — 이론 패키지 + 실습 단과를 따로 신청하거나 상담을 통해 구성해야 합니다. <b>(C안이 해결하는 지점)</b></div>`:""}
+    ${reqGauge(rec.fill, "이 패키지로 채워지는 요건")}
+    <div class="plan-prev">
+      <div class="pp-t">${r.d} 개강반으로 시작하면 — 학기별 이수 플랜</div>
+      <div class="pp-track">
+        ${steps.map((s,i)=>`<div class="pp-step"><i>${s[0]}</i><b>${s[1]}</b><small>${s[2]}</small></div>`).join("")}
+        <div class="pp-step goal"><i>학점인정</i><b>${rec.n}과목</b><small>${r.credit}</small></div>
+        <div class="pp-step goal"><i>자격증 수령</i><b>사회복지사 2급</b><small>${r.cert}</small></div>
+      </div>
+    </div>
+    <div class="rec-lead"><b>이런 선택도 있어요</b></div>
+    <div class="alts">${alts.map(a=>`
+      <div class="alt">
+        <div class="compo">${a.compo}</div>
+        <h4>${a.name}</h4>
+        <div class="ap">${won(a.sale)} <s>${won(a.list)}</s></div>
+        <div class="aw">${a.why}</div>
+        <button onclick="alert('상세 보기 (시연)')">자세히 보기 ›</button>
+      </div>`).join("")}</div>
+    <button class="see-all" onclick="toggleAll()">${bAll?"전체 패키지 접기 ▲":`전체 패키지 ${CUR_PKGS.length}개 모두 보기 ▼`}</button>
+    ${bAll?`<div class="cards" style="margin-top:10px;">${CARDS.map(c=>`
+      <div class="pcard"><div class="compo">${c.compo}</div><h3 style="font-size:15px;">${c.name}</h3>
+      ${miniGauge(c.fill)}
+      <div class="price">${c.dual
+        ? `<b style="font-size:17px;">${won(P.base16.sale+P.prac.metro.sale)} ~ ${won(P.base16.sale+P.prac.nation.sale)}</b><div class="per">실습 권역에 따라</div>`
+        : `<s>${won(c.list)}</s><b style="font-size:19px;">${won(c.sale)}</b>`}</div></div>`).join("")}</div>`:""}
+  `;
+}
+
+/* ══════════ C안 ══════════ */
+function setBase(n){ cBase=n; if(n===8){cPrac=null;cGen=false;cHgj=false;} renderC(); }
+function togglePrac(v){ cPrac = (cPrac===v ? null : v); renderC(); }
+function toggleGen(){ cGen=!cGen; if(cGen) cHgj=false; renderC(); }
+function toggleHgj(){ cHgj=!cHgj; if(cHgj) cGen=false; renderC(); }
+
+function renderC(){
+  document.getElementById("cRound").innerHTML = roundHeader();
+  const base = cBase===16 ? P.base16 : P.base8;
+  document.getElementById("cB16").classList.toggle("act", cBase===16);
+  document.getElementById("cB8").classList.toggle("act", cBase===8);
+  document.getElementById("cBaseName").textContent = cBase===16 ? "이론 16과목" : "이론 8과목";
+  document.getElementById("cBaseDesc").textContent = cBase===16
+    ? "사회복지사 2급 이론 전 과목 (필수 9 + 선택 7)"
+    : "필수 6 + 선택 2 — 한 학기 분량만 먼저 시작합니다";
+
+  const lock = cBase===8;
+  document.getElementById("cAddons").innerHTML = `
+    <div class="addon ${cPrac?"on":""}" style="${lock?"opacity:.45;pointer-events:none;":""}">
+      <input type="checkbox" ${cPrac?"checked":""} onclick="event.preventDefault();togglePrac(cPrac?cPrac:'metro')">
+      <div class="ad-b"><b>사회복지현장실습</b>
+        <small>세미나 30시간 + 현장 160시간. <b>이 과목이 없으면 자격증이 나오지 않습니다.</b></small>
+        <div class="sub-pick">
+          <button class="${cPrac==='metro'?'act':''}" onclick="togglePrac('metro')">수도권 ${won(P.prac.metro.sale)}</button>
+          <button class="${cPrac==='nation'?'act':''}" onclick="togglePrac('nation')">전국 ${won(P.prac.nation.sale)}</button>
+        </div>
+      </div>
+      <div class="ad-p">${cPrac?won(P.prac[cPrac].sale):"—"}</div>
+    </div>
+    <div class="addon ${cGen?"on":""}" style="${lock?"opacity:.45;pointer-events:none;":""}" onclick="toggleGen()">
+      <input type="checkbox" ${cGen?"checked":""} onclick="event.stopPropagation();toggleGen()">
+      <div class="ad-b"><b>전문학사 교양 4과목</b>
+        <small>고졸 학력이면 학위 취득이 필요합니다. 교양 4과목을 더하면 전문학사 과정으로 이어집니다.</small></div>
+      <div class="ad-p"><s>${won(4*P.genList)}</s>${won(4*P.extraSale)}</div>
+    </div>
+    <div class="addon ${cHgj?"on":""}" style="${lock?"opacity:.45;pointer-events:none;":""}" onclick="toggleHgj()">
+      <input type="checkbox" ${cHgj?"checked":""} onclick="event.stopPropagation();toggleHgj()">
+      <div class="ad-b"><b>건강가정사 2과목</b>
+        <small>가족상담및가족치료 · 가족복지론. 2과목만 더 들으면 자격증이 하나 더 나옵니다.</small></div>
+      <div class="ad-p"><s>${won(2*P.hgjList)}</s>${won(2*P.extraSale)}</div>
+    </div>
+    ${lock?`<div class="rb-hint" style="margin-top:2px;">※ 8과목 기본에서는 애드온을 붙일 수 없습니다 — 다음 학기에 이어서 신청하세요</div>`:""}`;
+
+  /* 계산 */
+  const extra = cGen?4 : cHgj?2 : 0;
+  const extraListUnit = cGen?P.genList : P.hgjList;
+  const pr = cPrac ? P.prac[cPrac] : null;
+  const list = base.list + extra*extraListUnit + (pr?pr.list:0);
+  const sale = base.sale + extra*P.extraSale + (pr?pr.sale:0);
+  const n = base.n + extra + (pr?1:0);
+  const fill = cBase===16 ? {req:9, elec:7, prac: pr?1:0} : {req:6, elec:2, prac:0};
+
+  document.getElementById("cReq").innerHTML = reqGauge(fill, "이 구성으로 채워지는 요건");
+
+  const lines = [
+    {k:`이론 ${base.n}과목`, v:won(base.sale)},
+    pr ? {k:`현장실습 (${pr.label})`, v:won(pr.sale)} : {k:"현장실습", v:"미포함", dim:true},
+    cGen ? {k:"전문학사 교양 4과목", v:won(4*P.extraSale)} : null,
+    cHgj ? {k:"건강가정사 2과목", v:won(2*P.extraSale)} : null,
+  ].filter(Boolean);
+  document.getElementById("cLines").innerHTML = lines.map(l=>
+    `<div class="cs-row ${l.dim?"dim":""}"><span class="k">${l.k}</span><span class="v">${l.v}</span></div>`).join("");
+  document.getElementById("cList").innerHTML = `정가 <s>${won(list)}</s>`;
+  document.getElementById("cSale").textContent = won(sale);
+  document.getElementById("cPer").textContent = `총 ${n}과목 · 이론 과목당 ${won(Math.round(base.sale/base.n))}`;
+
+  const done = REQ.every(r => fill[r.k] >= r.need);
+  document.getElementById("cState").innerHTML = done
+    ? `<div class="cs-state ok">사회복지사 2급 요건을 모두 채웠습니다 ✓</div>`
+    : `<div class="cs-state no">${!pr && cBase===16 ? "현장실습 1과목이 빠져 있어요 — 이 구성만으로는 자격증이 나오지 않습니다"
+        : `아직 ${17-n>0?17-n:0}과목이 더 필요합니다 — 다음 학기에 이어서 들으세요`}</div>`;
+
+  const match = matchExisting(sale);
+  document.getElementById("cMatch").innerHTML = match
+    ? `현재 판매 상품 <b style="color:var(--main);">${match}</b> 과 동일한 구성입니다.`
+    : `이 조합은 현재 <b>단일 상품으로 등록되어 있지 않습니다</b> — C안 도입 시 조합 상품 등록 체계가 필요한 지점.`;
+  document.getElementById("cPick").innerHTML = roundInCard("cfg");
+}
+
+/* ══════════ 공통 ══════════ */
+function renderAll(){
+  if(layout==="cur") renderCur();
+  if(layout==="a")   renderA();
+  if(layout==="b")   renderB();
+  if(layout==="c")   renderC();
+  const counts = {cur:"CTA 18개 · 카드 6장", a:"CTA 8개 · 카드 4장", b:"CTA 2~4개 · 카드 1장(+대안 2)", c:"CTA 2개 · 카드 0장"};
+  const rmTxt = layout==="cur" ? "" :
+    ` &nbsp;|&nbsp; <b>개강일 배치</b> ${roundMode==="top" ? "상단 선택기 (상품 위 1회 선택)" : "카드 내 드롭다운 (카드별 개별 선택 · 권고)"}`;
+  document.getElementById("footNote").innerHTML =
+    `<b>현재 화면</b> ${counts[layout]}${rmTxt} &nbsp;|&nbsp; 가격·과목·개강일은 2026-08-13 career.baeoom.com/landing/socialwork.asp 실데이터.
+     신청·학습 기간과 학점인정·자격증 수령 시점은 예시입니다.<br>
+     조합 단가 근거 — 할인가 기준 <b>582,400 + 24,000×추가과목 + 실습(300,000/400,000)</b> 으로 현행 6종 중 5종이 정확히 재현됩니다 (8과목만 별도 티어).<br>
+     기획 문서: <b>docs/패키지화면_개선기획_계획.md</b>`;
+}
+
+/* 초기화 */
+setDevice("pc");
+setRoundMode("card");
+applyLayout("cur");
+</script>
+</body>
+</html>
