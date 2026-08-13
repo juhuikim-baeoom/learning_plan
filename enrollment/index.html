@@ -265,6 +265,17 @@
   .pkg-none .pn-d{font-size:12.5px;color:var(--gray);margin-top:7px;line-height:1.6;}
   .pkg-none .pn-d b{color:var(--main);font-weight:800;}
   .pkg-none .pn-go{margin-top:16px;background:var(--main);color:#fff;border:none;border-radius:5px;font-family:inherit;font-size:13px;font-weight:800;padding:11px 24px;cursor:pointer;}
+  .pkg-none.soft{padding:20px;text-align:left;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .pkg-none.soft .pn-t{font-size:14px;}
+  .pkg-none.soft .pn-d{margin-top:3px;flex:1;min-width:220px;}
+  .pkg-none.soft .pn-go{margin-top:0;margin-left:auto;font-size:12px;padding:8px 16px;background:#fff;color:var(--main);border:1px solid var(--mid);}
+
+  /* 교차 상품 구역 — 다른 과정과 결과물을 공유하는 패키지 (동시취득·학위연계) */
+  .cross-zone{margin-top:18px;border-top:1px dashed var(--line-dark);padding-top:14px;}
+  .cz-head{font-size:13px;font-weight:800;margin-bottom:9px;}
+  .cz-head small{display:block;font-size:11px;font-weight:600;color:var(--gray-light);margin-top:2px;}
+  .cross-zone .pkg-row{background:var(--panel);}
+  .rn .also{display:inline-block;background:#fff;border:1px solid var(--mid);color:var(--main);font-size:11px;font-weight:700;border-radius:3px;padding:2px 7px;margin-left:6px;vertical-align:1px;}
   .t-badge.pre{background:#fdf3dc;color:#b07c10;}
   .recog-line{font-size:11px;color:var(--gray-light);margin-top:3px;}
   .recog-chip{cursor:pointer;}
@@ -677,12 +688,24 @@ const PACKAGES = [
    benefits:["사회복지사 2급 취득 핵심 구성","사회복지현장실습 포함","가장 빠른 완성형 패키지"],
    preview:"사회복지학개론 · 인간행동과사회환경 · 사회복지실천론 외 10과목 + 사회복지현장실습"},
   {id:"p2", course:"sw", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
-  {id:"p3", course:"sw", tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
-  {id:"p4", course:"sw", tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
+  // 교차 상품 — 결과물이 둘 이상이므로 소유 과정도 둘. 어느 쪽으로 들어와도 발견되어야 한다
+  {id:"p3", course:"sw", courses:["sw","hf"], yields:["사회복지사 2급","건강가정사"], tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
+  {id:"p4", course:"sw", courses:["sw","as-sw"], yields:["사회복지사 2급","사회복지 전문학사"], tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
   {id:"p5", course:"sw", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
 ];
 const ALL_PKGS=[...PACKAGES,...DEG_PACKAGES];
-function curPkgs(){ return ALL_PKGS.filter(p=>p.course===courseSel); }
+// 패키지 : 과정 = N:M. 결과물이 둘 이상인 교차 상품(동시취득·학위연계)은 소유 과정도 둘 이상이며,
+// 상단 카테고리가 자격/학위로 갈려 있어도 양쪽 모두에서 발견되어야 한다.
+function pkgCourses(p){ return p.courses || [p.course]; }
+function curPkgs(){ return ALL_PKGS.filter(p=>pkgCourses(p).includes(courseSel)); }
+// 이 과정 단독 상품 / 다른 과정과 걸친 교차 상품 — 표시 구역을 나눈다
+function ownPkgs(){ return curPkgs().filter(p=>pkgCourses(p).length===1); }
+function crossPkgs(){ return curPkgs().filter(p=>pkgCourses(p).length>1); }
+// 교차 상품이 이 과정 말고 어떤 결과물을 함께 주는지 (yields[i]는 courses[i]의 결과물)
+function alsoYields(p){
+  const cs=pkgCourses(p);
+  return (p.yields||[]).filter((y,i)=>cs[i]!==courseSel);
+}
 // 단과 필터 탭 — career.baeoom.com/lectureN 의 실제 인정 과정 태그 13종 (+ 전체)
 const DEPTS = [
   {n:"전체", tag:""},
@@ -1204,18 +1227,44 @@ function applyLayout(l){
   renderNote();
   renderSideNav(); renderRoundPicker(); renderPlan(); setMode(mode);
 }
+// 교차 상품 구역 — 이 과정 단독 상품 아래에 별도로 묶는다 (중복 노출임을 시각적으로 구분)
+function crossHTML(){
+  const cross=crossPkgs(); if(!cross.length) return "";
+  const c=curCourse();
+  return `
+    <div class="cross-zone">
+      <div class="cz-head">${c?c.name:""} + α <small>다른 과정과 함께 취득하는 패키지 — 해당 과정에서도 같은 상품이 보입니다</small></div>
+      ${cross.map(p=>`
+      <div class="pkg-row">
+        <span class="pk-badge type">${p.tag}</span>
+        <div class="rn">
+          <span class="nm">${p.name}</span>
+          <button class="btn-compose" onclick="openCompose('${p.id}')">구성과목보기</button>
+          ${alsoYields(p).length?`<span class="also">함께 취득 ${alsoYields(p).join(" · ")}</span>`:""}
+          <div class="cm">( ${p.comp} ) — ${p.desc}</div>
+        </div>
+        <div class="rp">
+          <span class="o">${fmt(p.orig)}</span><span class="f">${fmt(p.price)}</span><span class="d">${p.disc}↓</span>
+          <div class="rper">${p.pl||"과목당 최저"} ${fmt(p.per)}</div>
+        </div>
+        <button class="apply-sm" onclick="openConfirm('pkg','${p.id}')">신청하기</button>
+      </div>`).join("")}
+    </div>`;
+}
 function renderPkg(){
-  const pkgs=curPkgs();
-  // 패키지 상품이 아직 구성되지 않은 과정 — 단과로 유도 (과목은 실데이터로 전 과정 신청 가능)
+  const pkgs=ownPkgs(), cross=crossPkgs();
+  // 이 과정 단독 패키지가 없는 경우 — 교차 상품이라도 있으면 그쪽으로, 없으면 단과로 유도
   if(!pkgs.length){
     const c=curCourse(), v=roundStat(roundIdx());
     $("pkgBody").innerHTML = `
-      <div class="pkg-none">
-        <div class="pn-t">${c?c.name:""} 패키지는 준비 중입니다</div>
-        <div class="pn-d">${v?`이 과정 과목은 <b>${ROUNDS.find(r=>r.id===roundSel).d}</b> 기준 <b>${v.ok}과목</b> 신청 가능합니다 — 단과로 필요한 과목만 선택하세요`:"단과로 필요한 과목만 선택하실 수 있습니다"}</div>
+      <div class="pkg-none${cross.length?" soft":""}">
+        <div class="pn-t">${c?c.name:""} 단독 패키지는 준비 중입니다</div>
+        <div class="pn-d">${cross.length
+          ? `대신 <b>${c?c.name:""}</b>를 함께 취득하는 패키지 <b>${cross.length}개</b>가 아래에 있습니다`
+          : (v?`이 과정 과목은 <b>${ROUNDS.find(r=>r.id===roundSel).d}</b> 기준 <b>${v.ok}과목</b> 신청 가능합니다 — 단과로 필요한 과목만 선택하세요`:"단과로 필요한 과목만 선택하실 수 있습니다")}</div>
         <button class="pn-go" onclick="setMode('single')">단과로 과목 보기 ›</button>
       </div>
-`;
+      ${crossHTML()}`;
     return;
   }
   const h=pkgs[0], rest=pkgs.slice(1);
@@ -1273,6 +1322,7 @@ function renderPkg(){
         </div>
         <button class="apply-sm" onclick="openConfirm('pkg','${p.id}')">신청하기</button>
       </div>`).join("")}
+    ${crossHTML()}
     <div class="prac-notice">
       ※ 실습을 포함한 패키지 과정은 선이수 교과목 이수 후 실습 수강이 가능하며, 사전 미확인으로 인한 책임은 수강생 본인에게 있습니다.<br>
       ※ 패키지 과정은 과목당 수강료가 상이할 수 있으며, [구성과목보기]에서 수강료 확인이 가능합니다.
