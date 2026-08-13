@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -14,8 +14,6 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#fff;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:1041px;margin:0 auto;padding:26px 20px 120px;}
-  .note{display:inline-flex;align-items:center;gap:6px;background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;margin:8px 0;}
-  .note::before{content:"기획";background:#f5b942;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
 
   /* 타이틀 + 안내 */
   .page-top{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:0;}
@@ -29,9 +27,8 @@
   .g-chip.strong{background:var(--soft);border-color:var(--mid);color:var(--main);font-weight:800;}
   .g-more{border:none;background:transparent;font-size:12px;color:var(--gray-light);cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px 2px;}
   .guide-full{margin-top:6px;}
-  .sel-row{display:flex;gap:18px;align-items:flex-start;}
+  .sel-row{display:flex;align-items:flex-start;}
   .sel-row + .sel-row{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
-  .sel-label{width:66px;flex-shrink:0;font-size:13px;font-weight:800;padding-top:11px;}
   .sel-body{flex:1;min-width:0;}
 
   /* ① 과정 탭 */
@@ -181,9 +178,6 @@
   /* 단과 모드 */
   .single-body{display:none;}
   .single-body.show{display:block;}
-  .dept-tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:0;padding:0 2px;align-items:center;}
-  .dept-tab{font-size:13.5px;font-weight:700;color:var(--gray);padding:10px 2px;cursor:pointer;border-bottom:2px solid transparent;}
-  .dept-tab.act{color:var(--ink);border-bottom-color:var(--ink);}
   .filter-chips{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;}
   .f-chip{border:1px solid var(--line-dark);background:#fff;border-radius:15px;font-size:12px;font-weight:600;color:var(--gray);padding:5px 14px;cursor:pointer;font-family:inherit;}
   .f-chip.act{background:var(--main);border-color:var(--main);color:#fff;}
@@ -195,7 +189,6 @@
   .st-txt.na{color:var(--gray-light);border:1px dashed var(--line-dark);border-radius:3px;padding:2px 7px;font-size:11px;font-weight:600;}
   tr.na td{background:#fafbfc;}
   tr.na td.grp{background:#fbfbfc;}
-  .dept-tabs{flex-wrap:wrap;gap:0 16px;}
 
   /* ── 레이아웃 시안 C: 학기 플래너 ── */
   #planShell{display:none;gap:16px;align-items:flex-start;margin-top:16px;}
@@ -314,6 +307,24 @@
   .lay-switch button:hover{background:#ffe3ef;}
   .lay-switch button.act{background:#e0316f;border-color:#e0316f;color:#fff;}
   .lay-switch button.act:hover{background:#e0316f;}
+
+  /* 기획설명 — 시연 전용 (선택한 시안의 의도·전제를 화면에서 바로 읽히게) */
+  .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:-6px 0 18px;}
+  .ln-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #f2e0ac;}
+  .ln-tag{background:#e0a71e;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.02em;}
+  .ln-head b{font-size:13.5px;font-weight:800;color:#8a6212;}
+  .ln-hyp{font-size:12px;font-weight:600;color:#a08a54;}
+  .ln-tog{margin-left:auto;border:1px solid #e6c878;background:#fff;border-radius:13px;font-family:inherit;font-size:11.5px;font-weight:700;color:#8a6212;padding:4px 12px;cursor:pointer;}
+  .ln-tog:hover{background:#fdf3d8;}
+  .ln-sec{padding:11px 14px 12px;}
+  .ln-sec.shade{background:#fff8e2;border-bottom:1px solid #f2e0ac;}
+  .ln-sec h4{font-size:10.5px;font-weight:800;color:#8a6212;letter-spacing:.03em;margin-bottom:7px;}
+  .ln-sec ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+  .ln-sec li{font-size:12.5px;line-height:1.58;color:#4a4436;padding-left:11px;position:relative;}
+  .ln-sec li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:#e5bf5e;}
+  .ln-sec li b{font-weight:800;color:#2b2b2b;}
+  .ln-foot{padding:9px 14px;border-top:1px solid #f2e0ac;font-size:12px;line-height:1.6;color:#8d7d5b;font-weight:600;}
+  .ln-foot b{color:#8a6212;font-weight:800;}
   #sideShell{display:none;gap:18px;align-items:flex-start;margin-top:16px;}
   .side-nav{width:196px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;padding:13px 0 8px;background:#fff;position:sticky;top:12px;}
   .sn-title{font-size:11.5px;font-weight:800;color:var(--gray-light);padding:0 14px 10px;border-bottom:1px solid var(--line);}
@@ -336,9 +347,7 @@
   .side-caption{margin-left:auto;padding-bottom:9px;}
   /* 개강일 = 과정 × 수강방식에 종속된 필터. 부모 바로 아래, 상단 블록 통째로 스티키 */
   .side-top{position:sticky;top:0;z-index:30;background:#fff;}
-  .rrow{display:flex;align-items:flex-start;gap:16px;padding:14px 0 16px;border-bottom:1px solid var(--line);}
-  .rrow-label{flex-shrink:0;width:100px;font-size:13px;font-weight:800;line-height:1.3;padding-top:12px;}
-  .rrow-label small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:3px;}
+  .rrow{display:flex;align-items:flex-start;padding:14px 0 16px;border-bottom:1px solid var(--line);}
   .rrow-body{flex:1;min-width:0;}
   .rrow-warn{display:inline-block;background:var(--red-soft);color:var(--red);font-weight:700;border-radius:3px;padding:2px 8px;margin-right:8px;}
 
@@ -379,6 +388,27 @@
     <em>버튼을 눌러 세 시안을 비교하세요</em>
   </div>
 
+  <!-- 기획설명 — 선택한 시안의 의도·전제 (시연 전용) -->
+  <div class="lay-note">
+    <div class="ln-head">
+      <span class="ln-tag">기획설명</span>
+      <b id="lnTitle"></b>
+      <span class="ln-hyp" id="lnHyp"></span>
+      <button class="ln-tog" id="lnTog" onclick="toggleNote()">접기</button>
+    </div>
+    <div id="lnWrap">
+      <div class="ln-sec shade">
+        <h4>세 시안 공통 전제</h4>
+        <ul id="lnCommon"></ul>
+      </div>
+      <div class="ln-sec">
+        <h4 id="lnH1"></h4>
+        <ul id="lnList"></ul>
+      </div>
+      <div class="ln-foot" id="lnFoot"></div>
+    </div>
+  </div>
+
   <!-- 타이틀 + 안내 (현행 유지) -->
   <div class="page-top">
     <h1>수강신청</h1>
@@ -415,7 +445,6 @@
     <div class="plan-top" id="planTop"></div>
     <div class="plan-tracks" id="planTracks"></div>
     <div class="plan-pay" id="planPay"></div>
-    <span class="note">개강일을 선택 축에서 빼고 캔버스의 가로축으로 전환 — 앞 시안들이 "개강일을 어디 둘까"로 씨름한 문제가 축이 되는 순간 소멸. 상단 안내에만 있던 학기 8과목(24학점)·연간 14과목(42학점) 한도를 화면이 직접 강제하고, 27과목 80학점짜리 패키지가 실제로 몇 학기인지를 상품이 스스로 설명함. 결제는 첫 학기분만 — 나머지는 계획으로 남겨 재방문 동선을 만듦. 단 learning-plan 학습설계 툴과 모델이 겹치므로 역할 정리가 선행되어야 함</span>
   </div>
 </div>
 
@@ -429,7 +458,6 @@
   <!-- ② 방식 토글 + ③ 개강일 대형 탭 -->
   <div class="select-zone">
     <div class="sel-row">
-      <span class="sel-label">수강 방식</span>
       <div class="sel-body">
         <div class="mode-toggle">
           <button id="mPkg" class="active" onclick="setMode('pkg')">패키지<small>추천 · 과목당 최저가</small></button>
@@ -438,14 +466,12 @@
       </div>
     </div>
     <div class="sel-row">
-      <span class="sel-label">개강일</span>
       <div class="sel-body">
         <div class="round-tabs" id="roundTabs"></div>
         <div class="round-info" id="roundInfo"></div>
       </div>
     </div>
   </div>
-  <span class="note">과정 2단 구성 — 1행 카테고리 3개 고정(자격/학위/교양·단과), 2행 과정 칩. 과정이 늘어도 카테고리는 불변. 가로 스크롤 1행(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 줄바꿈되는 학위 2행은 전공 전량 노출. 학위는 학위 수준(4년제/2년제)이 전공의 상위 계층이 아니라 직교하는 축이므로, 탭을 더 만들지 않고 라벨을 붙인 2행 칩으로 병렬 배치 — 깊이 추가 0, 각 행은 짧게 유지. 라벨에 요건 학점·최단 기간을 함께 노출(기관 언어인 전문학사/학사만으로는 판단 불가). 두 수준이 항상 동시에 보이므로 상품 단계의 별도 비교·전환 블록은 두지 않음 — 같은 선택을 두 번 묻지 않기 위함.현행 첫 선택지였던 개강일 대형 탭은 형태 그대로 과정·방식 아래로 이동, 학습기간 스트립은 선택 개강일에 연동</span>
 
 </div><!-- /stackShell -->
 
@@ -465,14 +491,12 @@
         </div>
       </div>
       <div class="rrow">
-        <span class="rrow-label">개강일<small>개설 차수만 표시</small></span>
         <div class="rrow-body">
           <div class="round-tabs" id="rrowSeg"></div>
           <div class="round-info" id="rrowInfo"></div>
         </div>
       </div>
     </div>
-    <span class="note">선택 축을 성격에 맞는 컨트롤에 분배 — 항목이 많고 계층이 있는 과정은 좌측바, 2택인 수강 방식은 본문 상단 탭, 개강일은 그 아래 세그먼트. 개강일은 과정 × 수강방식으로 개설 차수가 결정되는 종속 필터이므로 반드시 부모 아래에 둔다(부모를 바꿔 차수가 갱신되는 변화가 시야 안에서 일어나야 함 — 위에 두면 조용히 바뀌어 결제 사고로 이어짐). 미개설 차수는 숨기지 않고 비활성 + 사유 표기, 선택 중이던 차수가 미개설이 되면 자동 전환 후 경고. 상단 블록을 통째로 스티키 처리해 과목표 86행을 내려보는 동안에도 어느 차수를 보고 있는지 유지 — 축을 더해도 상품이 아래로 밀리지 않는 것이 세로형과의 핵심 차이</span>
     <div id="sideMount"></div>
   </div>
 </div><!-- /sideShell -->
@@ -485,13 +509,12 @@
   <!-- 단과 모드 -->
   <div class="mode-body single-body" id="singleBody">
     <!-- 학습설계 빌더 연계 진입점은 학습설계 확정 후 재검토 (보류) -->
-    <div class="dept-tabs" id="deptTabs"></div>
+    <!-- 인정 과정 필터 줄 제거 — 과정 축은 상단 하나로 통일 (전체 훑기는 교양·단과 › 전체 과목) -->
     <div class="filter-chips" id="filterChips"></div>
     <table class="subj">
       <thead><tr><th>이수구분</th><th>신청</th><th style="text-align:left;padding-left:14px;">교과목</th><th>상태</th><th>수강료</th><th>수업계획서</th><th>미리보기</th></tr></thead>
       <tbody id="subjBody"></tbody>
     </table>
-    <span class="note">상태 컬럼: 잔여석은 임계치(10석) 미만 시에만 자동 노출(마감임박 남발 방지), 마감 과목은 다음 차수 링크로 이탈 → 차수 전환 유도. 로그인 시 기이수 과목 "이수완료" 표시(중복 신청 방지). 해시태그 → "인정 과정" 라벨로 명확화, 클릭 시 해당 과정 필터</span>
     <div class="prac-notice">※ 사회복지현장실습은 선이수 교과목 이수 후 수강이 가능하며, 신청 시 지역(수도권/전국)·실습 차수 선택이 필요합니다.</div>
   </div>
 </div><!-- /contentHolder -->
@@ -597,7 +620,7 @@ function pickCat(id){
   renderCats(); renderCourseRow(); renderSideNav();
   syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
   if(id==="free") setMode("single");
-  syncDept(); renderDepts(); renderTable();
+  syncDept(); renderTable();
 }
 // cap=null이면 전량 노출. 가로 스크롤 1행(자격/교양)에서는 MAX_CHIPS로 자르고,
 // 줄바꿈되는 학위 2행 레이아웃에서는 자를 이유가 없으므로 전공을 모두 보여준다
@@ -624,7 +647,7 @@ function renderCourseRow(){
 function pickCourse(id){
   courseSel=id; renderCourseRow(); renderSideNav();
   syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
-  syncDept(); renderDepts(); renderTable();
+  syncDept(); renderTable();
 }
 const DEG_PACKAGES = [
   // 4년제 학사 (ba-biz)
@@ -920,7 +943,7 @@ function pickSide(cat,id){
   renderCats(); renderCourseRow(); renderSideNav();
   syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
   if(cat==="free") setMode("single");
-  syncDept(); renderDepts(); renderTable();
+  syncDept(); renderTable();
 }
 function ddayOf(r){
   const t=new Date(); t.setHours(0,0,0,0);
@@ -1034,7 +1057,7 @@ function planPickCourse(v){
   catSel=cat; courseSel=id; plan={}; planPkg=null;
   renderCats(); renderCourseRow(); renderSideNav();
   syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
-  syncDept(); renderDepts(); renderTable(); renderPlan();
+  syncDept(); renderTable(); renderPlan();
 }
 function renderPlan(){
   if(!$("planShell")) return;
@@ -1099,6 +1122,72 @@ function renderPlan(){
         <button onclick="openConfirm('pkg','${pkg.id}')">패키지 전체 결제</button></div>`:"");
 }
 
+/* ── 기획설명 ── */
+const NOTE_COMMON=[
+  `현행 = <b>개강 차수가 최상위</b>인 관리자 기준 구조 → 세 시안 모두 <b>과정 목적 → 수강방식 → 개강일</b> 순으로 축 재배열`,
+  `과정 3분류 = <b>자격증 취득 · 학위 취득 · 교양/단과</b>. 과정이 늘어도 카테고리는 불변`,
+  `학위의 4년제/2년제는 전공의 상위 계층이 아닌 <b>직교 축</b> → depth 추가 없이 라벨 붙인 2행 칩으로 병렬 배치. 라벨에 요건 학점·최단 기간 병기(기관 언어인 "전문학사/학사"만으로는 판단 불가)`,
+  `개설 차수 = <b>과정 × 수강방식</b>의 종속값 → 반드시 부모 아래 배치. 미개설 차수는 숨김이 아니라 비활성 + 사유 표기(사라지면 원래 없었는지 없어졌는지 불명), 선택 중이던 차수가 미개설이 되면 자동 전환 후 경고`,
+  `패키지 : 과정 = <b>N:M</b> → 과정마다 편성 여부 상이. 미편성 과정은 빈 화면 대신 단과 동선으로 연결`,
+  `마감 과목은 다음 차수로 전환 유도 · 잔여석은 10석 미만에서만 노출(마감임박 남발 방지) · 기이수 과목은 이수완료 표기(중복 신청 방지)`,
+  `과목 · 가격 · 차수별 개설 현황 = <b>실데이터</b> (career.baeoom.com, 171과목 / 3개 차수)`
+];
+const NOTES={
+  stack:{
+    t:"A. 현행 세로형",
+    h:"가설 — 현행 화면 구조를 두고 축 순서만 바꿔도 충분한가",
+    h1:"A. 현행 세로형 — 이 시안이 하는 것",
+    li:[
+      `현행의 <b>위 → 아래 단계 진행</b> 형태 유지, 최상위 축만 개강일 → 과정 목적으로 교체`,
+      `과정 · 수강방식 · 개강일 각 1행. 현행 컨트롤(개강일 대형 탭 · 학습기간 스트립)을 형태 그대로 하위로 이동 → <b>이식 비용 최소</b>`,
+      `과정 영역 2단 — 1행 카테고리 3개 고정, 2행 과정 칩. 1행 스크롤 칩(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 2행 학위 칩은 전공 전량 노출`,
+      `한계 — 축이 하나 늘 때마다 상품이 아래로 밀림. <b>첫 상품까지 약 709px</b>`
+    ],
+    f:`<b>확인 포인트</b> — 늘어난 세로 길이를 감수할 만한가 · 학위 2행 칩이 자격증 1행 칩과 섞이지 않고 읽히는가`
+  },
+  side:{
+    t:"B. 좌측바형",
+    h:"가설 — 필터를 옆으로 빼고 상품을 먼저 보이게 하면 나은가",
+    h1:"B. 좌측바형 — 이 시안이 하는 것",
+    li:[
+      `선택 축을 성격에 맞는 컨트롤에 분배 — 항목 많고 계층 있는 <b>과정은 좌측바</b>, 2택인 <b>수강방식은 본문 상단 탭</b>, <b>개강일은 그 아래</b> 대형 탭`,
+      `개강일을 좌측바로 올리지 않은 이유 — 부모(과정·수강방식)를 바꿀 때 차수가 시야 밖에서 조용히 갱신되면 결제 사고로 직결`,
+      `상단 블록 통째 스티키 → 과목표를 내려보는 동안에도 <b>지금 보고 있는 차수</b> 유지`,
+      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지 약 351px</b> (세로형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
+      `레퍼런스 — 휴넷(좌측바), 고시스쿨(패키지/단과 분리)`
+    ],
+    f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
+  },
+  plan:{
+    t:"C. 학기 플래너",
+    h:"가설 — 수강신청을 단일 차수 구매가 아니라 다학기 계획으로 재정의하면 나은가",
+    h1:"C. 학기 플래너 — 이 시안이 하는 것",
+    li:[
+      `개강일을 선택 축에서 빼고 <b>캔버스의 가로축</b>으로 전환 → A·B가 씨름한 "개강일을 어디 둘까" 문제 자체가 소멸`,
+      `과목 담기 → <b>가장 이른 신청 가능 학기에 자동 배치</b>. 미개설 학기로는 이동 차단, 한도·개설 제약으로 못 담은 과목은 <b>미배치 트랙</b>에 잔류(조용히 사라지지 않게)`,
+      `상단 안내 문구로만 있던 <b>학기 8과목(24학점) · 연간 14과목(42학점)</b> 한도를 화면이 직접 강제`,
+      `패키지 = <b>계획 프리셋</b> → 27과목 80학점이 실제 몇 학기인지를 상품이 스스로 설명`,
+      `결제는 <b>첫 학기분만</b>, 나머지는 계획으로 저장 → 개강 전 재신청하는 재방문 동선 형성`
+    ],
+    f:`<b>확인 포인트</b> — 학습설계 툴(builder)과 모델이 사실상 동일. 기회이자 위험이므로 <b>두 기능의 역할 정리가 선행 과제</b>`
+  }
+};
+let noteOpen=true;
+function renderNote(){
+  const n=NOTES[layout]; if(!n) return;
+  $("lnTitle").textContent=n.t;
+  $("lnHyp").textContent=n.h;
+  $("lnH1").textContent=n.h1;
+  $("lnList").innerHTML=n.li.map(x=>`<li>${x}</li>`).join("");
+  $("lnCommon").innerHTML=NOTE_COMMON.map(x=>`<li>${x}</li>`).join("");
+  $("lnFoot").innerHTML=n.f;
+}
+function toggleNote(){
+  noteOpen=!noteOpen;
+  $("lnWrap").style.display=noteOpen?"block":"none";
+  $("lnTog").textContent=noteOpen?"접기":"펼치기";
+}
+
 let layout="stack";
 function applyLayout(l){
   layout=l;
@@ -1112,6 +1201,7 @@ function applyLayout(l){
   $("layPlan").classList.toggle("act",planL);
   document.body.classList.toggle("lay-side",side);
   document.body.classList.toggle("lay-plan",planL);
+  renderNote();
   renderSideNav(); renderRoundPicker(); renderPlan(); setMode(mode);
 }
 function renderPkg(){
@@ -1125,7 +1215,7 @@ function renderPkg(){
         <div class="pn-d">${v?`이 과정 과목은 <b>${ROUNDS.find(r=>r.id===roundSel).d}</b> 기준 <b>${v.ok}과목</b> 신청 가능합니다 — 단과로 필요한 과목만 선택하세요`:"단과로 필요한 과목만 선택하실 수 있습니다"}</div>
         <button class="pn-go" onclick="setMode('single')">단과로 과목 보기 ›</button>
       </div>
-      <span class="note">패키지:과정 = N:M 매핑이므로 과정마다 편성 여부가 다름 — 미편성 과정은 빈 화면 대신 단과 동선으로 연결. 시연에서는 사회복지사 2급 · 경영학(학사) · 경영(전문학사) 3개 과정에만 패키지를 구성</span>`;
+`;
     return;
   }
   const h=pkgs[0], rest=pkgs.slice(1);
@@ -1183,7 +1273,6 @@ function renderPkg(){
         </div>
         <button class="apply-sm" onclick="openConfirm('pkg','${p.id}')">신청하기</button>
       </div>`).join("")}
-    <span class="note">패키지 요약부는 과정 유형별 분기 — 자격: 구성과목 미리보기 / 학위: 학점 게이지(인정+배치). 유형은 패키지 속성이 아닌 과정 마스터 유형에서 파생 (패키지:과정 = N:M 매핑, 동시취득·학위연계 교차 상품 대응)</span>
     <div class="prac-notice">
       ※ 실습을 포함한 패키지 과정은 선이수 교과목 이수 후 실습 수강이 가능하며, 사전 미확인으로 인한 책임은 수강생 본인에게 있습니다.<br>
       ※ 패키지 과정은 과목당 수강료가 상이할 수 있으며, [구성과목보기]에서 수강료 확인이 가능합니다.
@@ -1248,18 +1337,14 @@ function doPay(){
   document.getElementById("confirmModal").classList.remove("open");
   alert(`결제 이동 (시연)\n${confirmCtx.name} · ${confirmCtx.round}\n→ 결제 유의사항 → 쿠폰 적용 → 결제`);
 }
-function renderDepts(){
-  $("deptTabs").innerHTML = DEPTS.map((d,i)=>`
-    <span class="dept-tab ${deptSel===i?"act":""}" onclick="deptSel=${i};renderDepts();renderTable();">${d.n}</span>`).join("")
-    + `<button class="login-demo ${loginDemo?"on":""}" onclick="loginDemo=!loginDemo;renderDepts();renderTable();">시연: 로그인 상태 ${loginDemo?"ON — 기이수 표시":"OFF"}</button>`;
-}
 const FILTERS=[{id:"all",n:"전체"},{id:"이론",n:"이론"},{id:"대면",n:"대면"},{id:"실습",n:"실습"},{id:"open",n:"신청가능만"}];
 let filterSel="all", recogSel=null, loginDemo=false;
 function isDone(s){ return loginDemo && s.done; }
 function renderFilters(){
   $("filterChips").innerHTML = FILTERS.map(f=>`
     <button class="f-chip ${filterSel===f.id?"act":""}" onclick="filterSel='${f.id}';renderFilters();renderTable();">${f.n}</button>`).join("")
-    + (recogSel?`<button class="f-chip act" onclick="toggleRecog('${recogSel}')">인정: ${recogSel} ✕</button>`:"");
+    + (recogSel?`<button class="f-chip act" onclick="toggleRecog('${recogSel}')">인정: ${recogSel} ✕</button>`:"")
+    + `<button class="login-demo ${loginDemo?"on":""}" onclick="loginDemo=!loginDemo;renderFilters();renderTable();">시연: 로그인 상태 ${loginDemo?"ON — 기이수 표시":"OFF"}</button>`;
 }
 function toggleRecog(r){ recogSel = recogSel===r?null:r; renderFilters(); renderTable(); }
 /* 선택 차수 기준 과목 상태 — O 신청가능 / H 마감임박 / C 신청마감 / - 해당 차수 미개설 */
@@ -1332,7 +1417,7 @@ function updateCartBar(){
 function goCart(){ openConfirm("cart"); }
 
 syncDept();
-renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderDepts(); renderFilters(); renderTable();
+renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderFilters(); renderTable();
 const _l=new URLSearchParams(location.search).get("layout");
 applyLayout(_l==="side"||_l==="plan" ? _l : "stack");
 </script>
