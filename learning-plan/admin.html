@@ -123,18 +123,9 @@
   .seg{display:inline-flex;background:#eef1f6;border-radius:10px;padding:3px;gap:2px;}
   .seg button{border:none;background:transparent;font-size:11.5px;font-weight:700;color:var(--gray);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:inherit;}
   .seg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(27,42,74,.12);}
-  .steps{display:flex;gap:6px;margin:12px 0 14px;}
-  .steps .st{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:8px 6px;font-size:11px;font-weight:700;color:var(--gray-light);background:#fff;text-align:center;cursor:pointer;}
-  .steps .st.on{border-color:var(--blue);background:var(--blue-soft);color:var(--blue);}
-  .steps .st.done{border-color:var(--green);color:var(--green);background:var(--green-soft);}
-  .tn-grid{display:grid;gap:14px;}
+  .tn-grid{display:grid;gap:14px;grid-template-columns:1.3fr .8fr;align-items:start;}
   .tn-col-a,.tn-col-b{display:flex;flex-direction:column;gap:14px;min-width:0;}
-  .tn-flat .tn-grid{grid-template-columns:1.3fr .8fr;align-items:start;}
-  .tn-wiz .tn-grid{display:block;}
-  .tn-wiz .tn-col-a,.tn-wiz .tn-col-b{display:contents;}
-  .tn-wiz .blk[data-step]{display:none;}
-  .tn-wiz .blk[data-step].cur{display:block;}
-  .tn-flat .tn-nav,.tn-flat .steps{display:none;}
+  .tn-wide{margin-top:14px;}
   .blk{border:1.5px solid var(--line);border-radius:12px;padding:15px;background:#fff;}
   .blk>h3{font-size:13.5px;font-weight:800;margin-bottom:3px;}
   .blk>.bd{font-size:11px;color:var(--gray-light);margin-bottom:11px;line-height:1.65;}
@@ -156,7 +147,7 @@
   .up button.pri{background:var(--blue);color:#fff;}
   .up .done{font-size:10.5px;color:var(--green);font-weight:700;margin-top:9px;}
   .sum{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-  .sum .s{flex:1;min-width:80px;border:1.5px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:#fff;}
+  .sum .s{flex:1 1 0;min-width:62px;border:1.5px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:#fff;}
   .sum .s .v{font-size:17px;font-weight:800;line-height:1.2;}
   .sum .s .k{font-size:10px;color:var(--gray-light);font-weight:700;margin-top:2px;}
   .sum .s.ok{border-color:#bfe6d5;} .sum .s.ok .v{color:var(--green);}
@@ -165,7 +156,7 @@
   .mt-wrap{overflow-x:auto;}
   .mt{width:100%;border-collapse:collapse;font-size:11.5px;}
   .mt th{text-align:left;font-size:10px;font-weight:800;color:var(--gray-light);border-bottom:1.5px solid var(--line);padding:7px 6px;white-space:nowrap;}
-  .mt td{border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:middle;}
+  .mt td{border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:middle;white-space:nowrap;}
   .mt tr.rn td{background:var(--amber-soft);}
   .mt tr.rx td{background:var(--red-soft);}
   .mt tr.rd td{opacity:.45;}
@@ -177,6 +168,8 @@
   .mb.f{background:var(--blue-soft);color:var(--blue);}
   .mb.n{background:var(--amber-soft);color:var(--amber);}
   .mb.x{background:var(--red-soft);color:var(--red);}
+  .mb.e{background:var(--violet-soft);color:var(--violet);}
+  .mb.q{background:#e8eefb;color:#3b5bbf;}
   .mb.d{background:#f0f1f4;color:var(--gray-light);}
   .mini{border:1.5px solid var(--line);background:#fff;color:var(--gray);border-radius:7px;font-size:10.5px;font-weight:700;padding:5px 9px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-right:3px;}
   .mini:hover{border-color:var(--blue-line);color:var(--blue);}
@@ -190,10 +183,13 @@
   .save-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .btn-pri:disabled{background:#c9d0dc;cursor:not-allowed;}
   .blocked{font-size:11px;font-weight:700;color:var(--red);flex:1;min-width:150px;}
-  .tn-nav{display:flex;justify-content:space-between;gap:8px;margin-top:14px;}
+  .mt tr.re td{background:#f7f3ff;}
+  .mt tr.rq td{background:#f2f5fd;}
+  .semp .chip.e{background:var(--violet-soft);border-color:#d8c8f7;color:var(--violet);}
+  .semp .chip.q{background:#e8eefb;border-color:#c3d0ee;color:#3b5bbf;}
   #viewTmplNew .note{display:block;line-height:1.65;}
   #viewTmplNew .note::before{margin-right:6px;}
-  @media(max-width:900px){.tn-flat .tn-grid{grid-template-columns:1fr;}}
+  @media(max-width:900px){.tn-grid{grid-template-columns:1fr;}}
   .hidden{display:none;}
   @media(max-width:860px){.layout{grid-template-columns:1fr;}}
 </style>
@@ -333,22 +329,16 @@
       </div>
 
       <!-- ===== 템플릿 등록 (직접 등록) ===== -->
-      <div class="panel hidden tn-wiz" id="viewTmplNew">
+      <div class="panel hidden" id="viewTmplNew">
         <button class="tn-back" onclick="tnClose()">&larr; 템플릿 관리로</button>
         <div class="panel-head">
           <div>
             <h2>템플릿 직접 등록</h2>
             <div class="desc">패키지로 구성되지 않은 과정의 설계 틀을 직접 만듭니다 — 엑셀로 올리거나 화면에서 과목을 검색해 구성</div>
           </div>
-          <div class="seg">
-            <button class="on" id="tnSegWiz" onclick="tnSetLayout('wiz')">A안 · 단계형</button>
-            <button id="tnSegFlat" onclick="tnSetLayout('flat')">B안 · 한 화면형</button>
-          </div>
         </div>
 
         <div class="readonly-bar"><b>패키지로 판매 중인 과정은 여기서 만들지 마세요</b> — 패키지 등록 데이터에서 자동 변환되므로 중복 등록이 됩니다. 이 화면은 <b>패키지 미구성 과정</b>(예: 보육교사 2급)과 기존 엑셀 설계안 이관 전용입니다.</div>
-
-        <div class="steps" id="tnSteps"></div>
 
         <div class="tn-grid">
           <div class="tn-col-a">
@@ -377,11 +367,11 @@
               <div class="src-cards">
                 <div class="src on" id="srcExcel" onclick="tnPickSrc('excel')">
                   <div class="sh">엑셀 업로드</div>
-                  <div class="ss">기존 엑셀 설계안을 표준 양식으로 일괄 등록<br>과목명은 과목 마스터와 자동 매칭</div>
+                  <div class="ss">기존 엑셀 설계안을 표준 양식으로 일괄 등록<br>과목명은 우리 과목 목록과 자동 매칭</div>
                 </div>
                 <div class="src" id="srcSearch" onclick="tnPickSrc('search')">
                   <div class="sh">과목 검색해 추가</div>
-                  <div class="ss">과목 마스터에서 하나씩 골라 구성<br>과목 수가 적거나 처음 만들 때</div>
+                  <div class="ss">우리 과목 목록에서 하나씩 골라 구성<br>과목 수가 적거나 처음 만들 때</div>
                 </div>
                 <div class="src" id="srcCopy" onclick="tnPickSrc('copy')">
                   <div class="sh">기존 것 복제</div>
@@ -391,7 +381,7 @@
 
               <div class="up" id="upBox">
                 <div class="ut">학습계획 엑셀 업로드</div>
-                <div class="ud">열: 학기(1·2·3…) · 과목명 · 학점 · 이수구분<br><b>가격·개강일 열은 없습니다</b> — 과목 마스터·차수에서 자동으로 붙습니다</div>
+                <div class="ud">열: 학기(1·2·3…) · 과목명 · 학점 · 이수구분<br><b>가격·개강일 열은 없습니다</b> — 과목·차수 정보에서 자동으로 붙습니다</div>
                 <div class="ub">
                   <button onclick="alert('학습계획 양식.xlsx 다운로드 (시연)\n열: 학기 · 과목명 · 학점 · 이수구분\n· 학기는 상대 학기(1,2,3…) — 실제 개강일 아님\n· 가격·차수 열 없음 (마스터 자동)\n· 과목명은 최대한 정확히 — 매칭 실패 시 수기 지정 필요\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
                   <button class="pri" onclick="tnUpload()">파일 업로드</button>
@@ -400,36 +390,11 @@
               </div>
 
               <div class="up" id="searchBox" style="display:none;border-style:solid;background:#fff;text-align:left;">
-                <div class="fr" style="margin-bottom:0"><label>과목 검색</label><input type="text" placeholder="과목명 입력 (시연)"><button class="mini" style="padding:9px 14px" onclick="alert('과목 마스터 검색 (시연)\n선택 시 학점·이수구분이 마스터 값으로 자동 입력됩니다')">검색</button></div>
+                <div class="fr" style="margin-bottom:0"><label>과목 검색</label><input type="text" placeholder="과목명 입력 (시연)"><button class="mini" style="padding:9px 14px" onclick="alert('과목 검색 (시연)\n우리가 파는 과목 목록에서 찾습니다\n선택 시 학점·이수구분이 등록된 값으로 자동 입력됩니다')">검색</button></div>
               </div>
 
               <div class="up" id="copyBox" style="display:none;border-style:solid;background:#fff;text-align:left;">
                 <div class="fr" style="margin-bottom:0"><label>복제 원본</label><select><option>사회복지사 2급 실습포함 (패키지)</option><option>보육교사 자격 보유자 패턴 (내 템플릿)</option><option>전적대 사복 일부이수 패턴 (팀 공유)</option></select><button class="mini" style="padding:9px 14px" onclick="alert('복제 (시연): 과목·학기 배치를 그대로 복사한 새 템플릿 초안 생성 — 원본은 변하지 않습니다')">복제</button></div>
-              </div>
-            </div>
-
-            <!-- 3. 매칭 확인 -->
-            <div class="blk" data-step="3">
-              <h3>3. 과목 매칭 확인</h3>
-              <div class="bd">엑셀의 과목명을 <b>LMS 과목 마스터</b>와 대조한 결과입니다. 매칭되지 않은 과목이 남아 있으면 저장할 수 없습니다 — 자유 텍스트 과목이 설계에 들어가면 가격·학점 자동 계산이 깨지기 때문입니다</div>
-              <div id="tnMatch"></div>
-              <span class="note">1단계는 이름 일치·유사도만 봅니다 — 개설 여부·선수과목 판정은 2단계</span>
-            </div>
-
-            <!-- 5. 저장 -->
-            <div class="blk" data-step="5">
-              <h3>5. 저장</h3>
-              <div class="bd">저장하면 빌더의 템플릿 목록에 즉시 나타납니다 — 승인 절차 없음, 생성·수정 이력은 자동 기록</div>
-              <div class="fr"><label>저장 범위</label>
-                <div class="scope-pick">
-                  <button class="on" id="scMine" onclick="tnScope('mine')">내 템플릿</button>
-                  <button id="scTeam" onclick="tnScope('team')">팀 공유</button>
-                </div>
-              </div>
-              <div class="save-bar">
-                <span class="blocked" id="tnBlocked"></span>
-                <button class="btn-line" onclick="alert('임시 저장 (시연): 미매칭이 남아 있어도 초안으로 보관됩니다 — 빌더 목록에는 노출되지 않습니다')">임시 저장</button>
-                <button class="btn-pri" id="tnSave" onclick="tnSaveGo()">템플릿 저장</button>
               </div>
             </div>
 
@@ -445,10 +410,36 @@
           </div>
         </div>
 
-        <div class="tn-nav">
-          <button class="btn-line" id="tnPrev1" onclick="tnGo(-1)">← 이전</button>
-          <button class="btn-pri" id="tnNext1" onclick="tnGo(1)">다음 →</button>
-        </div>
+        <!-- 3. 매칭 확인 — 표가 넓어 전체 폭 사용 -->
+            <div class="blk tn-wide" data-step="3">
+              <h3>3. 과목 매칭 확인</h3>
+              <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. 판정이 안 끝난 행이 남으면 저장할 수 없습니다 — 정체를 모르는 과목이 설계에 들어가면 가격·학점 자동 계산이 깨지기 때문입니다</div>
+              <div id="tnMatch"></div>
+              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 네 갈래로 갈립니다</b> — 저장을 막는 것은 <b>미판정</b>뿐이고, 나머지 셋은 정상 저장됩니다.<br>
+                · <b>표기만 다른 것</b> (사회복지개론 → 사회복지학개론) → [과목 지정]으로 우리 과목에 연결<br>
+                · <b>우리가 안 파는 과목</b> (전적대·타기관에서 들어야 하는 과목) → [외부 이수] — 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
+                · <b>아직 안 연 과목</b> (열면 팔 수 있는 것) → [개설 요청] — 개설 확정 전까지 템플릿에 <b>개설 대기</b> 표시<br>
+                · <b>잘못 적힌 행</b> → [행 제외]</div>
+              <span class="note">과목 마스터는 아직 없습니다 — 1단계 시연은 <b>기존 패키지에 등록된 과목</b>을 대조 대상으로 가정했습니다. 별도 마스터로 정규화할지는 미정</span>
+              <span class="note">1단계는 이름 일치·유사도만 봅니다 — 개설 여부·선수과목 판정은 2단계</span>
+            </div>
+
+            <!-- 5. 저장 -->
+            <div class="blk tn-wide" data-step="5">
+              <h3>5. 저장</h3>
+              <div class="bd">저장하면 빌더의 템플릿 목록에 즉시 나타납니다 — 승인 절차 없음, 생성·수정 이력은 자동 기록</div>
+              <div class="fr"><label>저장 범위</label>
+                <div class="scope-pick">
+                  <button class="on" id="scMine" onclick="tnScope('mine')">내 템플릿</button>
+                  <button id="scTeam" onclick="tnScope('team')">팀 공유</button>
+                </div>
+              </div>
+              <div class="save-bar">
+                <span class="blocked" id="tnBlocked"></span>
+                <button class="btn-line" onclick="alert('임시 저장 (시연): 미판정 행이 남아 있어도 초안으로 보관됩니다 — 빌더 목록에는 노출되지 않습니다')">임시 저장</button>
+                <button class="btn-pri" id="tnSave" onclick="tnSaveGo()">템플릿 저장</button>
+              </div>
+            </div>
 
         <div class="footer-hint">엑셀 업로드는 <b>이관·최초 등록용</b>입니다. 한 번 등록해 템플릿으로 남기면 다음부터는 빌더에서 불러다 쓰므로 업로드가 다시 필요하지 않습니다 — 엑셀 작업이 상시 입력 수단으로 되돌아오지 않게 하는 것이 이 화면의 목적입니다.</div>
       </div>
@@ -505,8 +496,9 @@
   }
 
   /* ===== 템플릿 직접 등록 (시연) =====
-     m: auto=자동 매칭 / near=유사 후보(확인 필요) / none=매칭 실패 / fixed=수기 확정 / drop=제외 */
-  const TN_STEPS=["기본 정보","과목 구성","매칭 확인","학기 배치","저장"];
+     m: auto=우리 과목 자동 매칭 / near=유사 후보(확인 필요) / fixed=수기로 우리 과목 지정
+        ext=외부 이수(우리가 안 파는 과목 — 학점만, 가격 제외) / req=개설 요청(개설 대기)
+        none=미판정(저장 차단) / drop=제외 */
   const TN_ROWS=[
     {s:1,raw:"인간행동과사회환경",cr:3,a:"필수",m:"auto",to:"인간행동과사회환경"},
     {s:1,raw:"사회복지개론",cr:3,a:"필수",m:"near",to:"사회복지학개론"},
@@ -523,27 +515,17 @@
     {s:3,raw:"사회복지현장실습",cr:3,a:"필수",m:"auto",to:"사회복지현장실습"},
     {s:3,raw:"복지행정실무",cr:3,a:"선택",m:"none",to:""}
   ];
-  let tnLayout="wiz", tnStep=1, tnLoaded=false, tnSrc="excel", tnScopeV="mine";
+  let tnLoaded=false, tnSrc="excel", tnScopeV="mine";
 
   function tnOpen(){
     document.getElementById("viewTmpl").classList.add("hidden");
     document.getElementById("viewTmplNew").classList.remove("hidden");
-    tnStep=1; tnRender();
+    tnRender();
   }
   function tnClose(){
     document.getElementById("viewTmplNew").classList.add("hidden");
     document.getElementById("viewTmpl").classList.remove("hidden");
   }
-  function tnSetLayout(l){
-    tnLayout=l;
-    document.getElementById("tnSegWiz").classList.toggle("on",l==="wiz");
-    document.getElementById("tnSegFlat").classList.toggle("on",l==="flat");
-    const v=document.getElementById("viewTmplNew");
-    v.classList.toggle("tn-wiz",l==="wiz"); v.classList.toggle("tn-flat",l==="flat");
-    tnRender();
-  }
-  function tnGo(d){ tnStep=Math.min(5,Math.max(1,tnStep+d)); tnRender(); }
-  function tnStepTo(n){ if(tnLayout==="wiz"){ tnStep=n; tnRender(); } }
   function tnPickSrc(s){
     tnSrc=s;
     ["excel","search","copy"].forEach(k=>document.getElementById("src"+k[0].toUpperCase()+k.slice(1)).classList.toggle("on",k===s));
@@ -560,21 +542,34 @@
     if(tnLoaded){ alert("이미 업로드된 내역이 있습니다 (시연)\n다시 올리려면 기존 행을 비운 뒤 업로드하세요"); return; }
     tnLoaded=true;
     document.getElementById("upDone").style.display="block";
-    if(tnLayout==="wiz") tnStep=3;
     tnRender();
-    alert("업로드 완료 (시연) — 14행\n· 자동 매칭 11 / 확인 필요 2 / 매칭 실패 1\n· 확인 필요는 유사한 마스터 과목을 추천만 한 상태입니다\n· 매칭 실패가 0이 되어야 저장할 수 있습니다");
+    alert("업로드 완료 (시연) — 14행\n· 우리 과목 11 / 확인 필요 2 / 미판정 1\n· 확인 필요는 이름이 비슷한 우리 과목을 추천만 한 상태입니다\n· 미판정이 0이 되어야 저장할 수 있습니다 — 외부 이수·개설 요청으로 판정해도 됩니다");
   }
   function tnAccept(i){ TN_ROWS[i].m="fixed"; tnRender(); }
   function tnPick(i){
-    alert("과목 마스터 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 과목을 직접 지정합니다\n→ 사회복지행정실무 (선택 3학점) 선택한 것으로 처리");
+    alert("과목 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 우리 과목을 직접 지정합니다\n→ 사회복지행정실무 (선택 3학점) 선택한 것으로 처리");
     TN_ROWS[i].to="사회복지행정실무"; TN_ROWS[i].m="fixed"; tnRender();
   }
+  function tnExt(i){
+    alert("외부 이수로 표시 (시연)\n'"+TN_ROWS[i].raw+"' 은 우리가 팔지 않는 과목입니다\n· 학습계획·학점 집계에는 그대로 남습니다\n· 가격 계산에서는 빠집니다 (우리 매출 아님)\n· 학생 화면에는 '타기관 수강' 으로 안내됩니다");
+    TN_ROWS[i].m="ext"; TN_ROWS[i].to=TN_ROWS[i].raw; tnRender();
+  }
+  function tnReq(i){
+    alert("개설 요청 (시연)\n'"+TN_ROWS[i].raw+"' 을 신규 개설 대상으로 접수합니다\n· 템플릿에는 '개설 대기' 상태로 담깁니다\n· 개설이 확정되기 전에는 이 템플릿으로 만든 설계를 발송할 수 없습니다\n· 개설 확정되면 자동으로 우리 과목으로 전환됩니다");
+    TN_ROWS[i].m="req"; TN_ROWS[i].to=TN_ROWS[i].raw; tnRender();
+  }
   function tnDrop(i){ TN_ROWS[i].m="drop"; tnRender(); }
-  function tnUndo(i){ TN_ROWS[i].m=TN_ROWS[i].to?"fixed":"none"; tnRender(); }
+  function tnUndo(i){ TN_ROWS[i].m="none"; TN_ROWS[i].to=""; tnRender(); }
   function tnSaveGo(){
     const n=TN_ROWS.filter(r=>r.m==="none").length;
-    if(n>0){ alert("매칭되지 않은 과목이 "+n+"건 남아 있어 저장할 수 없습니다 (시연)"); return; }
-    alert("템플릿 저장 (시연)\n· 저장 범위: "+(tnScopeV==="mine"?"내 템플릿":"팀 공유")+"\n· 빌더의 템플릿 목록에 즉시 노출\n· 차수·개강일 없음 — 상대 학기로만 저장\n· 생성 이력 자동 기록");
+    if(n>0){ alert("판정이 안 끝난 과목이 "+n+"건 남아 있어 저장할 수 없습니다 (시연)"); return; }
+    const live=TN_ROWS.filter(r=>r.m!=="drop");
+    const ext=live.filter(r=>r.m==="ext").length, req=live.filter(r=>r.m==="req").length;
+    alert("템플릿 저장 (시연)\n· 저장 범위: "+(tnScopeV==="mine"?"내 템플릿":"팀 공유")+
+      "\n· 우리 과목 "+live.filter(r=>r.m==="auto"||r.m==="fixed"||r.m==="near").length+"과목 (가격 계산 대상)"+
+      (ext?"\n· 외부 이수 "+ext+"과목 — 학점만 집계, 가격 제외":"")+
+      (req?"\n· 개설 요청 "+req+"과목 — 개설 확정 전까지 '개설 대기' 표시, 발송 불가":"")+
+      "\n· 차수·개강일 없음 — 상대 학기로만 저장\n· 생성 이력 자동 기록");
   }
 
   function tnRender(){
@@ -583,44 +578,42 @@
     const cFix=live.filter(r=>r.m==="fixed").length;
     const cNear=live.filter(r=>r.m==="near").length;
     const cNone=live.filter(r=>r.m==="none").length;
+    const cExt=live.filter(r=>r.m==="ext").length;
+    const cReq=live.filter(r=>r.m==="req").length;
     const cDrop=TN_ROWS.length-live.length;
-
-    document.getElementById("tnSteps").innerHTML=TN_STEPS.map((t,k)=>{
-      const n=k+1, cls=n===tnStep?"st on":(n<tnStep?"st done":"st");
-      return '<div class="'+cls+'" onclick="tnStepTo('+n+')">'+n+'. '+t+'</div>';
-    }).join("");
-    document.querySelectorAll("#viewTmplNew .blk[data-step]").forEach(b=>{
-      b.classList.toggle("cur",Number(b.dataset.step)===tnStep);
-    });
-    document.getElementById("tnPrev1").style.visibility=tnStep===1?"hidden":"visible";
-    document.getElementById("tnNext1").style.visibility=tnStep===5?"hidden":"visible";
 
     const mt=document.getElementById("tnMatch");
     if(!tnLoaded){
-      mt.innerHTML='<div class="tbl-empty">아직 올린 과목이 없습니다<br>2단계에서 엑셀을 업로드하거나 과목을 검색해 추가하세요</div>';
+      mt.innerHTML='<div class="tbl-empty">아직 올린 과목이 없습니다<br>위에서 엑셀을 업로드하거나 과목을 검색해 추가하세요</div>';
     }else{
-      const badge={auto:'<span class="mb a">자동 매칭</span>',fixed:'<span class="mb f">확인 완료</span>',
-                   near:'<span class="mb n">확인 필요</span>',none:'<span class="mb x">매칭 실패</span>',drop:'<span class="mb d">제외</span>'};
+      const badge={auto:'<span class="mb a">우리 과목</span>',fixed:'<span class="mb f">지정 완료</span>',
+                   near:'<span class="mb n">확인 필요</span>',ext:'<span class="mb e">외부 이수</span>',
+                   req:'<span class="mb q">개설 대기</span>',none:'<span class="mb x">미판정</span>',
+                   drop:'<span class="mb d">제외</span>'};
       const rows=TN_ROWS.map(function(r,i){
-        const cls=r.m==="drop"?"rd":(r.m==="none"?"rx":(r.m==="near"?"rn":""));
+        const cls=r.m==="drop"?"rd":(r.m==="none"?"rx":(r.m==="near"?"rn":(r.m==="ext"?"re":(r.m==="req"?"rq":""))));
         let act="";
         if(r.m==="near") act='<button class="mini" onclick="tnAccept('+i+')">추천 적용</button><button class="mini" onclick="tnPick('+i+')">다른 과목</button>';
-        else if(r.m==="none") act='<button class="mini" onclick="tnPick('+i+')">과목 지정</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
-        else if(r.m==="drop") act='<button class="mini" onclick="tnUndo('+i+')">되살리기</button>';
+        else if(r.m==="none") act='<button class="mini" onclick="tnPick('+i+')">과목 지정</button><button class="mini" onclick="tnExt('+i+')">외부 이수</button><button class="mini" onclick="tnReq('+i+')">개설 요청</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
+        else if(r.m==="drop"||r.m==="ext"||r.m==="req") act='<button class="mini" onclick="tnUndo('+i+')">되돌리기</button>';
         else act='<button class="mini" onclick="tnPick('+i+')">변경</button>';
-        const to=r.to||'<span style="color:var(--red)">지정 필요</span>';
+        const to=r.to||'<span style="color:var(--red)">판정 필요</span>';
+        const price=(r.m==="ext")?'제외':(r.m==="req"?'개설 후':'포함');
         return '<tr class="'+cls+'"><td>'+r.s+'학기차</td><td class="raw">'+r.raw+'</td><td class="ar">→</td>'+
-               '<td class="to">'+to+'</td><td>'+r.cr+'</td><td>'+r.a+'</td><td>'+badge[r.m]+'</td><td>'+act+'</td></tr>';
+               '<td class="to">'+to+'</td><td>'+r.cr+'</td><td>'+r.a+'</td><td>'+badge[r.m]+'</td>'+
+               '<td style="font-size:10.5px;color:var(--gray-light)">'+(r.m==="drop"?'—':price)+'</td><td>'+act+'</td></tr>';
       }).join("");
       mt.innerHTML=
         '<div class="sum">'+
           '<div class="s"><div class="v">'+TN_ROWS.length+'</div><div class="k">읽은 행</div></div>'+
-          '<div class="s ok"><div class="v">'+(cAuto+cFix)+'</div><div class="k">매칭 완료</div></div>'+
+          '<div class="s ok"><div class="v">'+(cAuto+cFix)+'</div><div class="k">우리 과목</div></div>'+
           '<div class="s warn"><div class="v">'+cNear+'</div><div class="k">확인 필요</div></div>'+
-          '<div class="s bad"><div class="v">'+cNone+'</div><div class="k">매칭 실패</div></div>'+
+          '<div class="s"><div class="v" style="color:var(--violet)">'+cExt+'</div><div class="k">외부 이수</div></div>'+
+          '<div class="s"><div class="v" style="color:#3b5bbf">'+cReq+'</div><div class="k">개설 대기</div></div>'+
+          '<div class="s bad"><div class="v">'+cNone+'</div><div class="k">미판정</div></div>'+
           '<div class="s"><div class="v">'+cDrop+'</div><div class="k">제외</div></div>'+
         '</div>'+
-        '<div class="mt-wrap"><table class="mt"><thead><tr><th>학기</th><th>엑셀 과목명</th><th></th><th>마스터 과목</th><th>학점</th><th>이수구분</th><th>상태</th><th></th></tr></thead>'+
+        '<div class="mt-wrap"><table class="mt"><thead><tr><th>학기</th><th>엑셀 과목명</th><th></th><th>연결된 과목</th><th>학점</th><th>이수구분</th><th>상태</th><th>가격</th><th></th></tr></thead>'+
         '<tbody>'+rows+'</tbody></table></div>';
     }
 
@@ -630,22 +623,29 @@
     }else{
       const sems=[...new Set(live.map(r=>r.s))].sort(function(x,y){return x-y;});
       const ok=live.filter(r=>r.m!=="none");
+      const ours=ok.filter(r=>r.m!=="ext"&&r.m!=="req");
+      const outs=ok.filter(r=>r.m==="ext"), reqs=ok.filter(r=>r.m==="req");
+      const cls={none:" x",ext:" e",req:" q"};
       pv.innerHTML=sems.map(function(s){
         const rs=live.filter(r=>r.s===s);
         const cr=rs.filter(r=>r.m!=="none").reduce(function(t,r){return t+r.cr;},0);
         const chips=rs.map(function(r){
-          return '<span class="chip'+(r.m==="none"?" x":"")+'">'+(r.to||r.raw)+(r.m==="none"?" ?":"")+'</span>';
+          const tail=r.m==="none"?" ?":(r.m==="ext"?" 외부":(r.m==="req"?" 대기":""));
+          return '<span class="chip'+(cls[r.m]||"")+'">'+(r.to||r.raw)+tail+'</span>';
         }).join("");
         return '<div class="semp"><div class="sh"><span>'+s+'학기차</span><span class="c">'+rs.length+'과목 · '+cr+'학점</span></div>'+
                '<div class="chips">'+chips+'</div></div>';
       }).join("")+
-      '<div class="footer-hint" style="margin-top:2px">총 '+ok.length+'과목 · '+ok.reduce(function(t,r){return t+r.cr;},0)+
-      '학점 — 상대 학기 기준. 실제 개강일은 빌더에서 차수를 고를 때 정해집니다.</div>';
+      '<div class="footer-hint" style="margin-top:2px">우리 과정 '+ours.length+'과목 · '+ours.reduce(function(t,r){return t+r.cr;},0)+'학점 <b>(가격 계산 대상)</b>'+
+      (outs.length?'<br>외부 이수 '+outs.length+'과목 · '+outs.reduce(function(t,r){return t+r.cr;},0)+'학점 — 학점만 집계, 가격 제외':'')+
+      (reqs.length?'<br>개설 대기 '+reqs.length+'과목 · '+reqs.reduce(function(t,r){return t+r.cr;},0)+'학점 — 개설 확정 후 가격 반영':'')+
+      '<br>합계 '+ok.length+'과목 · '+ok.reduce(function(t,r){return t+r.cr;},0)+'학점 — 상대 학기 기준. 실제 개강일은 빌더에서 차수를 고를 때 정해집니다.</div>';
     }
 
     const sv=document.getElementById("tnSave"), bl=document.getElementById("tnBlocked");
-    if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 — 2단계에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
-    else if(cNone>0){ sv.disabled=true; bl.textContent="매칭 실패 "+cNone+"건 — 과목을 지정하거나 행을 제외해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
+    if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 — 위 [과목 구성 방식]에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
+    else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 — 과목 지정 · 외부 이수 · 개설 요청 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
+    else if(cReq>0){ sv.disabled=false; bl.textContent="개설 대기 "+cReq+"건 — 저장은 되지만 개설 확정 전까지 이 템플릿으로 만든 설계는 발송할 수 없습니다"; bl.style.color="#3b5bbf"; }
     else if(cNear>0){ sv.disabled=false; bl.textContent="확인 필요 "+cNear+"건 — 추천값 그대로 저장됩니다"; bl.style.color="var(--amber)"; }
     else { sv.disabled=false; bl.textContent=""; }
   }
