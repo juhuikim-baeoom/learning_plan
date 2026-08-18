@@ -122,6 +122,8 @@
 
   /* 패키지 모드 */
   .mode-body{margin-top:18px;}
+  #pkgBody{display:none;}
+  #pkgBody.show{display:block;}
   .pkg-hero{border:2px solid var(--main);border-radius:8px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden;background:#fff;}
   .hero-grid{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;}
   .hero-left{flex:1;min-width:300px;padding-top:8px;}
@@ -407,93 +409,214 @@
      현행은 격자선·테두리로 영역을 나눈다. 여기서는 그 선을 걷어내고 여백·배경·라운드로 나눈다.
      구조(A·B·C)는 손대지 않고 표현만 바꾸므로, 두 축을 교차해서 무엇이 구조 차이이고
      무엇이 표현 차이인지 분리해 볼 수 있다. 현행 탭에는 적용하지 않는다 (기준선 유지) */
-  body.skin-new{--line:#eceef1;--line-dark:#dde1e6;--panel:#f5f7f9;--gray:#5b6470;--gray-light:#98a1ad;--ink:#171a1f;}
+  body.skin-air{--line:#eceef1;--line-dark:#dde1e6;--panel:#f5f7f9;--gray:#5b6470;--gray-light:#98a1ad;--ink:#171a1f;}
 
   /* 타이틀 · 안내 */
-  body.skin-new .page-top{border-bottom:none;padding-bottom:4px;}
-  body.skin-new .page-top h1{font-size:34px;letter-spacing:-1.4px;}
-  body.skin-new .g-chip{border:none;background:#f0f2f5;border-radius:9px;padding:6px 13px;}
-  body.skin-new .g-chip.strong{background:var(--soft);border:none;color:var(--main);}
-  body.skin-new .top-btn{border:none;background:#f0f2f5;border-radius:9px;padding:6px 14px;}
+  body.skin-air .page-top{border-bottom:none;padding-bottom:4px;}
+  body.skin-air .page-top h1{font-size:34px;letter-spacing:-1.4px;}
+  body.skin-air .g-chip{border:none;background:#f0f2f5;border-radius:9px;padding:6px 13px;}
+  body.skin-air .g-chip.strong{background:var(--soft);border:none;color:var(--main);}
+  body.skin-air .top-btn{border:none;background:#f0f2f5;border-radius:9px;padding:6px 14px;}
 
   /* 과정 카테고리 — 박스 탭 → 밑줄 탭 */
-  body.skin-new .course-tabs{border-left:none;gap:6px;border-bottom:1px solid var(--line);}
-  body.skin-new .course-tab{border:none;background:transparent;padding:13px 4px 14px;border-bottom:2px solid transparent;font-size:15px;}
-  body.skin-new .course-tab.act{background:transparent;border-top:none;border-bottom:2px solid var(--main);color:var(--main);}
-  body.skin-new .course-tab.act::after{display:none;}
+  body.skin-air .course-tabs{border-left:none;gap:6px;border-bottom:1px solid var(--line);}
+  body.skin-air .course-tab{border:none;background:transparent;padding:13px 4px 14px;border-bottom:2px solid transparent;font-size:15px;}
+  body.skin-air .course-tab.act{background:transparent;border-top:none;border-bottom:2px solid var(--main);color:var(--main);}
+  body.skin-air .course-tab.act::after{display:none;}
 
   /* 과정 칩 — 테두리 대신 배경 */
-  body.skin-new .course-row{border:none;background:transparent;padding:16px 0 2px;}
-  body.skin-new .course-row.rows{padding:14px 0 2px;}
-  body.skin-new .c-chip{border:none;background:#f0f2f5;border-radius:11px;padding:10px 17px;}
-  body.skin-new .c-chip.act{background:var(--main);color:#fff;}
-  body.skin-new .c-chip.more{background:transparent;box-shadow:inset 0 0 0 1px var(--line-dark);}
-  body.skin-new .chip-line + .chip-line{border-top:1px solid var(--line);}
+  body.skin-air .course-row{border:none;background:transparent;padding:16px 0 2px;}
+  body.skin-air .course-row.rows{padding:14px 0 2px;}
+  body.skin-air .c-chip{border:none;background:#f0f2f5;border-radius:11px;padding:10px 17px;}
+  body.skin-air .c-chip.act{background:var(--main);color:#fff;}
+  body.skin-air .c-chip.more{background:transparent;box-shadow:inset 0 0 0 1px var(--line-dark);}
+  body.skin-air .chip-line + .chip-line{border-top:1px solid var(--line);}
 
   /* 수강방식 — 붙은 버튼 → 세그먼트 컨트롤 */
-  body.skin-new .select-zone{border:none;background:transparent;padding:8px 0 0;}
-  body.skin-new .sel-row + .sel-row{border-top:none;margin-top:12px;padding-top:4px;}
-  body.skin-new .mode-toggle,body.skin-new .mtabs{background:#e8ecf1;border-radius:13px;padding:4px;gap:4px;}
-  body.skin-new .mode-toggle button,body.skin-new .mtabs button{border:none !important;border-radius:10px;background:transparent;}
-  body.skin-new .mode-toggle button.active,body.skin-new .mtabs button.active{background:#fff;color:var(--main);box-shadow:0 1px 4px rgba(20,30,50,.2);}
-  body.skin-new .mode-toggle button.active small,body.skin-new .mtabs button.active small{color:var(--gray);opacity:1;}
-  body.skin-new .main-top{border-bottom:none;}
+  body.skin-air .select-zone{border:none;background:transparent;padding:8px 0 0;}
+  body.skin-air .sel-row + .sel-row{border-top:none;margin-top:12px;padding-top:4px;}
+  body.skin-air .mode-toggle,body.skin-air .mtabs{background:#e8ecf1;border-radius:13px;padding:4px;gap:4px;}
+  body.skin-air .mode-toggle button,body.skin-air .mtabs button{border:none !important;border-radius:10px;background:transparent;}
+  body.skin-air .mode-toggle button.active,body.skin-air .mtabs button.active{background:#fff;color:var(--main);box-shadow:0 1px 4px rgba(20,30,50,.2);}
+  body.skin-air .mode-toggle button.active small,body.skin-air .mtabs button.active small{color:var(--gray);opacity:1;}
+  body.skin-air .main-top{border-bottom:none;}
 
   /* 개강일 — 맞붙은 탭 → 떨어진 카드 */
-  body.skin-new .round-tabs{gap:8px;}
-  body.skin-new .round-tab,body.skin-new .round-tab + .round-tab{border:1px solid var(--line);border-radius:13px;background:#fff;padding:16px 8px;}
-  body.skin-new .round-tab.act{background:var(--soft);border:1px solid var(--main);box-shadow:inset 0 0 0 1px var(--main);}
-  body.skin-new .round-info{border:none;background:transparent;padding:13px 2px 0;}
-  body.skin-new .rrow{border-bottom:none;}
+  body.skin-air .round-tabs{gap:8px;}
+  body.skin-air .round-tab,body.skin-air .round-tab + .round-tab{border:1px solid var(--line);border-radius:13px;background:#fff;padding:16px 8px;}
+  body.skin-air .round-tab.act{background:var(--soft);border:1px solid var(--main);box-shadow:inset 0 0 0 1px var(--main);}
+  body.skin-air .round-info{border:none;background:transparent;padding:13px 2px 0;}
+  body.skin-air .rrow{border-bottom:none;}
 
   /* 상품 — 테두리 → 그림자 */
-  body.skin-new .pkg-hero{border:none;border-radius:18px;box-shadow:0 3px 16px rgba(20,30,50,.1);padding:26px 28px;}
-  body.skin-new .pkg-row{border:none;border-radius:14px;box-shadow:0 1px 6px rgba(20,30,50,.08);background:#fff;padding:16px 20px;margin-bottom:10px;}
-  body.skin-new .cross-zone .pkg-row{background:#fff;}
-  body.skin-new .benefit{border:none;background:#f2f5f8;border-radius:9px;}
-  body.skin-new .credit-sum,body.skin-new .plan-top{border:none;border-radius:13px;}
-  body.skin-new .compose-preview{border-radius:10px;}
-  body.skin-new .btn-compose{border:none;background:#f0f2f5;border-radius:8px;padding:4px 10px;}
-  body.skin-new .apply-sm{border-radius:10px;padding:10px 20px;}
-  body.skin-new .pkg-apply,body.skin-new .cart-cta,body.skin-new .plan-pay button{border-radius:11px;}
-  body.skin-new .pkg-none{border:none;border-radius:16px;}
-  body.skin-new .cross-zone{border-top:1px solid var(--line);}
+  body.skin-air .pkg-hero{border:none;border-radius:18px;box-shadow:0 3px 16px rgba(20,30,50,.1);padding:26px 28px;}
+  body.skin-air .pkg-row{border:none;border-radius:14px;box-shadow:0 1px 6px rgba(20,30,50,.08);background:#fff;padding:16px 20px;margin-bottom:10px;}
+  body.skin-air .cross-zone .pkg-row{background:#fff;}
+  body.skin-air .benefit{border:none;background:#f2f5f8;border-radius:9px;}
+  body.skin-air .credit-sum,body.skin-air .plan-top{border:none;border-radius:13px;}
+  body.skin-air .compose-preview{border-radius:10px;}
+  body.skin-air .btn-compose{border:none;background:#f0f2f5;border-radius:8px;padding:4px 10px;}
+  body.skin-air .apply-sm{border-radius:10px;padding:10px 20px;}
+  body.skin-air .pkg-apply,body.skin-air .cart-cta,body.skin-air .plan-pay button{border-radius:11px;}
+  body.skin-air .pkg-none{border:none;border-radius:16px;}
+  body.skin-air .cross-zone{border-top:1px solid var(--line);}
 
   /* 과목표 — 격자 제거, 행 구분선만 */
-  body.skin-new table.subj{font-size:13.5px;}
-  body.skin-new table.subj th{background:transparent;border:none;border-bottom:1px solid var(--line-dark);padding:11px 6px;font-size:11.5px;color:var(--gray-light);white-space:nowrap;}
-  body.skin-new table.subj td{border:none;border-bottom:1px solid var(--line);padding:16px 12px;}
-  body.skin-new table.subj td.grp{background:transparent;border-right:1px solid var(--line);color:var(--gray-light);font-size:12px;}
-  body.skin-new .f-chip{border:none;background:#f0f2f5;border-radius:10px;padding:7px 15px;}
-  body.skin-new .f-chip.act{background:var(--main);color:#fff;}
-  body.skin-new .login-demo{border-radius:8px;}
+  body.skin-air table.subj{font-size:13.5px;}
+  body.skin-air table.subj th{background:transparent;border:none;border-bottom:1px solid var(--line-dark);padding:11px 6px;font-size:11.5px;color:var(--gray-light);white-space:nowrap;}
+  body.skin-air table.subj td{border:none;border-bottom:1px solid var(--line);padding:16px 12px;}
+  body.skin-air table.subj td.grp{background:transparent;border-right:1px solid var(--line);color:var(--gray-light);font-size:12px;}
+  body.skin-air .f-chip{border:none;background:#f0f2f5;border-radius:10px;padding:7px 15px;}
+  body.skin-air .f-chip.act{background:var(--main);color:#fff;}
+  body.skin-air .login-demo{border-radius:8px;}
 
   /* 좌측바 (B) */
-  body.skin-new .side-nav{border:none;background:#f2f5f8;border-radius:16px;padding:14px 8px 10px;}
-  body.skin-new .sn-title{border-bottom:none;padding:0 10px 8px;}
-  body.skin-new .sn-head{padding:0 10px 7px;}
-  body.skin-new .sn-item{border-left:none;border-radius:10px;padding:8px 10px;}
-  body.skin-new .sn-item:hover{background:#e8ecf0;}
-  body.skin-new .sn-item.act{background:var(--main);color:#fff;border-left:none;}
-  body.skin-new .sn-item.act em{color:#fff;border-color:rgba(255,255,255,.55);}
+  body.skin-air .side-nav{border:none;background:#f2f5f8;border-radius:16px;padding:14px 8px 10px;}
+  body.skin-air .sn-title{border-bottom:none;padding:0 10px 8px;}
+  body.skin-air .sn-head{padding:0 10px 7px;}
+  body.skin-air .sn-item{border-left:none;border-radius:10px;padding:8px 10px;}
+  body.skin-air .sn-item:hover{background:#e8ecf0;}
+  body.skin-air .sn-item.act{background:var(--main);color:#fff;border-left:none;}
+  body.skin-air .sn-item.act em{color:#fff;border-color:rgba(255,255,255,.55);}
 
   /* 플래너 (C) */
-  body.skin-new .plan-pool{border:none;background:var(--panel);border-radius:16px;}
-  body.skin-new .pp-head,body.skin-new .pp-pkg,body.skin-new .pp-item{border-bottom-color:#e4e8ec;}
-  body.skin-new .pp-pkg{background:transparent;}
-  body.skin-new .ppk,body.skin-new .tr-card{border:none;border-radius:10px;box-shadow:0 1px 3px rgba(20,30,50,.1);}
-  body.skin-new .track{border:none;background:var(--panel);border-radius:16px;}
-  body.skin-new .track.cur{background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.11);}
-  body.skin-new .tr-head,body.skin-new .tr-foot{border-color:#e4e8ec;}
-  body.skin-new .plan-head select{border:none;background:#f0f2f5;border-radius:10px;padding:9px 12px;}
-  body.skin-new .plan-pay{border:none;border-radius:16px;background:#fff;box-shadow:0 3px 16px rgba(20,30,50,.11);}
+  body.skin-air .plan-pool{border:none;background:var(--panel);border-radius:16px;}
+  body.skin-air .pp-head,body.skin-air .pp-pkg,body.skin-air .pp-item{border-bottom-color:#e4e8ec;}
+  body.skin-air .pp-pkg{background:transparent;}
+  body.skin-air .ppk,body.skin-air .tr-card{border:none;border-radius:10px;box-shadow:0 1px 3px rgba(20,30,50,.1);}
+  body.skin-air .track{border:none;background:var(--panel);border-radius:16px;}
+  body.skin-air .track.cur{background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.11);}
+  body.skin-air .tr-head,body.skin-air .tr-foot{border-color:#e4e8ec;}
+  body.skin-air .plan-head select{border:none;background:#f0f2f5;border-radius:10px;padding:9px 12px;}
+  body.skin-air .plan-pay{border:none;border-radius:16px;background:#fff;box-shadow:0 3px 16px rgba(20,30,50,.11);}
 
   /* 트랙 상태색은 유지 — 미배치·미개설은 배경으로 구분하는 정보라 스킨이 지우면 안 된다 */
-  body.skin-new .track.un{background:#fff7ed;}
-  body.skin-new .track.tbd{background:#f7f9fb;}
+  body.skin-air .track.un{background:#fff7ed;}
+  body.skin-air .track.tbd{background:#f7f9fb;}
 
   /* 하단 합산 바 */
-  body.skin-new .cart-bar{border-top:none;box-shadow:0 -3px 22px rgba(20,30,50,.13);}
+  body.skin-air .cart-bar{border-top:none;box-shadow:0 -3px 22px rgba(20,30,50,.13);}
+
+  /* ══ 커머스형 스킨 — 수강신청을 구매 경험으로 ══
+     상품을 세로 리스트가 아니라 2단 카드 그리드로 깔고, 가격·할인율·CTA를 최대로 키운다.
+     패키지 발견에는 유리하지만 단과 171과목 훑기에는 불리한 트레이드오프를 그대로 드러낸다.
+     CTA는 브랜드 강조색(배움 오렌지) — 현행 사이트의 수강신청 버튼과 같은 계열 */
+  body.skin-shop{--cta:#F26B21;}
+  body.skin-shop .page-top h1{font-size:30px;}
+  body.skin-shop .course-tab.act{border-top:3px solid var(--cta);color:var(--ink);}
+  body.skin-shop .course-tab.act .cat-desc{color:var(--cta);}
+  body.skin-shop .c-chip{border-radius:6px;font-weight:800;}
+  body.skin-shop .c-chip.act{background:var(--ink);border-color:var(--ink);}
+  body.skin-shop .mode-toggle button.active,body.skin-shop .mtabs button.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  body.skin-shop .mode-toggle button.active small,body.skin-shop .mtabs button.active small{color:rgba(255,255,255,.82);}
+  body.skin-shop .round-tab.act{background:#fff5ef;border-color:var(--cta);border-bottom:2px solid var(--cta);}
+  body.skin-shop .round-tab.act .rt2,body.skin-shop .round-tab.act .rt3{color:var(--cta);}
+  body.skin-shop .rt-badge.ok{color:var(--cta);border-color:var(--cta);}
+
+  /* 상품 — 세로 리스트 → 2단 카드 그리드 */
+  body.skin-shop #pkgBody.show,body.skin-shop .cross-zone{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;}
+  body.skin-shop .pkg-hero,body.skin-shop .cross-zone,body.skin-shop .cz-head,
+  body.skin-shop .prac-notice,body.skin-shop .pkg-none{flex:1 1 100%;}
+  body.skin-shop .pkg-hero{margin-bottom:0;border-width:3px;border-color:var(--cta);border-radius:12px;}
+  body.skin-shop .pkg-row{flex:1 1 calc(50% - 6px);min-width:290px;margin-bottom:0;flex-direction:column;
+    align-items:flex-start;gap:0;border:1px solid var(--line-dark);border-radius:12px;padding:16px 20px;
+    transition:transform .12s,box-shadow .12s;}
+  body.skin-shop .pkg-row:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(20,30,50,.13);}
+  body.skin-shop .pkg-row .pk-badge{align-self:flex-start;margin-bottom:6px;}
+  body.skin-shop .pkg-row .rn{flex:1;width:100%;min-width:0;}
+  body.skin-shop .pkg-row .rn .nm{display:block;font-size:16px;font-weight:800;line-height:1.35;}
+  body.skin-shop .pkg-row .rp{width:100%;text-align:left;min-width:0;margin-top:12px;}
+  body.skin-shop .pkg-row .rp .o{display:block;margin:0 0 2px;}
+  body.skin-shop .pkg-row .rp .f{font-size:25px;letter-spacing:-.5px;}
+  body.skin-shop .pkg-row .rp .d{display:inline-block;background:var(--red);color:#fff;border-radius:4px;
+    padding:2px 7px;font-size:12px;margin-left:8px;}
+  body.skin-shop .pkg-row .rp .rper{margin-top:3px;}
+  body.skin-shop .apply-sm{width:100%;margin-top:13px;background:var(--cta);border-color:var(--cta);color:#fff;
+    font-size:14px;font-weight:800;padding:13px;border-radius:8px;}
+  body.skin-shop .pkg-apply{background:var(--cta);font-size:15px;padding:15px 32px;}
+  body.skin-shop .hero-price .fin,body.skin-shop .pkg-price .fin,body.skin-shop .hero-price .m-main b{color:var(--cta);}
+  body.skin-shop .ribbon,body.skin-shop .cart-cta,body.skin-shop .plan-pay button{background:var(--cta);}
+  body.skin-shop .pp-add{border-color:var(--cta);color:var(--cta);}
+  body.skin-shop .pp-item.on .pp-add{background:var(--cta);color:#fff;}
+  body.skin-shop .tr-pay,body.skin-shop .plan-top b{color:var(--cta);}
+
+  /* 표 — 가격을 CTA 색으로 올리고 행 호버 추가 */
+  body.skin-shop table.subj tbody tr:hover td{background:#fffaf6;}
+  body.skin-shop td.fee .f{font-size:16px;color:var(--cta);}
+  body.skin-shop .f-chip.act{background:var(--ink);border-color:var(--ink);}
+
+  /* ══ 딥헤더형 스킨 — '고르는 곳'과 '보는 곳'을 색으로 가른다 ══
+     선택 축(과정·수강방식·개강일)만 짙은 판에 올리고 상품 영역은 흰색으로 남긴다.
+     시안마다 축을 어디에 뒀는지가 짙은 덩어리의 위치·크기로 바로 드러난다 */
+  body.skin-dark{--dk:#1d232e;--dk2:#2b3341;--dkline:#3b4553;--dktx:#c3ccd9;--dkdim:#8593a6;}
+
+  /* A — 세 블록을 붙여 하나의 짙은 판으로 (상품은 #contentHolder라 영향 없음) */
+  body.skin-dark .course-tabs{background:var(--dk);border:none;border-bottom:1px solid var(--dkline);
+    border-radius:14px 14px 0 0;padding:4px 20px 0;gap:6px;}
+  body.skin-dark .course-tab{border:none;background:transparent;color:var(--dktx);
+    border-bottom:2px solid transparent;font-size:14.5px;padding:15px 4px;}
+  body.skin-dark .course-tab .cat-desc{color:var(--dkdim);}
+  body.skin-dark .course-tab.act{background:transparent;border-top:none;border-bottom:2px solid #fff;color:#fff;}
+  body.skin-dark .course-tab.act .cat-desc{color:#fff;opacity:.7;}
+  body.skin-dark .course-tab.act::after{display:none;}
+  body.skin-dark .course-row,body.skin-dark .course-row.rows{background:var(--dk);border:none;padding:15px 20px 2px;}
+  body.skin-dark .c-chip{background:var(--dk2);border-color:var(--dkline);color:var(--dktx);border-radius:9px;}
+  body.skin-dark .c-chip.act{background:#fff;border-color:#fff;color:var(--dk);}
+  body.skin-dark .c-chip .mb,body.skin-dark .course-tab .mini-badge{background:var(--dk2);border-color:var(--main);color:#7fd4ff;}
+  body.skin-dark .chip-label{color:#fff;}
+  body.skin-dark .chip-label small{color:var(--dkdim);}
+  body.skin-dark .chip-line + .chip-line{border-top-color:var(--dkline);}
+  body.skin-dark .select-zone{background:var(--dk);border:none;border-radius:0 0 14px 14px;padding:10px 20px 20px;}
+  body.skin-dark .sel-row + .sel-row{border-top-color:var(--dkline);}
+  body.skin-dark #contentHolder{margin-top:2px;}
+
+  /* 축 컨트롤 — 어두운 판 위에서 읽히도록 */
+  body.skin-dark .mode-toggle button,body.skin-dark .mtabs button{background:var(--dk2);border-color:var(--dkline);color:var(--dktx);}
+  body.skin-dark .mode-toggle button small,body.skin-dark .mtabs button small{color:var(--dkdim);}
+  body.skin-dark .mode-toggle button.active,body.skin-dark .mtabs button.active{background:var(--main);border-color:var(--main);color:#fff;}
+  body.skin-dark .mode-toggle button.active small,body.skin-dark .mtabs button.active small{color:rgba(255,255,255,.85);}
+  body.skin-dark .round-tab{background:var(--dk2);border-color:var(--dkline);}
+  body.skin-dark .round-tab .rt1{color:var(--dkdim);}
+  body.skin-dark .round-tab .rt2{color:var(--dktx);}
+  body.skin-dark .round-tab .rt3{color:var(--dkdim);}
+  body.skin-dark .round-tab.off{background:#232a36;}
+  body.skin-dark .round-tab.act{background:var(--main);border-color:var(--main);}
+  body.skin-dark .round-tab.act .rt1,body.skin-dark .round-tab.act .rt2,body.skin-dark .round-tab.act .rt3{color:#fff;opacity:1;}
+  body.skin-dark .rt-badge{background:var(--dk);}
+  body.skin-dark .round-info{background:transparent;border:none;color:var(--dkdim);padding:13px 2px 0;}
+  body.skin-dark .round-info b{color:#fff;}
+
+  /* B — 좌측바와 상단 블록이 각각 짙은 판. 축을 둘로 나눠 뒀다는 게 그대로 보인다 */
+  body.skin-dark .side-nav{background:var(--dk);border:none;border-radius:14px;padding:14px 8px 12px;}
+  body.skin-dark .sn-title{color:var(--dkdim);border-bottom-color:var(--dkline);padding:0 10px 9px;}
+  body.skin-dark .sn-head{color:#fff;padding:0 10px 7px;}
+  body.skin-dark .sn-head small{color:var(--dkdim);}
+  body.skin-dark .sn-item{color:var(--dktx);border-left:none;border-radius:9px;padding:8px 10px;}
+  body.skin-dark .sn-item:hover{background:var(--dk2);color:#fff;}
+  body.skin-dark .sn-item.act{background:var(--main);color:#fff;}
+  body.skin-dark .sn-item.act em{color:#fff;border-color:rgba(255,255,255,.5);}
+  body.skin-dark .side-top{background:var(--dk);border-radius:14px;padding:8px 18px 16px;margin-bottom:14px;}
+  body.skin-dark .main-top{border-bottom-color:var(--dkline);}
+  body.skin-dark .rrow{border-bottom:none;}
+
+  /* C — 과목 풀과 상단 컨트롤만 짙게. 학기 트랙(=상품)은 흰색으로 남는다 */
+  body.skin-dark .plan-pool{background:var(--dk);border:none;border-radius:14px;}
+  body.skin-dark .pp-head{color:#fff;border-bottom-color:var(--dkline);}
+  body.skin-dark .pp-head small,body.skin-dark .pp-pkg .ppk-t{color:var(--dkdim);}
+  body.skin-dark .pp-pkg{background:transparent;border-bottom-color:var(--dkline);}
+  body.skin-dark .ppk{background:var(--dk2);border-color:var(--dkline);}
+  body.skin-dark .ppk .k1{color:#fff;}
+  body.skin-dark .ppk .k2{color:var(--dkdim);}
+  body.skin-dark .ppk .k3{color:#7fd4ff;}
+  body.skin-dark .ppk-clear{background:transparent;border-color:var(--dkline);color:var(--dkdim);}
+  body.skin-dark .pp-item{border-bottom-color:var(--dkline);}
+  body.skin-dark .pp-item .ppn{color:var(--dktx);}
+  body.skin-dark .pp-item .ppn small{color:var(--dkdim);}
+  body.skin-dark .pp-item.on{background:var(--dk2);}
+  body.skin-dark .pp-item.off .ppn{color:#6b7788;}
+  body.skin-dark .pp-add{background:transparent;}
+  body.skin-dark .plan-head{background:var(--dk);border-radius:12px;padding:12px 16px;}
+  body.skin-dark .plan-head label{color:var(--dkdim);}
 
   /* 기획설명 — 시연 전용 (선택한 시안의 의도·전제를 화면에서 바로 읽히게) */
   .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:-6px 0 18px;}
@@ -579,8 +702,7 @@
     <button id="layPlan" onclick="applyLayout('plan')">C. 학기 플래너</button>
     <i class="div"></i>
     <span class="sk-lab">스킨</span>
-    <button id="skOld" class="skin act" onclick="applySkin('old')">현행풍</button>
-    <button id="skNew" class="skin" onclick="applySkin('new')">개편풍</button>
+    <span id="skinBtns"></span>
     <em class="sk-note" id="skinNote"></em>
     <button class="cmp-tog" id="cmpTog" onclick="toggleCmp()">한눈에 비교 ▾</button>
   </div>
@@ -1141,7 +1263,8 @@ function setMode(m){
   $("mSingle").classList.toggle("active",m==="single");
   $("sPkg").classList.toggle("active",m==="pkg");
   $("sSingle").classList.toggle("active",m==="single");
-  $("pkgBody").style.display = m==="pkg"?"block":"none";
+  // 인라인 display 대신 클래스 — 스킨이 표시 방식(블록/그리드)을 바꿀 수 있어야 한다
+  $("pkgBody").classList.toggle("show", m==="pkg");
   $("singleBody").classList.toggle("show",m==="single");
   // 수강방식도 개설 차수 집합을 바꾸는 부모 축
   syncRound(); renderRounds(); renderRoundPicker();
@@ -1535,16 +1658,22 @@ function renderCur(){
 
 /* 스킨 = 구조와 독립된 두 번째 축. 현행은 기준선이므로 항상 현행풍으로 고정한다 —
    표현까지 같이 바뀌면 무엇이 구조 차이인지 흐려진다 */
+const SKINS=[
+  {id:"old",  n:"현행풍",   cls:""},
+  {id:"air",  n:"여백형",   cls:"skin-air",  d:"격자선을 걷고 여백·라운드로"},
+  {id:"shop", n:"커머스형", cls:"skin-shop", d:"상품 카드 그리드 · 가격과 CTA 강조"},
+  {id:"dark", n:"딥헤더형", cls:"skin-dark", d:"선택 축을 짙은 판으로 분리"}
+];
 let skin="old";
-function applySkin(s){
-  skin=s;
-  $("skOld").classList.toggle("act",s==="old");
-  $("skNew").classList.toggle("act",s==="new");
-  syncSkin();
-}
+function applySkin(s){ skin=s; syncSkin(); }
 function syncSkin(){
-  document.body.classList.toggle("skin-new", skin==="new" && layout!=="cur");
-  $("skinNote").textContent = layout==="cur" ? "현행은 기준선 — 스킨 고정" : "";
+  // 현행은 기준선이므로 언제나 현행풍 — 표현까지 바뀌면 무엇이 구조 차이인지 흐려진다
+  const on = layout==="cur" ? "old" : skin;
+  SKINS.forEach(k=>{ if(k.cls) document.body.classList.toggle(k.cls, k.id===on); });
+  $("skinBtns").innerHTML = SKINS.map(k=>
+    `<button class="skin ${skin===k.id?"act":""}" title="${k.d||"현행 화면의 표현을 그대로"}" onclick="applySkin('${k.id}')">${k.n}</button>`).join("");
+  const cur=SKINS.find(k=>k.id===skin);
+  $("skinNote").textContent = layout==="cur" ? "현행은 기준선 — 스킨 고정" : (cur.d||"");
 }
 
 let layout="stack", modeSaved=null;
@@ -1856,7 +1985,7 @@ function goCart(){ openConfirm("cart"); }
 syncDept();
 renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderFilters(); renderTable();
 const _q=new URLSearchParams(location.search), _l=_q.get("layout");
-if(_q.get("skin")==="new") applySkin("new");
+const _s=_q.get("skin"); if(SKINS.some(k=>k.id===_s)) skin=_s;
 applyLayout(["cur","side","plan"].includes(_l) ? _l : "stack");
 </script>
 </body>
