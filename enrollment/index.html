@@ -66,7 +66,6 @@
   .mode-toggle button.active small{color:rgba(255,255,255,.85);}
   .mode-caption{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
   .mode-hint{font-size:12px;color:var(--gray);}
-  .design-link{margin-left:auto;border:1px solid var(--mid);background:var(--soft);color:var(--main);border-radius:16px;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;font-family:inherit;}
   .design-banner{display:flex;align-items:center;gap:14px;background:var(--soft);border:1px solid var(--mid);border-radius:6px;padding:13px 17px;margin:14px 0 2px;flex-wrap:wrap;}
   .design-banner .db-t{flex:1;font-size:12.5px;font-weight:600;min-width:240px;}
   .design-banner .db-t b{color:var(--main);}
@@ -428,13 +427,13 @@
   .sn-item em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--main);border:1px solid var(--mid);border-radius:8px;padding:0 6px;margin-left:5px;}
   .side-main{flex:1;min-width:0;}
   .main-top{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);flex-wrap:wrap;}
-  .mtabs{display:flex;}
-  .mtabs button{border:1px solid var(--line);border-bottom:none;background:var(--panel);font-family:inherit;font-size:14px;font-weight:800;color:var(--gray);padding:11px 28px 10px;cursor:pointer;line-height:1.25;text-align:center;}
+  /* 캡션이 빠져 남는 폭 — 패키지/단과가 A안처럼 전체 폭을 쓰게 한다 */
+  .mtabs{display:flex;flex:1;}
+  .mtabs button{flex:1;border:1px solid var(--line);border-bottom:none;background:var(--panel);font-family:inherit;font-size:14px;font-weight:800;color:var(--gray);padding:11px 28px 10px;cursor:pointer;line-height:1.25;text-align:center;}
   .mtabs button small{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:1px;}
   .mtabs button + button{border-left:none;}
   .mtabs button.active{background:#fff;color:var(--main);border-top:2px solid var(--main);}
   .mtabs button.active small{color:var(--main);opacity:.75;}
-  .side-caption{margin-left:auto;padding-bottom:9px;}
   /* 개강일 = 과정 × 수강방식에 종속된 필터. 부모 바로 아래, 상단 블록 통째로 스티키 */
   .side-top{position:sticky;top:0;z-index:30;background:#fff;}
   .rrow{display:flex;align-items:flex-start;padding:14px 0 16px;border-bottom:1px solid var(--line);}
@@ -620,9 +619,7 @@
           <button id="sPkg" onclick="setMode('pkg')">패키지<small>추천 · 과목당 최저가</small></button>
           <button id="sSingle" onclick="setMode('single')">단과<small>필요한 과목만 선택</small></button>
         </div>
-        <div class="side-caption">
-          <button class="design-link" onclick="alert('무료 학습설계 신청 (시연)\n학습설계 접수 페이지로 이동 — 설계 완료 시 맞춤 설계가로 이 페이지 재진입')">보유학점·자격증이 있다면? 무료 학습설계 ›</button>
-        </div>
+        <!-- 학습설계 진입점 보류 — 두 기능의 역할 정리 후 재검토 (A안은 앞서 제거) -->
       </div>
       <div class="rrow">
         <div class="rrow-body">
