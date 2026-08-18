@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수강신청 개편 v2 — 풀 프레임 (현행 유지형)</title>
+<title>수강신청 개편 v2 — 현행 + 레이아웃 시안 3종 비교</title>
 <link rel="stylesheet" href="../assets/tokens.css">
 <style>
   :root{
@@ -477,7 +477,7 @@
     <span>레이아웃 시안</span>
     <button id="layCur" class="base" onclick="applyLayout('cur')">현행</button>
     <i class="div"></i>
-    <button id="layStack" onclick="applyLayout('stack')">A. 현행 세로형</button>
+    <button id="layStack" onclick="applyLayout('stack')">A. 축 재배열형</button>
     <button id="laySide" onclick="applyLayout('side')">B. 좌측바형</button>
     <button id="layPlan" onclick="applyLayout('plan')">C. 학기 플래너</button>
     <button class="cmp-tog" id="cmpTog" onclick="toggleCmp()">한눈에 비교 ▾</button>
@@ -582,7 +582,7 @@
   </div>
 </div>
 
-<!-- ══ A. 현행 세로형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
+<!-- ══ A. 축 재배열형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
 <div id="stackShell">
 
   <!-- ① 과정 선택 (2단: 카테고리 → 과정) -->
@@ -1295,9 +1295,9 @@ const NOTES={
     f:`<b>확인 포인트</b> — 세 시안이 공통으로 건드리는 지점은 ① 최상위 축을 과정으로 ② 패키지를 같은 화면 안으로 ③ 개설 차수를 과정 종속값으로. 나머지 차이는 <b>한눈에 비교</b> 표에서 한 번에 대조`
   },
   stack:{
-    t:"A. 현행 세로형",
+    t:"A. 축 재배열형",
     h:"가설 — 현행 화면 구조를 두고 축 순서만 바꿔도 충분한가",
-    h1:"A. 현행 세로형 — 이 시안이 하는 것",
+    h1:"A. 축 재배열형 — 이 시안이 하는 것",
     li:[
       `현행의 <b>위 → 아래 단계 진행</b> 형태 유지, 최상위 축만 개강일 → 과정 목적으로 교체`,
       `과정 · 수강방식 · 개강일 각 1행. 현행 컨트롤(개강일 대형 탭 · 학습기간 스트립)을 형태 그대로 하위로 이동 → <b>이식 비용 최소</b>`,
@@ -1314,7 +1314,7 @@ const NOTES={
       `선택 축을 성격에 맞는 컨트롤에 분배 — 항목 많고 계층 있는 <b>과정은 좌측바</b>, 2택인 <b>수강방식은 본문 상단 탭</b>, <b>개강일은 그 아래</b> 대형 탭`,
       `개강일을 좌측바로 올리지 않은 이유 — 부모(과정·수강방식)를 바꿀 때 차수가 시야 밖에서 조용히 갱신되면 결제 사고로 직결`,
       `상단 블록 통째 스티키 → 과목표를 내려보는 동안에도 <b>지금 보고 있는 차수</b> 유지`,
-      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지 약 348px</b> (세로형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
+      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지 약 348px</b> (축 재배열형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
       `레퍼런스 — 휴넷(좌측바), 고시스쿨(패키지/단과 분리)`
     ],
     f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
@@ -1465,7 +1465,7 @@ function applyLayout(l){
 let cmpOpen=false;
 /* 한눈에 비교 — 네 화면을 같은 축 위에 놓고 대조. 현행 열이 기준선 */
 const CMP_COLS=[
-  {k:"cur", n:"현행", base:true}, {k:"stack", n:"A. 현행 세로형"},
+  {k:"cur", n:"현행", base:true}, {k:"stack", n:"A. 축 재배열형"},
   {k:"side", n:"B. 좌측바형"}, {k:"plan", n:"C. 학기 플래너"}
 ];
 const CMP_ROWS=[
