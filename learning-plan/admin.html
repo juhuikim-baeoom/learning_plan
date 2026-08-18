@@ -169,7 +169,6 @@
   .mb.n{background:var(--amber-soft);color:var(--amber);}
   .mb.x{background:var(--red-soft);color:var(--red);}
   .mb.e{background:var(--violet-soft);color:var(--violet);}
-  .mb.q{background:#e8eefb;color:#3b5bbf;}
   .mb.d{background:#f0f1f4;color:var(--gray-light);}
   .mini{border:1.5px solid var(--line);background:#fff;color:var(--gray);border-radius:7px;font-size:10.5px;font-weight:700;padding:5px 9px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-right:3px;}
   .mini:hover{border-color:var(--blue-line);color:var(--blue);}
@@ -184,9 +183,7 @@
   .btn-pri:disabled{background:#c9d0dc;cursor:not-allowed;}
   .blocked{font-size:11px;font-weight:700;color:var(--red);flex:1;min-width:150px;}
   .mt tr.re td{background:#f7f3ff;}
-  .mt tr.rq td{background:#f2f5fd;}
   .semp .chip.e{background:var(--violet-soft);border-color:#d8c8f7;color:var(--violet);}
-  .semp .chip.q{background:#e8eefb;border-color:#c3d0ee;color:#3b5bbf;}
   #viewTmplNew .note{display:block;line-height:1.65;}
   #viewTmplNew .note::before{margin-right:6px;}
   @media(max-width:900px){.tn-grid{grid-template-columns:1fr;}}
@@ -415,11 +412,11 @@
               <h3>3. 과목 매칭 확인</h3>
               <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. 판정이 안 끝난 행이 남으면 저장할 수 없습니다 — 정체를 모르는 과목이 설계에 들어가면 가격·학점 자동 계산이 깨지기 때문입니다</div>
               <div id="tnMatch"></div>
-              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 네 갈래로 갈립니다</b> — 저장을 막는 것은 <b>미판정</b>뿐이고, 나머지 셋은 정상 저장됩니다.<br>
+              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 세 갈래로 갈립니다</b> — 저장을 막는 것은 <b>미판정</b>뿐이고, 나머지 둘은 정상 저장됩니다.<br>
                 · <b>표기만 다른 것</b> (사회복지개론 → 사회복지학개론) → [과목 지정]으로 우리 과목에 연결<br>
                 · <b>우리가 안 파는 과목</b> (전적대·타기관에서 들어야 하는 과목) → [외부 이수] — 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
-                · <b>아직 안 연 과목</b> (열면 팔 수 있는 것) → [개설 요청] — 개설 확정 전까지 템플릿에 <b>개설 대기</b> 표시<br>
                 · <b>잘못 적힌 행</b> → [행 제외]</div>
+              <span class="note">과목을 새로 만드는 입구는 여기 두지 않습니다 — 상담사는 설계를 짜는 역할이고, 판매 과목을 늘리는 것은 기획·운영의 권한입니다. 이 화면이 받는 것은 <b>이미 팔았던 엑셀 설계안</b>이라 목록에 없는 과목은 거의 표기 차이거나 타기관 수강분입니다</span>
               <span class="note">과목 마스터는 아직 없습니다 — 1단계 시연은 <b>기존 패키지에 등록된 과목</b>을 대조 대상으로 가정했습니다. 별도 마스터로 정규화할지는 미정</span>
               <span class="note">1단계는 이름 일치·유사도만 봅니다 — 개설 여부·선수과목 판정은 2단계</span>
             </div>
@@ -497,7 +494,7 @@
 
   /* ===== 템플릿 직접 등록 (시연) =====
      m: auto=우리 과목 자동 매칭 / near=유사 후보(확인 필요) / fixed=수기로 우리 과목 지정
-        ext=외부 이수(우리가 안 파는 과목 — 학점만, 가격 제외) / req=개설 요청(개설 대기)
+        ext=외부 이수(우리가 안 파는 과목 — 학점만, 가격 제외)
         none=미판정(저장 차단) / drop=제외 */
   const TN_ROWS=[
     {s:1,raw:"인간행동과사회환경",cr:3,a:"필수",m:"auto",to:"인간행동과사회환경"},
@@ -543,7 +540,7 @@
     tnLoaded=true;
     document.getElementById("upDone").style.display="block";
     tnRender();
-    alert("업로드 완료 (시연) — 14행\n· 우리 과목 11 / 확인 필요 2 / 미판정 1\n· 확인 필요는 이름이 비슷한 우리 과목을 추천만 한 상태입니다\n· 미판정이 0이 되어야 저장할 수 있습니다 — 외부 이수·개설 요청으로 판정해도 됩니다");
+    alert("업로드 완료 (시연) — 14행\n· 우리 과목 11 / 확인 필요 2 / 미판정 1\n· 확인 필요는 이름이 비슷한 우리 과목을 추천만 한 상태입니다\n· 미판정이 0이 되어야 저장할 수 있습니다 — 외부 이수로 판정해도 됩니다");
   }
   function tnAccept(i){ TN_ROWS[i].m="fixed"; tnRender(); }
   function tnPick(i){
@@ -554,21 +551,16 @@
     alert("외부 이수로 표시 (시연)\n'"+TN_ROWS[i].raw+"' 은 우리가 팔지 않는 과목입니다\n· 학습계획·학점 집계에는 그대로 남습니다\n· 가격 계산에서는 빠집니다 (우리 매출 아님)\n· 학생 화면에는 '타기관 수강' 으로 안내됩니다");
     TN_ROWS[i].m="ext"; TN_ROWS[i].to=TN_ROWS[i].raw; tnRender();
   }
-  function tnReq(i){
-    alert("개설 요청 (시연)\n'"+TN_ROWS[i].raw+"' 을 신규 개설 대상으로 접수합니다\n· 템플릿에는 '개설 대기' 상태로 담깁니다\n· 개설이 확정되기 전에는 이 템플릿으로 만든 설계를 발송할 수 없습니다\n· 개설 확정되면 자동으로 우리 과목으로 전환됩니다");
-    TN_ROWS[i].m="req"; TN_ROWS[i].to=TN_ROWS[i].raw; tnRender();
-  }
   function tnDrop(i){ TN_ROWS[i].m="drop"; tnRender(); }
   function tnUndo(i){ TN_ROWS[i].m="none"; TN_ROWS[i].to=""; tnRender(); }
   function tnSaveGo(){
     const n=TN_ROWS.filter(r=>r.m==="none").length;
     if(n>0){ alert("판정이 안 끝난 과목이 "+n+"건 남아 있어 저장할 수 없습니다 (시연)"); return; }
     const live=TN_ROWS.filter(r=>r.m!=="drop");
-    const ext=live.filter(r=>r.m==="ext").length, req=live.filter(r=>r.m==="req").length;
+    const ext=live.filter(r=>r.m==="ext").length;
     alert("템플릿 저장 (시연)\n· 저장 범위: "+(tnScopeV==="mine"?"내 템플릿":"팀 공유")+
       "\n· 우리 과목 "+live.filter(r=>r.m==="auto"||r.m==="fixed"||r.m==="near").length+"과목 (가격 계산 대상)"+
       (ext?"\n· 외부 이수 "+ext+"과목 — 학점만 집계, 가격 제외":"")+
-      (req?"\n· 개설 요청 "+req+"과목 — 개설 확정 전까지 '개설 대기' 표시, 발송 불가":"")+
       "\n· 차수·개강일 없음 — 상대 학기로만 저장\n· 생성 이력 자동 기록");
   }
 
@@ -579,7 +571,6 @@
     const cNear=live.filter(r=>r.m==="near").length;
     const cNone=live.filter(r=>r.m==="none").length;
     const cExt=live.filter(r=>r.m==="ext").length;
-    const cReq=live.filter(r=>r.m==="req").length;
     const cDrop=TN_ROWS.length-live.length;
 
     const mt=document.getElementById("tnMatch");
@@ -588,17 +579,17 @@
     }else{
       const badge={auto:'<span class="mb a">우리 과목</span>',fixed:'<span class="mb f">지정 완료</span>',
                    near:'<span class="mb n">확인 필요</span>',ext:'<span class="mb e">외부 이수</span>',
-                   req:'<span class="mb q">개설 대기</span>',none:'<span class="mb x">미판정</span>',
+                   none:'<span class="mb x">미판정</span>',
                    drop:'<span class="mb d">제외</span>'};
       const rows=TN_ROWS.map(function(r,i){
-        const cls=r.m==="drop"?"rd":(r.m==="none"?"rx":(r.m==="near"?"rn":(r.m==="ext"?"re":(r.m==="req"?"rq":""))));
+        const cls=r.m==="drop"?"rd":(r.m==="none"?"rx":(r.m==="near"?"rn":(r.m==="ext"?"re":"")));
         let act="";
         if(r.m==="near") act='<button class="mini" onclick="tnAccept('+i+')">추천 적용</button><button class="mini" onclick="tnPick('+i+')">다른 과목</button>';
-        else if(r.m==="none") act='<button class="mini" onclick="tnPick('+i+')">과목 지정</button><button class="mini" onclick="tnExt('+i+')">외부 이수</button><button class="mini" onclick="tnReq('+i+')">개설 요청</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
-        else if(r.m==="drop"||r.m==="ext"||r.m==="req") act='<button class="mini" onclick="tnUndo('+i+')">되돌리기</button>';
+        else if(r.m==="none") act='<button class="mini" onclick="tnPick('+i+')">과목 지정</button><button class="mini" onclick="tnExt('+i+')">외부 이수</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
+        else if(r.m==="drop"||r.m==="ext") act='<button class="mini" onclick="tnUndo('+i+')">되돌리기</button>';
         else act='<button class="mini" onclick="tnPick('+i+')">변경</button>';
         const to=r.to||'<span style="color:var(--red)">판정 필요</span>';
-        const price=(r.m==="ext")?'제외':(r.m==="req"?'개설 후':'포함');
+        const price=(r.m==="ext")?'제외':'포함';
         return '<tr class="'+cls+'"><td>'+r.s+'학기차</td><td class="raw">'+r.raw+'</td><td class="ar">→</td>'+
                '<td class="to">'+to+'</td><td>'+r.cr+'</td><td>'+r.a+'</td><td>'+badge[r.m]+'</td>'+
                '<td style="font-size:10.5px;color:var(--gray-light)">'+(r.m==="drop"?'—':price)+'</td><td>'+act+'</td></tr>';
@@ -609,7 +600,6 @@
           '<div class="s ok"><div class="v">'+(cAuto+cFix)+'</div><div class="k">우리 과목</div></div>'+
           '<div class="s warn"><div class="v">'+cNear+'</div><div class="k">확인 필요</div></div>'+
           '<div class="s"><div class="v" style="color:var(--violet)">'+cExt+'</div><div class="k">외부 이수</div></div>'+
-          '<div class="s"><div class="v" style="color:#3b5bbf">'+cReq+'</div><div class="k">개설 대기</div></div>'+
           '<div class="s bad"><div class="v">'+cNone+'</div><div class="k">미판정</div></div>'+
           '<div class="s"><div class="v">'+cDrop+'</div><div class="k">제외</div></div>'+
         '</div>'+
@@ -623,14 +613,14 @@
     }else{
       const sems=[...new Set(live.map(r=>r.s))].sort(function(x,y){return x-y;});
       const ok=live.filter(r=>r.m!=="none");
-      const ours=ok.filter(r=>r.m!=="ext"&&r.m!=="req");
-      const outs=ok.filter(r=>r.m==="ext"), reqs=ok.filter(r=>r.m==="req");
-      const cls={none:" x",ext:" e",req:" q"};
+      const ours=ok.filter(r=>r.m!=="ext");
+      const outs=ok.filter(r=>r.m==="ext");
+      const cls={none:" x",ext:" e"};
       pv.innerHTML=sems.map(function(s){
         const rs=live.filter(r=>r.s===s);
         const cr=rs.filter(r=>r.m!=="none").reduce(function(t,r){return t+r.cr;},0);
         const chips=rs.map(function(r){
-          const tail=r.m==="none"?" ?":(r.m==="ext"?" 외부":(r.m==="req"?" 대기":""));
+          const tail=r.m==="none"?" ?":(r.m==="ext"?" 외부":"");
           return '<span class="chip'+(cls[r.m]||"")+'">'+(r.to||r.raw)+tail+'</span>';
         }).join("");
         return '<div class="semp"><div class="sh"><span>'+s+'학기차</span><span class="c">'+rs.length+'과목 · '+cr+'학점</span></div>'+
@@ -638,14 +628,12 @@
       }).join("")+
       '<div class="footer-hint" style="margin-top:2px">우리 과정 '+ours.length+'과목 · '+ours.reduce(function(t,r){return t+r.cr;},0)+'학점 <b>(가격 계산 대상)</b>'+
       (outs.length?'<br>외부 이수 '+outs.length+'과목 · '+outs.reduce(function(t,r){return t+r.cr;},0)+'학점 — 학점만 집계, 가격 제외':'')+
-      (reqs.length?'<br>개설 대기 '+reqs.length+'과목 · '+reqs.reduce(function(t,r){return t+r.cr;},0)+'학점 — 개설 확정 후 가격 반영':'')+
       '<br>합계 '+ok.length+'과목 · '+ok.reduce(function(t,r){return t+r.cr;},0)+'학점 — 상대 학기 기준. 실제 개강일은 빌더에서 차수를 고를 때 정해집니다.</div>';
     }
 
     const sv=document.getElementById("tnSave"), bl=document.getElementById("tnBlocked");
     if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 — 위 [과목 구성 방식]에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
-    else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 — 과목 지정 · 외부 이수 · 개설 요청 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
-    else if(cReq>0){ sv.disabled=false; bl.textContent="개설 대기 "+cReq+"건 — 저장은 되지만 개설 확정 전까지 이 템플릿으로 만든 설계는 발송할 수 없습니다"; bl.style.color="#3b5bbf"; }
+    else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 — 과목 지정 · 외부 이수 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
     else if(cNear>0){ sv.disabled=false; bl.textContent="확인 필요 "+cNear+"건 — 추천값 그대로 저장됩니다"; bl.style.color="var(--amber)"; }
     else { sv.disabled=false; bl.textContent=""; }
   }
