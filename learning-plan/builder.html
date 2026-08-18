@@ -139,6 +139,13 @@
   .gcheck{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:var(--green);color:#fff;font-size:11px;font-weight:800;flex-shrink:0;}
   .ghost-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--green-soft);color:var(--green);white-space:nowrap;}
   .prereq-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:var(--amber-soft);color:var(--amber);white-space:nowrap;}
+  /* 타기관 수강분 — 학점은 집계, 가격은 제외 */
+  .subj.ext{background:#faf8ff;border-color:#ddd0f7;}
+  .subj .name.slot{color:var(--violet);font-style:italic;font-weight:700;}
+  .ext-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:var(--violet-soft);color:var(--violet);white-space:nowrap;}
+  .ext-btn{border:1.5px solid var(--line);background:#fff;color:var(--gray-light);border-radius:7px;font-size:10px;font-weight:800;padding:4px 8px;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .ext-btn:hover{border-color:#ddd0f7;color:var(--violet);}
+  .ext-btn.on{border-color:#ddd0f7;background:var(--violet-soft);color:var(--violet);}
   .src-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:#e3ecff;color:#1d4ed8;white-space:nowrap;}
   .subj.st-done{background:#f6f7f9;}
   .subj.st-done .name{color:var(--gray-light);text-decoration:line-through;}
@@ -250,6 +257,9 @@
   .s-subj .nm{flex:1;}
   .s-subj input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);}
   .s-badge{font-size:9.5px;font-weight:800;border-radius:7px;padding:2px 7px;white-space:nowrap;}
+  .s-badge.ext{background:var(--violet-soft);color:var(--violet);}
+  .s-subj.ext{background:#faf8ff;border-color:#ddd0f7;}
+  .s-subj.ext .nm{color:var(--violet);}
   .s-badge.done{background:#e3e6eb;color:var(--gray);}
   .s-badge.cert{background:var(--green);color:#fff;}
   .s-badge.internal{background:#1d4ed8;color:#fff;}
@@ -622,7 +632,9 @@
       {id:9,  name:"사회복지현장실습", credit:3, area:"major", prereq:true},
       {id:11, name:"청소년복지론", credit:3, area:"major"},
       {id:12, name:"노인복지론", credit:3, area:"major"},
-      {id:14, name:"가족복지론", credit:3, area:"major"}
+      {id:14, name:"가족복지론", credit:3, area:"major"},
+      // 타기관 수강분 — 우리가 팔지 않는 과목. 학점만 집계하고 가격에서 제외 (엑셀 관행 "과목명 (타사)")
+      {id:15, name:"아동권리와복지", credit:3, area:"major", origin:"ext"}
     ]}
   ];
   // 이수 현황: status = unset(미분류) / recog(인정) / excl(미인정)
@@ -656,7 +668,9 @@
       {id:116,name:"브랜드관리",credit:3,area:"melec"},{id:117,name:"유통관리",credit:3,area:"melec"},
       {id:118,name:"서비스마케팅",credit:3,area:"melec"},{id:119,name:"글쓰기",credit:3,area:"gen"},
       {id:120,name:"창업론",credit:3,area:"free"},{id:121,name:"품질경영",credit:3,area:"melec"},
-      {id:122,name:"e-비즈니스",credit:3,area:"free"}]}
+      {id:122,name:"e-비즈니스",credit:3,area:"free"},
+      // 요건 슬롯 — 과목을 특정하지 않은 타기관 요건 (엑셀 관행 "전공1 (타사)"). 어떤 과목으로 채울지는 학생이 정함
+      {id:123,name:"",credit:3,area:"melec",origin:"ext",slot:true}]}
   ];
   // 학위 이수 현황 (전적대 인정분 — 4분류)
   let degIH = [
@@ -707,19 +721,28 @@
   function preCreditsByArea(area){ return ihList().filter(x=>x.status==="recog"&&x.kind==='pre'&&x.area===area).reduce((t,x)=>t+x.credit,0); }
   function planByArea(area){ return all().filter(s=>s.area===area).reduce((t,s)=>t+s.credit,0); }
   function all(){ return sems().flatMap(s=>s.subjects); }
+  // 타기관 수강분 — 우리가 팔지 않는 과목. 학점·요건 집계에는 들어가고 가격 계산에서만 빠진다.
+  // slot=true면 과목을 특정하지 않은 요건 슬롯 (이수구분·학점만 확정, 과목은 학생이 정함)
+  function isExt(s){ return s.origin==="ext"; }
+  function paid(){ return all().filter(s=>!isExt(s)); }        // 가격 계산 대상 = 우리 과목만
+  function extList(){ return all().filter(isExt); }
+  function extCredits(){ return extList().reduce((t,s)=>t+s.credit,0); }
+  function subjName(s){ return s.slot ? `${areaMeta(s.area).label} ${s.credit}학점 — 과목 미지정` : s.name; }
   function fmt(n){ return n.toLocaleString("ko-KR"); }
   const START_YEAR=2026, START_TERM=2;
   function termLabel(i){ let y=START_YEAR,t=START_TERM; for(let k=0;k<i;k++){t++;if(t>2){t=1;y++;}} return y+"년 "+t+"학기"; }
   function counts(){ const a=all(); const ih=ihList();
     return {total:a.length+recogList_().length, need:a.length,
+            paidN:a.filter(s=>!isExt(s)).length, extN:a.filter(isExt).length,
             done:ih.filter(x=>x.status==="recog"&&x.kind!=='pre').length, cert:ih.filter(x=>x.status==="recog"&&x.kind==='cr').length}; }
   function needCredits(){ return all().reduce((t,s)=>t+s.credit,0); }
   function doneCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='sub'&&x.origin!=='cert').reduce((t,x)=>t+x.credit,0); }
   function certSubjCredits(){ return ihList().filter(x=>x.status==="recog"&&x.kind==='cr').reduce((t,x)=>t+x.credit,0); }
-  function price(){ return all().length*PRICE_PER; }
+  // 가격은 우리 과목만 — 타기관 수강분은 우리 매출이 아니므로 정가·수량할인 모두에서 제외
+  function price(){ return paid().length*PRICE_PER; }
   // 수량 자동 할인 룰 — 1단계: 하드코딩 + 산식 스냅샷 기록 (할인율은 시연용 예시, LMS 정책 확정 시 교체 / 3단계: 결제 API 실시간 견적으로 대체)
   const QTY_DISCOUNT=[{min:5,rate:0.10,label:"5과목 이상 10%"},{min:3,rate:0.05,label:"3과목 이상 5%"}];
-  function qtyRule(){ const n=all().length; return QTY_DISCOUNT.find(r=>n>=r.min)||null; }
+  function qtyRule(){ const n=paid().length; return QTY_DISCOUNT.find(r=>n>=r.min)||null; }
   function discPrice(){ const r=qtyRule(); return r?Math.round(price()*(1-r.rate)):price(); }
   function toggleExpose(el){ const l=document.getElementById("exposeLbl"); l.textContent=el.checked?"v1 표시 중":"비표시"; l.style.color=el.checked?"":"var(--gray-light)"; }
   function openSnipPop(){ document.getElementById("snipPop").classList.add("open"); }
@@ -961,11 +984,13 @@
       const subjRows = sem.subjects.map(s=>{
         const am=areaMeta(s.area);
         return `
-          <div class="subj">
-            <span class="name">${s.name}</span>
+          <div class="subj ${isExt(s)?"ext":""}">
+            <span class="name ${s.slot?"slot":""}">${subjName(s)}</span>
             <span class="area-tag ${am.cls}">${am.label}</span>
+            ${isExt(s)?'<span class="ext-tag">타기관</span>':""}
             ${s.prereq?'<span class="prereq-tag">선이수 필요</span>':""}
             <input class="credit-input" type="number" min="1" max="6" value="${s.credit}" onchange="setCredit(${s.id},this.value)"><span class="meta">학점</span>
+            <button class="ext-btn ${isExt(s)?"on":""}" onclick="toggleExt(${s.id})" title="${isExt(s)?"우리 과목으로 되돌림 — 가격에 포함됨":"타기관 수강분으로 표시 — 가격에서 제외됨"}">${isExt(s)?"우리":"타기관"}</button>
             <button class="mv" onclick="moveSubj(${s.id},-1)" ${i===0?'disabled style="opacity:.3"':''}>◀</button>
             <button class="mv" onclick="moveSubj(${s.id},1)" ${i===semArr.length-1?'disabled style="opacity:.3"':''}>▶</button>
           </div>`;
@@ -991,7 +1016,7 @@
             <h3>${i+1}학기 <span>${termLabel(i)}</span></h3>
             <div class="right">
               ${over?`<span class="over-warn">학기 ${SEM_MAX}학점 초과 (${nc}학점)</span>`:""}
-              <span class="cnt">수강 ${sem.subjects.length}${ghosts.length?` · 인정 ${ghosts.length}`:''} · ${nc}학점</span>
+              <span class="cnt">수강 ${sem.subjects.length}${sem.subjects.filter(isExt).length?` (타기관 ${sem.subjects.filter(isExt).length})`:''}${ghosts.length?` · 인정 ${ghosts.length}`:''} · ${nc}학점</span>
               ${(sem.subjects.length===0&&ghosts.length===0)?`<button class="btn-del-sem" onclick="delSemester(${i})">학기 삭제</button>`:""}
             </div>
           </div>
@@ -1046,12 +1071,14 @@
         <div class="big">인정 ${recogList_().filter(x=>x.kind!=='pre').length}과목(${recCr}학점)${preCr?` + 예정 ${preCr}학점`:''}<br>→ <em>${c.need}과목</em> 수강</div>
         <div class="dur">미인정 ${exclList_().length}과목${unsetN?` · <span style="color:#ffd87a;font-weight:700">미분류 ${unsetN}과목 처리 필요</span>`:''}</div>
         <div class="dur">수강 기간: <b>${activeSemCount()}학기</b></div>
-        <div class="price">전체 패키지 <s>${fmt(PKG_FULL)}원</s>${qtyRule()?`<br>단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}`:""}<br>맞춤 설계가 <b style="font-size:17px">${fmt(discPrice())}원</b></div>
+        ${c.extN?`<div class="dur">그중 <b style="color:#e0d4ff">타기관 ${c.extN}과목(${extCredits()}학점)</b> — 학점만 집계, 수강료 제외</div>`:""}
+        <div class="price">전체 패키지 <s>${fmt(PKG_FULL)}원</s>${qtyRule()?`<br>단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}`:""}<br>맞춤 설계가 <b style="font-size:17px">${fmt(discPrice())}원</b>${c.extN?`<br><span style="font-size:10.5px;opacity:.8">우리 과목 ${c.paidN}과목 기준</span>`:""}</div>
         <div class="valid">유효기간 ${VALID_UNTIL}</div>`;
     } else {
       box.className="summary deg";
       box.innerHTML=`<div class="t">학점 게이지</div><div class="big">학위 과정은 집계표 참조</div>
-        <div class="price">${qtyRule()?`단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}<br>`:""}설계 수강료 <b style="font-size:17px">${fmt(discPrice())}원</b></div>`;
+        ${c.extN?`<div class="dur">타기관 ${c.extN}과목(${extCredits()}학점) — 학점만 집계, 수강료 제외</div>`:""}
+        <div class="price">${qtyRule()?`단과 정가 <s>${fmt(price())}원</s> · ${qtyRule().label}<br>`:""}설계 수강료 <b style="font-size:17px">${fmt(discPrice())}원</b>${c.extN?`<br><span style="font-size:10.5px;opacity:.8">우리 과목 ${c.paidN}과목 기준</span>`:""}</div>`;
     }
   }
   // 수강 계획 → 이수 현황 (인정 처리) — fromSem 기록해 B안 회색 placeholder 유지
@@ -1076,6 +1103,16 @@
   // 이수 현황 상태 변경 (인정/미인정/미분류)
   function setRecog(id,val){ const x=ihList().find(x=>x.id===id); if(x){x.status=val?"recog":"excl"; if(val&&!x.kind)x.kind="sub";} renderBuilder(); }
   function setCredit(id,v){ const n=Math.max(1,Math.min(6,parseInt(v)||3)); all().forEach(s=>{if(s.id===id)s.credit=n;}); renderBuilder(); }
+  // 타기관 ↔ 우리 과목 전환 — 학점·요건 집계는 그대로, 가격 계산 대상만 바뀐다
+  function toggleExt(id){
+    const s=all().find(x=>x.id===id); if(!s) return;
+    if(isExt(s)){
+      if(s.slot){ alert("요건 슬롯은 과목이 정해지지 않아 우리 과목으로 되돌릴 수 없습니다 (시연)\n과목을 지정하려면 슬롯을 지우고 과목을 추가하세요"); return; }
+      delete s.origin;
+    } else { s.origin="ext"; }
+    renderBuilder();
+    if(document.getElementById("studentView").style.display==="flex") renderStudent();
+  }
   function addSubj(i){ const name=prompt("과목명 (시연)",""); if(!name)return; sems()[i].subjects.push({id:nextNewId++,name,credit:3,area:mode==="cert"?"major":"melec"}); renderBuilder(); }
   function moveSubj(id,dir){
     const arr=sems();
@@ -1156,8 +1193,9 @@
     renderStudent(); }
   function toggleSelMode(){ selMode=!selMode; if(!selMode)selected.clear(); renderStudent(); }
   function toggleSel(id){ selected.has(id)?selected.delete(id):selected.add(id); renderStudent(); }
-  function selectSem(i){ sems()[i].subjects.forEach(s=>selected.add(s.id)); renderStudent(); }
-  function selCredits(){ return all().filter(s=>selected.has(s.id)).length*PRICE_PER; }
+  // 타기관 수강분은 우리 수강신청 대상이 아니므로 선택에서 제외
+  function selectSem(i){ sems()[i].subjects.filter(s=>!isExt(s)).forEach(s=>selected.add(s.id)); renderStudent(); }
+  function selCredits(){ return paid().filter(s=>selected.has(s.id)).length*PRICE_PER; }
 
   function renderStudent(){
     if(device==="pc"){ renderStudentPC(); return; }
@@ -1170,9 +1208,9 @@
       if(needOnly.length===0)return "";
       return `<div class="s-sem">
         <h4>${i+1}학기 수강 과목 <span>${termLabel(i)} · ${semNeedCredits(sem)}학점 ${selMode?`<button class="sel-all" onclick="selectSem(${i})">학기 전체 선택</button>`:""}</span></h4>
-        ${needOnly.map(s=>`<div class="s-subj">
-          ${selMode?`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`:""}
-          <span class="nm">${s.name}</span><span style="font-size:10px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
+        ${needOnly.map(s=>`<div class="s-subj ${isExt(s)?"ext":""}">
+          ${selMode?(isExt(s)?'<span style="width:13px;display:inline-block"></span>':`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`):""}
+          <span class="nm">${subjName(s)}</span>${isExt(s)?'<span class="s-badge ext">타기관</span>':""}<span style="font-size:10px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
       </div>`;
     }).join("");
     const rGroups={};
@@ -1194,6 +1232,7 @@
     const selBar = selMode?`
       <div class="sel-bar">
         <div class="cmp"><span>선택 ${selected.size}과목 · 단과가</span><b>${fmt(selCredits())}원</b></div>
+        ${c.extN?`<div class="pkg-hint">타기관 ${c.extN}과목은 본원 수강신청 대상이 아니라 선택할 수 없습니다</div>`:""}
         ${mode==="cert"?`<div class="pkg-hint">전체 패키지로 결제 시 ${fmt(PKG_FULL)}원 — 패키지 할인은 전체 결제에만 적용</div>`:""}
         <button onclick="alert('수강신청 바구니로 ${selected.size}과목 일괄 전송 (시연)\\n과목·차수 매핑된 채 결제 화면 이동 → 쿠폰 적용 가능')">선택 과목 수강신청 (${selected.size})</button>
       </div>`:"";
@@ -1207,6 +1246,7 @@
           <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
           <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(discPrice())}원</div></div>
         </div>
+        ${c.extN?`<div class="basis" style="margin-top:8px">${c.need}과목 중 <b>${c.extN}과목(${extCredits()}학점)은 타기관에서 수강</b>하셔야 합니다 — 위 수강료에 포함되지 않습니다</div>`:""}
       </div>
       <div class="recog-banner">${mode==="cert"
         ? `자사 이수 + 전적대 <b>${c.done}과목(${doneCredits()}학점)</b> · 자격증 <b>${certSubjCredits()+CERT_CREDITS}학점</b><br>= 총 <b>${recogCredits}학점 인정</b> → ${c.need}과목만 수강`
@@ -1215,7 +1255,7 @@
       <div class="price-block">
         ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
         ${qtyRule()?`<div class="orig">단과 정가 ${fmt(price())}원</div>`:""}
-        <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}</div>
+        <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}${c.extN?`<br>본원 수강 ${c.paidN}과목 기준 · 타기관 ${c.extN}과목은 별도`:""}</div>
       </div>
       <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효합니다</div>
       <div class="s-comment"><b>설계 담당자 코멘트</b>${comment}</div>
@@ -1243,9 +1283,9 @@
       if(needOnly.length===0)return "";
       return `<div class="s-sem">
         <h4>${i+1}학기 수강 과목 <span>${termLabel(i)} · ${semNeedCredits(sem)}학점 ${selMode?`<button class="sel-all" onclick="selectSem(${i})">학기 전체 선택</button>`:""}</span></h4>
-        ${needOnly.map(s=>`<div class="s-subj">
-          ${selMode?`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`:""}
-          <span class="nm">${s.name}</span><span style="font-size:11px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
+        ${needOnly.map(s=>`<div class="s-subj ${isExt(s)?"ext":""}">
+          ${selMode?(isExt(s)?'<span style="width:13px;display:inline-block"></span>':`<input type="checkbox" ${selected.has(s.id)?"checked":""} onchange="toggleSel(${s.id})">`):""}
+          <span class="nm">${subjName(s)}</span>${isExt(s)?'<span class="s-badge ext">타기관</span>':""}<span style="font-size:11px;color:var(--gray-light)">${areaMeta(s.area).label} · ${s.credit}학점</span></div>`).join("")}
       </div>`;
     }).join("");
     const gaugeBlock=studentGaugeHTML();
@@ -1261,6 +1301,7 @@
               <div class="hstat"><div class="k">수강 과목</div><div class="v">${c.need}과목</div></div>
               <div class="hstat"><div class="k">수강료</div><div class="v">${fmt(discPrice())}원</div></div>
             </div>
+            ${c.extN?`<div class="basis" style="margin-top:8px">${c.need}과목 중 <b>${c.extN}과목(${extCredits()}학점)은 타기관에서 수강</b>하셔야 합니다 — 위 수강료에 포함되지 않습니다</div>`:""}
           </div>
           <div class="phone-like">
             <div class="recog-banner">${mode==="cert"
@@ -1283,7 +1324,7 @@
           <div class="price-block">
             ${mode==="cert"?`<div class="orig">전체 패키지 ${fmt(PKG_FULL)}원</div>`:""}
             ${qtyRule()?`<div class="orig">단과 정가 ${fmt(price())}원</div>`:""}
-            <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}</div>
+            <div class="fin">${fmt(discPrice())}원</div><div class="lbl">맞춤 설계가${qtyRule()?` — ${qtyRule().label} 자동 할인 적용`:" (정가 기준)"}${c.extN?`<br>본원 수강 ${c.paidN}과목 기준 · 타기관 ${c.extN}과목은 별도`:""}</div>
           </div>
           <div class="valid-bar">본 설계는 ${VALID_UNTIL}까지 유효</div>
           ${mode==="cert"?`<button class="s-cta" onclick="alert('패키지 페이지로 이동 (시연)\\n프리셀렉트·부분결제·쿠폰 연동은 3단계')">수강신청 하러 가기</button>`:""}
