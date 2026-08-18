@@ -325,6 +325,8 @@
   .ih-row.excl .nm{color:var(--gray-light);}
   .ih-act{border:1.5px solid var(--line);background:#fff;border-radius:7px;font-size:10.5px;font-weight:700;padding:4px 8px;cursor:pointer;font-family:inherit;color:var(--gray);}
   .ih-act:hover{border-color:var(--blue-line);color:var(--blue);}
+  /* 인정 취소 — 수강료를 올리는 되돌림이라 톤을 구분 */
+  .ih-act.warn:hover{border-color:#f3b8c0;color:var(--red);}
   .mini-tag{font-size:9px;font-weight:800;border-radius:6px;padding:2px 6px;white-space:nowrap;}
   .mt-sub{background:#e3ecff;color:#1d4ed8;}
   .mt-cr{background:var(--green-soft);color:var(--green);}
@@ -743,7 +745,7 @@
   // 수량 자동 할인 룰 — 1단계: 하드코딩 + 산식 스냅샷 기록 (할인율은 시연용 예시, LMS 정책 확정 시 교체 / 3단계: 결제 API 실시간 견적으로 대체)
   const QTY_DISCOUNT=[{min:5,rate:0.10,label:"5과목 이상 10%"},{min:3,rate:0.05,label:"3과목 이상 5%"}];
   function qtyRule(){ const n=paid().length; return QTY_DISCOUNT.find(r=>n>=r.min)||null; }
-  function discPrice(){ const r=qtyRule(); return r?Math.round(price()*(1-r.rate)):price(); }
+  function discPrice(){ return priceAt(paid().length); }   // priceAt() 단일 산식 — 확인 문구의 예상액과 어긋나지 않게
   function toggleExpose(el){ const l=document.getElementById("exposeLbl"); l.textContent=el.checked?"v1 표시 중":"비표시"; l.style.color=el.checked?"":"var(--gray-light)"; }
   function openSnipPop(){ document.getElementById("snipPop").classList.add("open"); }
   function closeSnipPop(){ document.getElementById("snipPop").classList.remove("open"); }
@@ -1004,7 +1006,7 @@
             <span class="area-tag ${am.cls}">${am.label}</span>
             <span class="ghost-tag">${x.origin==="cert"?"자격증 인정":x.origin==="internal"?"자사 이수":"인정 완료"}</span>
             <span class="meta">${x.credit}학점</span>
-            <button class="ih-act" onclick="unrecognize(${x.id},${i})" title="인정 취소 → 수강으로 되돌림">수강으로 ↓</button>
+            <button class="ih-act warn" onclick="unrecognize(${x.id},${i})" title="인정을 취소하고 이 학기의 수강 과목으로 되돌립니다 — 수강료가 올라갑니다">인정 취소</button>
           </div>`;
       }).join("");
       const rows = (sem.subjects.length===0 && ghosts.length===0)
@@ -1092,13 +1094,29 @@
         renderBuilder(); return; }
     }
   }
-  // 이수 현황(인정) → 수강 계획 되돌림 (회색 placeholder의 [수강으로 ↓])
+  // 인정 상태의 수강료 환산 — 우리 과목 n개일 때의 할인 적용가 (할인 구간 변동까지 반영)
+  function priceAt(n){ const p=n*PRICE_PER; const r=QTY_DISCOUNT.find(x=>n>=x.min); return r?Math.round(p*(1-r.rate)):p; }
+
+  // 이수 현황(인정) → 수강 계획 되돌림 (회색 placeholder의 [인정 취소])
+  // 수강료가 올라가는 되돌림이라 확인을 받는다
   function unrecognize(id,semIdx){
     const ih=ihList(); const idx=ih.findIndex(x=>x.id===id);
-    if(idx>-1){ const x=ih.splice(idx,1)[0];
-      const arr=sems(); const tgt=(semIdx!=null&&arr[semIdx])?semIdx:0;
-      arr[tgt].subjects.push({id:x.id,name:x.name,credit:x.credit,area:x.area,prereq:x.prereq});
-      renderBuilder(); }
+    if(idx<0) return;
+    const x=ih[idx];
+    const arr=sems(); const tgt=(semIdx!=null&&arr[semIdx])?semIdx:0;
+    const diff=priceAt(paid().length+1)-priceAt(paid().length);
+    const src=x.origin==="cert"?"자격증 학점인정":x.origin==="internal"?"자사 이수":"전적대 이수";
+    if(!confirm(
+      "인정 취소 (시연)\n\n"+
+      x.name+" ("+areaMeta(x.area).label+" "+x.credit+"학점 · "+src+")\n\n"+
+      "· 인정을 취소하고 "+(tgt+1)+"학기 수강 과목으로 되돌립니다\n"+
+      "· 학생이 이 과목을 다시 들어야 합니다\n"+
+      "· 수강료 "+fmt(priceAt(paid().length))+"원 → "+fmt(priceAt(paid().length+1))+"원 (+"+fmt(diff)+"원)\n\n"+
+      "되돌릴까요?")) return;
+    ih.splice(idx,1);
+    arr[tgt].subjects.push({id:x.id,name:x.name,credit:x.credit,area:x.area,prereq:x.prereq});
+    renderBuilder();
+    if(document.getElementById("studentView").style.display==="flex") renderStudent();
   }
   // 이수 현황 상태 변경 (인정/미인정/미분류)
   function setRecog(id,val){ const x=ihList().find(x=>x.id===id); if(x){x.status=val?"recog":"excl"; if(val&&!x.kind)x.kind="sub";} renderBuilder(); }
