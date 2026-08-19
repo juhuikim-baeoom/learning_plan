@@ -117,13 +117,10 @@
   .round-tab.act{background:#eef7fc;border-color:var(--main);border-bottom:2px solid var(--main);}
   .round-tab.act .rt2{color:var(--main);}
   .round-tab .rt3{font-size:11px;color:var(--gray-light);margin-top:2px;}
-  /* 이 차수에 이 과정 과목이 몇 개 열리는지 — 차수 간 편차가 보이는 자리 */
+  /* 이 과정이 이 차수에 열리지 않을 때만 쓰는 줄 */
   .round-tab .rt4{font-size:11px;color:var(--gray-light);margin-top:5px;padding-top:5px;border-top:1px dashed var(--line);}
-  .round-tab .rt4 b{color:var(--gray);font-weight:800;}
-  .round-tab .rt4.part b{color:var(--red);}
   .round-tab .rt4.none{color:var(--gray-light);font-style:italic;}
   .round-tab.act .rt4{border-top-color:var(--mid);}
-  .round-tab.act .rt4 b{color:var(--main);}
   .round-tab.act .rt3{color:var(--main);opacity:.75;}
   .round-info{display:flex;gap:6px 26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-top:none;padding:11px 16px;font-size:12.5px;color:var(--gray);}
   /* 개설 차수 규칙 안내 — 값이 아니라 규칙이므로 톤을 낮추고 오른쪽 끝에 둔다 */
@@ -1201,13 +1198,8 @@ function roundTabsHTML(){
       : d>0 && d<=7 ? {c:"hot", t:`신청마감 D-${d}`}
       : d>0 && d<=30 ? {c:"ok", t:`신청마감 D-${d}`}
       : {c:"ok", t:"신청가능"};
-    /* 차수마다 이 과정 과목이 몇 개나 열리는지 — 과정 단위 미개설은 실데이터에 없지만
-       과목 단위 편차는 크다 (사회복지사 9/4 차수는 22과목 중 12과목만 신청 가능).
-       "어느 차수가 이 과정에 덜 열리는가"는 여기서 드러난다 */
-    const v=roundStat(i);
-    const cnt = !ok ? `<div class="rt4 none">이 과정 미개설</div>`
-      : v ? `<div class="rt4 ${v.ok<v.all?"part":""}">신청 가능 <b>${v.ok}</b>/${v.all}과목</div>`
-      : `<div class="rt4">전 과목 대상</div>`;
+    /* 과목 개수(신청 가능 N/M과목)는 노출하지 않는다 — 과정 단위 미개설만 표시 */
+    const cnt = !ok ? `<div class="rt4 none">이 과정 미개설</div>` : "";
     return `<div class="round-tab ${roundSel===r.id?"act":""} ${ok?"":"off"}"
       onclick="${ok?`pickRound('${r.id}')`:`alert('이 과정에는 개설되지 않은 차수입니다 (시연)')`}">
       <span class="rt-badge ${badge.c}">${badge.t}</span>
@@ -1535,13 +1527,13 @@ function renderPkg(){
   const pkgs=ownPkgs(), cross=crossPkgs();
   // 이 과정 단독 패키지가 없는 경우 — 교차 상품이라도 있으면 그쪽으로, 없으면 단과로 유도
   if(!pkgs.length){
-    const c=curCourse(), v=roundStat(roundIdx());
+    const c=curCourse();
     $("pkgBody").innerHTML = `
       <div class="pkg-none${cross.length?" soft":""}">
         <div class="pn-t">${c?c.name:""} 단독 패키지는 준비 중입니다</div>
         <div class="pn-d">${cross.length
           ? `대신 <b>${c?c.name:""}</b>를 함께 취득하는 패키지 <b>${cross.length}개</b>가 아래에 있습니다`
-          : (v?`이 과정 과목은 <b>${ROUNDS.find(r=>r.id===roundSel).d}</b> 기준 <b>${v.ok}과목</b> 신청 가능합니다 — 단과로 필요한 과목만 선택하세요`:"단과로 필요한 과목만 선택하실 수 있습니다")}</div>
+          : "단과로 필요한 과목만 선택하실 수 있습니다"}</div>
         <button class="pn-go" onclick="setMode('single')">단과로 과목 보기 ›</button>
       </div>
       ${crossHTML()}`;
