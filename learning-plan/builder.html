@@ -66,6 +66,7 @@
   .tmpl-tabs{display:flex;gap:4px;margin-bottom:10px;}
   .tmpl-tab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:7px 4px;cursor:pointer;font-family:inherit;color:var(--gray);text-align:center;}
   .tmpl-tab.act{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .tmpl-empty{border:1.5px dashed var(--line);border-radius:10px;padding:18px 12px;text-align:center;font-size:11px;color:var(--gray-light);line-height:1.75;}
   .tmpl-item{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12px;margin-bottom:6px;cursor:pointer;}
   .tmpl-item:hover{border-color:var(--blue-line);}
   .tmpl-item .tn{font-weight:700;}
@@ -507,9 +508,9 @@
       <div class="panel">
         <h3>템플릿 불러오기</h3>
         <div class="tmpl-tabs">
-          <button class="tmpl-tab act" onclick="tmplTab(this)">패키지</button>
-          <button class="tmpl-tab" onclick="tmplTab(this)">내 템플릿</button>
-          <button class="tmpl-tab" onclick="tmplTab(this)">팀 공유</button>
+          <button class="tmpl-tab act" id="ttPkg" onclick="tmplTab('pkg')">패키지</button>
+          <button class="tmpl-tab" id="ttMine" onclick="tmplTab('mine')">내 템플릿</button>
+          <button class="tmpl-tab" id="ttTeam" onclick="tmplTab('team')">팀 공유</button>
         </div>
         <div id="tmplList"></div>
         <span class="note">패키지연동=패키지 등록정보 자동 변환 / 직접등록=패키지 없는 과정</span>
@@ -747,20 +748,27 @@
     {id:207,name:"철학의이해",credit:3,area:"free",status:"unset",origin:"transfer",when:"OO대학(전적대)"},
     {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"OO대학(전적대)"}
   ];
+  // scope = 탭 분류 (pkg 패키지 / mine 내 템플릿 / team 팀 공유)
+  // origin = 만들어진 경로 (pkg 패키지 자동변환 / direct 직접 등록 / pattern 저장된 설계 패턴)
   const templates = {
     cert: [
-      {n:"사회복지사 2급 · 전문대졸", m:"패키지 2938 변환 · 학기2 · 17과목", b:"sys", origin:"pkg"},
-      {n:"사회복지사 2급 · 고졸", m:"패키지 2936 변환 · 20과목", b:"sys", origin:"pkg"},
-      {n:"보육교사 2급 (패키지 미구성)", m:"직접 등록 템플릿 · 14과목", b:"sys", origin:"direct"},
-      {n:"전적대 사복 일부이수 패턴", m:"팀장 승인 · 검증됨", b:"team", origin:"team"},
-      {n:"보육교사 자격 보유자 패턴", m:"06.02 저장 · 나만", b:"mine", origin:"mine"}
+      {n:"사회복지사 2급 · 전문대졸", m:"패키지 2938 변환 · 2학기 · 17과목", origin:"pkg", scope:"pkg"},
+      {n:"사회복지사 2급 · 고졸", m:"패키지 2936 변환 · 20과목", origin:"pkg", scope:"pkg"},
+      {n:"한국어교원 2급 스타트", m:"패키지 2939 변환 · 18과목", origin:"pkg", scope:"pkg"},
+      {n:"보육교사 2급 (패키지 미구성)", m:"직접 등록 · 16과목 · 06.18 저장", origin:"direct", scope:"mine"},
+      {n:"보육교사 자격 보유자 패턴", m:"06.02 저장 · 사복 2급 · 구조만", origin:"pattern", scope:"mine"},
+      {n:"전적대 사복 일부이수 패턴", m:"공유 박OO 06.20 · 사용 31회", origin:"pattern", scope:"team"},
+      {n:"한국어교원 3중 요건 패턴", m:"공유 김주희 06.25 · 사용 12회", origin:"pattern", scope:"team"}
     ],
     deg: [
-      {n:"정보통신공학 · 14과목 패키지", m:"패키지 2940 변환 · 전필/전선 자동", b:"sys", origin:"pkg"},
-      {n:"한국어 학사 · 15과목", m:"패키지 2937 변환 · 1·2·3영역 매핑", b:"sys", origin:"pkg"},
-      {n:"학사 3학기 압축 패턴", m:"06.08 저장 · 나만", b:"mine", origin:"mine"}
+      {n:"경영학 전공 · 전문대졸 편입", m:"패키지 2940 변환 · 전필/전선 자동", origin:"pkg", scope:"pkg"},
+      {n:"한국어학 전공 · 15과목", m:"패키지 2937 변환 · 영역 매핑", origin:"pkg", scope:"pkg"},
+      {n:"IT 전공 · 14과목 패키지", m:"패키지 2943 변환 · 전필/전선 자동", origin:"pkg", scope:"pkg"},
+      {n:"학사 3학기 압축 패턴", m:"06.08 저장 · 경영학 · 구조만", origin:"pattern", scope:"mine"},
+      {n:"심리학 전공 교양 선이수 패턴", m:"공유 이OO 07.02 · 사용 8회", origin:"pattern", scope:"team"}
     ]
   };
+  let tmplScope = "pkg";
   const subjectSets = [
     {n:"교양 인기 세트", m:"심리학개론·글쓰기·생활속의통계 (9학점)", subjects:[
       {name:"심리학개론",credit:3,area:"gen"},{name:"글쓰기",credit:3,area:"gen"},{name:"생활속의통계",credit:3,area:"gen"}]},
@@ -874,11 +882,26 @@
     return `<div class="deg-gauge"><h5>학점 이수 현황</h5>${row("총계",g.tgtTot,g.recTot,g.plTot)}${row("전공(전필+전선)",g.tgtMajor,g.recMajor,g.plMajor)}${row("교양",g.tgtGen,g.recGen,g.plGen)}</div>`;
   }
 
+  const TMPL_SCOPES=[{k:"pkg",label:"패키지",id:"ttPkg"},{k:"mine",label:"내 템플릿",id:"ttMine"},{k:"team",label:"팀 공유",id:"ttTeam"}];
+  const TMPL_EMPTY={pkg:"이 과정 유형에 연동된 패키지가 없습니다<br>패키지 등록 후 자동으로 나타납니다",
+                    mine:"저장한 템플릿이 없습니다<br>설계 후 [내 템플릿 저장] 또는 설계보조도구에서 직접 등록하세요",
+                    team:"팀에 공유된 템플릿이 없습니다<br>내 템플릿을 공유하면 여기에 나타납니다"};
   function renderTemplates(){
-    document.getElementById("tmplList").innerHTML = templates[mode].map(t=>{
+    const list = templates[mode];
+    // 탭 라벨에 건수 표시 — 비어 있는 탭을 눌러보기 전에 알 수 있게
+    TMPL_SCOPES.forEach(s=>{
+      const btn=document.getElementById(s.id); if(!btn) return;
+      const n=list.filter(t=>t.scope===s.k).length;
+      btn.innerHTML=s.label+` <span style="opacity:.65;font-size:10px">${n}</span>`;
+      btn.classList.toggle("act", s.k===tmplScope);
+    });
+    const shown = list.filter(t=>t.scope===tmplScope);
+    document.getElementById("tmplList").innerHTML = shown.length===0
+      ? `<div class="tmpl-empty">${TMPL_EMPTY[tmplScope]}</div>`
+      : shown.map(t=>{
       const originTag = t.origin==="pkg" ? '<span class="tb sys">패키지연동</span>'
         : t.origin==="direct" ? '<span class="tb" style="background:#eef0f4;color:#777;">직접등록</span>'
-        : t.origin==="team" ? '<span class="tb team">팀 공유</span>'
+        : t.scope==="team" ? '<span class="tb team">팀 공유</span>'
         : '<span class="tb mine">내 것</span>';
       const msg = t.origin==="pkg"
         ? '패키지 데이터(학기·과목·이수구분·가격) 자동 변환 — 추가 입력 없이 템플릿화'
@@ -889,7 +912,7 @@
       </div>`;
     }).join("");
   }
-  function tmplTab(el){ document.querySelectorAll(".tmpl-tab").forEach(b=>b.classList.remove("act")); el.classList.add("act"); }
+  function tmplTab(k){ tmplScope=k; renderTemplates(); }
 
   // 엑셀 업로드 (시연): 표준양식 파싱 → 이수구분은 양식 값 그대로 등록, 인정 상태(미분류/인정/미인정)만 '미분류'로 시작
   // 두 축은 별개 — 입력 자동화 ≠ 인정 자동화 (기획서 8-4)
