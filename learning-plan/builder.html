@@ -223,6 +223,26 @@
   .set-item .sn{font-size:13px;font-weight:700;}
   .set-item .sm{font-size:11px;color:var(--gray-light);margin-top:2px;}
   .set-close{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
+  /* 과목 추가 피커 */
+  .set-box.wide{width:430px;max-height:86vh;display:flex;flex-direction:column;}
+  .subj-q{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;font-family:inherit;margin-bottom:8px;}
+  .subj-q:focus{border-color:var(--blue);outline:none;}
+  .subj-list{flex:1;overflow-y:auto;max-height:280px;margin-bottom:10px;}
+  .subj-row{display:flex;align-items:center;gap:7px;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:6px;cursor:pointer;font-size:12.5px;}
+  .subj-row:hover{border-color:var(--blue-line);background:var(--blue-soft);}
+  .subj-row .sn{flex:1;font-weight:600;}
+  .subj-row .sc{font-size:11px;color:var(--gray-light);}
+  .subj-row.used{opacity:.5;cursor:not-allowed;background:#f7f8fb;}
+  .subj-row.used:hover{border-color:var(--line);background:#f7f8fb;}
+  .subj-row .used-tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 6px;background:#eceef3;color:var(--gray-light);white-space:nowrap;}
+  .subj-none{border:1.5px dashed var(--line);border-radius:10px;padding:18px;text-align:center;font-size:11.5px;color:var(--gray-light);line-height:1.75;}
+  .slot-add{border:1.5px dashed #ddd0f7;background:#faf8ff;border-radius:11px;padding:11px 12px;margin-bottom:8px;}
+  .slot-add .sa-t{font-size:12px;font-weight:800;color:var(--violet);margin-bottom:3px;}
+  .slot-add .sa-d{font-size:10.5px;color:var(--gray-light);line-height:1.6;margin-bottom:8px;}
+  .slot-add .sa-d code{background:#efeaf9;border-radius:4px;padding:1px 5px;color:var(--violet);}
+  .slot-add .sa-r{display:flex;gap:6px;}
+  .slot-add select{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:8px;padding:8px;font-size:11.5px;font-family:inherit;background:#fff;}
+  .slot-add button{border:1.5px solid var(--violet);background:var(--violet);color:#fff;border-radius:8px;font-size:11.5px;font-weight:800;padding:8px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;}
 
   /* 학생 화면 */
   .student-view{display:none;flex-direction:column;align-items:center;gap:14px;}
@@ -657,6 +677,26 @@
   </div>
 </div>
 
+<!-- 과목 추가 — 우리 과목 목록에서 고른다 (자유 입력 금지) -->
+<div class="set-pop" id="subjPop" onclick="if(event.target===this)closeSubjPop()">
+  <div class="set-box wide">
+    <h4>과목 추가 <span id="subjSemLbl" style="font-size:12px;font-weight:600;color:var(--gray)"></span></h4>
+    <div class="sd">우리 과목 목록에서 고릅니다 — 이름을 직접 타이핑하면 가격·학점이 안 붙습니다</div>
+    <input class="subj-q" id="subjQ" type="text" placeholder="과목명 검색" oninput="renderSubjPick()" autocomplete="off">
+    <div class="subj-list" id="subjPick"></div>
+    <div class="slot-add">
+      <div class="sa-t">과목을 아직 안 정했다면 — <b>요건 슬롯</b></div>
+      <div class="sa-d">타기관에서 채울 요건만 잡아둡니다 (엑셀의 <code>전공1 (타사)</code>와 같은 뜻). 학점만 집계되고 수강료에는 안 들어갑니다</div>
+      <div class="sa-r">
+        <select id="slotArea"></select>
+        <select id="slotCr"><option value="3">3학점</option><option value="2">2학점</option><option value="1">1학점</option><option value="6">6학점</option></select>
+        <button onclick="addSlot()">요건 슬롯 추가</button>
+      </div>
+    </div>
+    <button class="set-close" onclick="closeSubjPop()">닫기</button>
+  </div>
+</div>
+
 <script>
   let mode = "cert";
   let builderLayout = "stack";   // stack(현재) | tab(A) | split(B)
@@ -774,6 +814,45 @@
     ]
   };
   let tmplScope = "pkg";
+  // 우리 과목 목록 — 배움 개설과목 기준. 1단계는 별도 과목 마스터 없이 이 목록을 대조 대상으로 본다
+  const COURSE_CATALOG = {
+    cert: [
+      {name:"사회복지학개론",credit:3,area:"major"},{name:"인간행동과사회환경",credit:3,area:"major"},
+      {name:"사회복지실천론",credit:3,area:"major"},{name:"사회복지실천기술론",credit:3,area:"major"},
+      {name:"사회복지정책론",credit:3,area:"major"},{name:"사회복지행정론",credit:3,area:"major"},
+      {name:"사회복지조사론",credit:3,area:"major"},{name:"사회복지법제와실천",credit:3,area:"major"},
+      {name:"지역사회복지론",credit:3,area:"major"},{name:"사회복지현장실습",credit:3,area:"major",prereq:true},
+      {name:"가족복지론",credit:3,area:"major"},{name:"가족상담및가족치료",credit:3,area:"major"},
+      {name:"산업복지론",credit:3,area:"major"},{name:"아동복지론",credit:3,area:"major"},
+      {name:"정신건강론",credit:3,area:"major"},{name:"청소년복지론",credit:3,area:"major"},
+      {name:"노인복지론",credit:3,area:"major"},{name:"의료사회복지론",credit:3,area:"major"},
+      {name:"자원봉사론",credit:3,area:"major"},{name:"장애인복지론",credit:3,area:"major"},
+      {name:"학교사회복지론",credit:3,area:"major"},
+      {name:"심리학개론",credit:3,area:"gen"},{name:"사회학개론",credit:3,area:"gen"},
+      {name:"인간행동의심리학적이해",credit:3,area:"gen"},{name:"현대인의정신건강",credit:3,area:"gen"},
+      {name:"대인관계의심리학",credit:3,area:"gen"},{name:"생활지도와상담",credit:3,area:"gen"},
+      {name:"한국문학개론",credit:3,area:"gen"},{name:"컴퓨터개론",credit:3,area:"gen"}
+    ],
+    deg: [
+      {name:"경영학개론",credit:3,area:"mreq"},{name:"회계원리",credit:3,area:"mreq"},
+      {name:"마케팅원론",credit:3,area:"mreq"},{name:"경제학개론",credit:3,area:"mreq"},
+      {name:"인적자원관리",credit:3,area:"mreq"},{name:"재무관리",credit:3,area:"mreq"},
+      {name:"국제경영",credit:3,area:"mreq"},{name:"경영정보시스템",credit:3,area:"mreq"},
+      {name:"생산관리",credit:3,area:"mreq"},
+      {name:"경영분석",credit:3,area:"melec"},{name:"경영통계학",credit:3,area:"melec"},
+      {name:"광고학",credit:3,area:"melec"},{name:"리더십",credit:3,area:"melec"},
+      {name:"마케팅관리론",credit:3,area:"melec"},{name:"무역학개론",credit:3,area:"melec"},
+      {name:"산업심리학",credit:3,area:"melec"},{name:"소비자심리학",credit:3,area:"melec"},
+      {name:"원가관리회계1",credit:3,area:"melec"},{name:"원가관리회계2",credit:3,area:"melec"},
+      {name:"인간관계론",credit:3,area:"melec"},{name:"조직심리학",credit:3,area:"melec"},
+      {name:"중급재무회계1",credit:3,area:"melec"},{name:"데이터베이스",credit:3,area:"melec"},
+      {name:"심리학개론",credit:3,area:"gen"},{name:"사회학개론",credit:3,area:"gen"},
+      {name:"컴퓨터개론",credit:3,area:"gen"},{name:"한국문학개론",credit:3,area:"gen"},
+      {name:"결혼과가족",credit:3,area:"gen"},{name:"교육심리학",credit:3,area:"gen"},
+      {name:"정보통신개론",credit:3,area:"gen"},{name:"생활예절",credit:3,area:"gen"},
+      {name:"현대인의정신건강",credit:3,area:"gen"},{name:"아동발달",credit:3,area:"gen"}
+    ]
+  };
   const subjectSets = [
     {n:"교양 인기 세트", m:"심리학개론·글쓰기·생활속의통계 (9학점)", subjects:[
       {name:"심리학개론",credit:3,area:"gen"},{name:"글쓰기",credit:3,area:"gen"},{name:"생활속의통계",credit:3,area:"gen"}]},
@@ -1235,7 +1314,52 @@
     renderBuilder();
     if(document.getElementById("studentView").style.display==="flex") renderStudent();
   }
-  function addSubj(i){ const name=prompt("과목명 (시연)",""); if(!name)return; sems()[i].subjects.push({id:nextNewId++,name,credit:3,area:mode==="cert"?"major":"melec"}); renderBuilder(); }
+  // 과목 추가 — 우리 과목 목록에서 고른다. 자유 입력을 막아야 가격·학점이 자동으로 붙는다
+  let subjTargetSem = 0;
+  function addSubj(i){
+    subjTargetSem=i;
+    document.getElementById("subjSemLbl").textContent=`— ${i+1}학기 (${termLabel(i)})`;
+    document.getElementById("subjQ").value="";
+    document.getElementById("slotArea").innerHTML=Object.keys(AREA_META[mode])
+      .map(a=>`<option value="${a}">${AREA_META[mode][a].label}</option>`).join("");
+    renderSubjPick();
+    document.getElementById("subjPop").classList.add("open");
+    document.getElementById("subjQ").focus();
+  }
+  function closeSubjPop(){ document.getElementById("subjPop").classList.remove("open"); }
+  function renderSubjPick(){
+    const q=(document.getElementById("subjQ").value||"").trim();
+    // 이미 배치했거나 인정된 과목은 다시 못 넣게 — 중복 배치가 가격·학점을 두 번 세게 한다
+    const planned=new Set(all().map(s=>s.name));
+    const recog=new Set(ihList().filter(x=>x.status==="recog").map(x=>x.name));
+    const list=COURSE_CATALOG[mode].filter(c=>!q||c.name.includes(q));
+    document.getElementById("subjPick").innerHTML = list.length===0
+      ? `<div class="subj-none">'${q}' 에 해당하는 과목이 없습니다<br>우리가 열지 않는 과목이면 아래 <b>요건 슬롯</b>으로 잡아두세요</div>`
+      : list.map((c,k)=>{
+          const idx=COURSE_CATALOG[mode].indexOf(c);
+          const used=planned.has(c.name)?"배치됨":(recog.has(c.name)?"인정됨":"");
+          const am=areaMeta(c.area);
+          return `<div class="subj-row ${used?"used":""}" ${used?"":`onclick="pickSubj(${idx})"`}>
+            <span class="sn">${c.name}</span>
+            <span class="area-tag ${am.cls}">${am.label}</span>
+            <span class="sc">${c.credit}학점</span>
+            ${used?`<span class="used-tag">${used}</span>`:""}
+          </div>`;
+        }).join("");
+  }
+  function pickSubj(idx){
+    const c=COURSE_CATALOG[mode][idx]; if(!c) return;
+    const s={id:nextNewId++,name:c.name,credit:c.credit,area:c.area};
+    if(c.prereq) s.prereq=true;
+    sems()[subjTargetSem].subjects.push(s);
+    closeSubjPop(); renderBuilder();
+  }
+  function addSlot(){
+    const area=document.getElementById("slotArea").value;
+    const credit=parseInt(document.getElementById("slotCr").value)||3;
+    sems()[subjTargetSem].subjects.push({id:nextNewId++,name:"",credit,area,origin:"ext",slot:true});
+    closeSubjPop(); renderBuilder();
+  }
   function moveSubj(id,dir){
     const arr=sems();
     for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===id);
