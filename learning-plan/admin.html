@@ -415,7 +415,7 @@
                   <button onclick="openFormSpec()">양식 보기</button>
                   <button class="pri" onclick="tnUpload()">파일 업로드</button>
                 </div>
-                <div class="done" id="upDone" style="display:none;">✓ 16행 읽음 — 아래 매칭 확인 단계에서 결과를 확인하세요</div>
+                <div class="done" id="upDone" style="display:none;">✓ 18행 읽음 — 아래 매칭 확인 단계에서 결과를 확인하세요</div>
               </div>
 
               <div class="up" id="searchBox" style="display:none;border-style:solid;background:#fff;text-align:left;">
@@ -445,7 +445,7 @@
               <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. <b>미판정·확인 필요가 남으면 저장할 수 없습니다</b> — 템플릿은 여러 설계에 재사용되므로, 틀린 과목이 한 번 들어가면 그 템플릿으로 만든 설계가 전부 영향을 받습니다</div>
               <div id="tnMatch"></div>
               <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 세 갈래로 갈립니다</b> — 판정만 끝나면 셋 다 정상 저장됩니다.<br>
-                · <b>표기만 다른 것</b> (사회복지개론 → 사회복지학개론) → [과목 지정]으로 우리 과목에 연결<br>
+                · <b>표기만 다른 것</b> (보육개론 → 보육학개론) → [과목 지정]으로 우리 과목에 연결<br>
                 · <b>우리가 안 파는 과목</b> (타기관에서 들어야 하는 과목) → [타기관 이수] — 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
                 · <b>과목을 특정하지 않은 요건</b> (엑셀의 <code>전공1 (타사)</code>) → [요건 슬롯] — 이수구분·학점만 확정, 어떤 과목으로 채울지는 학생이 정함<br>
                 · <b>잘못 적힌 행</b> → [행 제외]</div>
@@ -513,10 +513,10 @@
     <div class="xl-wrap">
       <table class="xl">
         <tr><th class="rn"></th><th>학기</th><th>과목명</th><th>학점</th><th>이수구분</th></tr>
-        <tr><td class="rn">1</td><td class="ex">1</td><td class="ex">인간행동과사회환경</td><td class="ex">3</td><td class="ex">필수</td></tr>
-        <tr><td class="rn">2</td><td class="ex">1</td><td class="ex">사회복지실천론</td><td class="ex">3</td><td class="ex">필수</td></tr>
-        <tr><td class="rn">3</td><td class="ex">2</td><td class="ex">노인복지론</td><td class="ex">3</td><td class="ex">선택</td></tr>
-        <tr><td class="rn">4</td><td class="ex">2</td><td class="ext">아동권리와복지 (타사)</td><td class="ex">3</td><td class="ex">선택</td></tr>
+        <tr><td class="rn">1</td><td class="ex">1</td><td class="ex">보육학개론</td><td class="ex">3</td><td class="ex">필수</td></tr>
+        <tr><td class="rn">2</td><td class="ex">1</td><td class="ex">보육과정</td><td class="ex">3</td><td class="ex">필수</td></tr>
+        <tr><td class="rn">3</td><td class="ex">2</td><td class="ex">부모교육론</td><td class="ex">3</td><td class="ex">선택</td></tr>
+        <tr><td class="rn">4</td><td class="ex">2</td><td class="ext">놀이지도 (타사)</td><td class="ex">3</td><td class="ex">선택</td></tr>
         <tr><td class="rn">5</td><td class="ex">3</td><td class="ext">전공1 (타사)</td><td class="ex">3</td><td class="ex">선택</td></tr>
         <tr><td class="rn">6</td><td colspan="4" style="color:var(--gray-light)">…</td></tr>
       </table>
@@ -572,23 +572,27 @@
         none=미판정(저장 차단) / drop=제외
      엑셀 raw 값에 붙은 '(타사)' 접미사는 상담사들이 이미 쓰고 있는 관행 표기 —
      업로드 시 tnClassify()가 읽어서 타기관으로 자동 판정한다. seed는 접미사가 없을 때의 대조 결과. */
+  // 템플릿명(보육교사 2급)에 맞춘 실제 배움 보육교사 개설과목.
+  // (타사) 붙은 건 배움이 팔지 않는 과목 — 놀이지도·아동간호학은 보육교사 교과목이지만 배움 개설분에 없다
   const TN_ROWS=[
-    {s:1,raw:"인간행동과사회환경",cr:3,a:"필수",seed:"auto",to:"인간행동과사회환경"},
-    {s:1,raw:"사회복지개론",cr:3,a:"필수",seed:"near",to:"사회복지학개론"},
-    {s:1,raw:"사회복지실천론",cr:3,a:"필수",seed:"auto",to:"사회복지실천론"},
-    {s:1,raw:"사회복지정책론",cr:3,a:"필수",seed:"auto",to:"사회복지정책론"},
-    {s:1,raw:"지역사회복지론",cr:3,a:"필수",seed:"auto",to:"지역사회복지론"},
-    {s:2,raw:"사회복지실천기술론",cr:3,a:"필수",seed:"auto",to:"사회복지실천기술론"},
-    {s:2,raw:"사회복지조사론",cr:3,a:"필수",seed:"auto",to:"사회복지조사론"},
-    {s:2,raw:"사회복지행정론",cr:3,a:"필수",seed:"auto",to:"사회복지행정론"},
-    {s:2,raw:"사회복지법제론",cr:3,a:"필수",seed:"near",to:"사회복지법제와실천"},
-    {s:2,raw:"노인복지론",cr:3,a:"선택",seed:"auto",to:"노인복지론"},
-    {s:2,raw:"아동권리와복지 (타사)",cr:3,a:"선택",seed:"none",to:""},
-    {s:3,raw:"정신건강론",cr:3,a:"선택",seed:"auto",to:"정신건강론"},
-    {s:3,raw:"아동복지론",cr:3,a:"선택",seed:"auto",to:"아동복지론"},
-    {s:3,raw:"사회복지현장실습",cr:3,a:"필수",seed:"auto",to:"사회복지현장실습"},
+    {s:1,raw:"보육개론",cr:3,a:"필수",seed:"near",to:"보육학개론"},
+    {s:1,raw:"보육과정",cr:3,a:"필수",seed:"auto",to:"보육과정"},
+    {s:1,raw:"영유아발달",cr:3,a:"필수",seed:"auto",to:"영유아발달"},
+    {s:1,raw:"아동권리와복지",cr:3,a:"필수",seed:"auto",to:"아동권리와복지"},
+    {s:1,raw:"보육교사론",cr:3,a:"필수",seed:"auto",to:"보육교사론"},
+    {s:2,raw:"아동관찰및행동연구론",cr:3,a:"필수",seed:"near",to:"아동관찰및행동연구"},
+    {s:2,raw:"부모교육론",cr:3,a:"선택",seed:"auto",to:"부모교육론"},
+    {s:2,raw:"특수아동이해",cr:3,a:"선택",seed:"auto",to:"특수아동이해"},
+    {s:2,raw:"언어지도",cr:3,a:"선택",seed:"auto",to:"언어지도"},
+    {s:2,raw:"아동안전관리",cr:3,a:"필수",seed:"auto",to:"아동안전관리"},
+    {s:2,raw:"놀이지도 (타사)",cr:3,a:"선택",seed:"none",to:""},
+    {s:3,raw:"아동미술",cr:3,a:"선택",seed:"auto",to:"아동미술"},
+    {s:3,raw:"아동수학지도",cr:3,a:"선택",seed:"auto",to:"아동수학지도"},
+    {s:3,raw:"가족관계론",cr:3,a:"선택",seed:"auto",to:"가족관계론"},
+    {s:3,raw:"영유아보육프로그램개발과평가",cr:3,a:"필수",seed:"auto",to:"영유아보육프로그램개발과평가"},
+    {s:3,raw:"보육실습",cr:3,a:"필수",seed:"auto",to:"보육실습"},
     {s:3,raw:"전공1 (타사)",cr:3,a:"선택",seed:"none",to:""},
-    {s:3,raw:"복지행정실무",cr:3,a:"선택",seed:"none",to:""}
+    {s:3,raw:"아동간호학",cr:3,a:"선택",seed:"none",to:""}
   ];
   // 관행 표기 '(타사)' 인식 — 접미사를 떼고, 남은 이름이 과목명이 아니라 요건 표현이면 슬롯으로 본다
   const TN_EXT_SUFFIX=/\s*\((타사|타기관)\)\s*$/;
@@ -640,8 +644,8 @@
   }
   function tnAccept(i){ TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender(); }
   function tnPick(i){
-    alert("과목 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 우리 과목을 직접 지정합니다\n→ 사회복지행정실무 (선택 3학점) 선택한 것으로 처리");
-    TN_ROWS[i].to="사회복지행정실무"; TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender();
+    alert("과목 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 우리 과목을 직접 지정합니다\n→ 아동생활지도 (선택 3학점) 선택한 것으로 처리");
+    TN_ROWS[i].to="아동생활지도"; TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender();
   }
   function tnExt(i){
     const r=TN_ROWS[i], base=r.raw.replace(TN_EXT_SUFFIX,"").trim(), slot=TN_SLOT_NAME.test(base);

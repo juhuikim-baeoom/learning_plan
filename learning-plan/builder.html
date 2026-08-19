@@ -592,7 +592,7 @@
         <tr><td class="rn">1</td><td class="ex">전공</td><td class="ex">사회복지윤리와철학</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td class="ex ok">인정</td></tr>
         <tr><td class="rn">2</td><td class="ex">교양</td><td class="ex">대학영어</td><td class="ex">전적대</td><td class="ex">2</td><td class="ex">OO대학</td><td class="ex ok">인정</td></tr>
         <tr><td class="rn">3</td><td class="ex">교양</td><td class="ex">현대문학의이해</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td class="ex no">미인정</td></tr>
-        <tr><td class="rn">4</td><td class="ex">전공</td><td class="ex">사회학개론</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td style="color:var(--gray-light)">(비움)</td></tr>
+        <tr><td class="rn">4</td><td class="ex">교양</td><td class="ex">서양철학사</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td style="color:var(--gray-light)">(비움)</td></tr>
         <tr><td class="rn">5</td><td colspan="6" style="color:var(--gray-light)">…</td></tr>
       </table>
     </div>
@@ -695,7 +695,7 @@
       {id:12, name:"노인복지론", credit:3, area:"major"},
       {id:14, name:"가족복지론", credit:3, area:"major"},
       // 타기관 수강분 — 우리가 팔지 않는 과목. 학점만 집계하고 가격에서 제외 (엑셀 관행 "과목명 (타사)")
-      {id:15, name:"아동권리와복지", credit:3, area:"major", origin:"ext"}
+      {id:15, name:"사회복지와문화다양성", credit:3, area:"major", origin:"ext"}
     ]}
   ];
   // 이수 현황: status = unset(미분류) / recog(인정) / excl(미인정)
@@ -713,23 +713,26 @@
     {id:24, name:"현대사회와복지", credit:3, area:"major", status:"excl", origin:"transfer", when:"OO대학(전적대)"},
     {id:22, name:"자원봉사론", credit:3, area:"major", status:"recog", kind:"pre", origin:"cert", when:"보육교사 2급 취득 예정"}
   ];
-  const DEG_TARGET = {total:140, mreq:18, melec:42, gen:30, free:0};
+  // 경영학 전공 학위수여 요건 (career.baeoom.com/degree/business_degree.asp 기준)
+  // 총 140학점 · 전공 60학점(전공필수 9과목 27학점 포함) · 교양 30학점
+  const DEG_TARGET = {total:140, mreq:27, melec:33, gen:30, free:0};
+  // 과목명은 배움 경영학 전공 개설과목 기준
   let degSems = [
     { subjects:[
-      {id:101,name:"경영학원론",credit:3,area:"mreq"},{id:102,name:"회계원리",credit:3,area:"mreq"},
-      {id:103,name:"마케팅원론",credit:3,area:"mreq"},{id:104,name:"경제학개론",credit:3,area:"gen"},
-      {id:105,name:"생활속의통계",credit:3,area:"gen"},{id:106,name:"조직행동론",credit:3,area:"melec"},
-      {id:107,name:"인적자원관리",credit:3,area:"melec"},{id:108,name:"재무관리",credit:3,area:"mreq"}]},
+      {id:101,name:"경영학개론",credit:3,area:"mreq"},{id:102,name:"회계원리",credit:3,area:"mreq"},
+      {id:103,name:"마케팅원론",credit:3,area:"mreq"},{id:104,name:"경제학개론",credit:3,area:"mreq"},
+      {id:105,name:"경영통계학",credit:3,area:"melec"},{id:106,name:"조직심리학",credit:3,area:"melec"},
+      {id:107,name:"인적자원관리",credit:3,area:"mreq"},{id:108,name:"재무관리",credit:3,area:"mreq"}]},
     { subjects:[
-      {id:109,name:"국제경영",credit:3,area:"melec"},{id:110,name:"소비자행동론",credit:3,area:"melec"},
-      {id:111,name:"경영정보시스템",credit:3,area:"melec"},{id:112,name:"심리학개론",credit:3,area:"gen"},
-      {id:113,name:"생산운영관리",credit:3,area:"melec"},{id:114,name:"경영전략",credit:3,area:"mreq"},
-      {id:115,name:"광고론",credit:3,area:"melec"}]},
+      {id:109,name:"국제경영",credit:3,area:"mreq"},{id:110,name:"소비자심리학",credit:3,area:"melec"},
+      {id:111,name:"경영정보시스템",credit:3,area:"mreq"},{id:112,name:"심리학개론",credit:3,area:"gen"},
+      {id:113,name:"생산관리",credit:3,area:"mreq"},{id:114,name:"마케팅관리론",credit:3,area:"melec"},
+      {id:115,name:"광고학",credit:3,area:"melec"}]},
     { subjects:[
-      {id:116,name:"브랜드관리",credit:3,area:"melec"},{id:117,name:"유통관리",credit:3,area:"melec"},
-      {id:118,name:"서비스마케팅",credit:3,area:"melec"},{id:119,name:"글쓰기",credit:3,area:"gen"},
-      {id:120,name:"창업론",credit:3,area:"free"},{id:121,name:"품질경영",credit:3,area:"melec"},
-      {id:122,name:"e-비즈니스",credit:3,area:"free"},
+      {id:116,name:"경영분석",credit:3,area:"melec"},{id:117,name:"무역학개론",credit:3,area:"melec"},
+      {id:118,name:"리더십",credit:3,area:"melec"},{id:119,name:"사회학개론",credit:3,area:"gen"},
+      {id:120,name:"인간관계론",credit:3,area:"melec"},{id:121,name:"원가관리회계1",credit:3,area:"melec"},
+      {id:122,name:"데이터베이스",credit:3,area:"melec"},
       // 요건 슬롯 — 과목을 특정하지 않은 타기관 요건 (엑셀 관행 "전공1 (타사)"). 어떤 과목으로 채울지는 학생이 정함
       {id:123,name:"",credit:3,area:"melec",origin:"ext",slot:true}]}
   ];
@@ -908,7 +911,7 @@
     // 우리 커리큘럼에 없는 전적대 과목 — 양식에 [미인정]으로 적어 올린 건
     certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"excl",origin:"transfer",when:"OO대학(전적대)"});
     // 인정여부를 비워 올린 건 — 판단 보류. 미분류로 들어와 상담사가 확정
-    certIH.push({id:91,name:"사회학개론",credit:3,area:"major",status:"unset",origin:"transfer",when:"OO대학(전적대)"});
+    certIH.push({id:91,name:"서양철학사",credit:3,area:"gen",status:"unset",origin:"transfer",when:"OO대학(전적대)"});
     uploaded=true;
     ihTab="all"; ihOpen=true;   // 업로드 직후엔 전체 목록을 펼쳐 되훑을 수 있게
     document.getElementById("uploadDone").style.display="block";
