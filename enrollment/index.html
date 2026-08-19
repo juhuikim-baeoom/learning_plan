@@ -124,8 +124,6 @@
   .round-tab.act .rt3{color:var(--main);opacity:.75;}
   .round-info{display:flex;gap:6px 26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-top:none;padding:11px 16px;font-size:12.5px;color:var(--gray);}
   /* 개설 차수 규칙 안내 — 값이 아니라 규칙이므로 톤을 낮추고 오른쪽 끝에 둔다 */
-  .round-info .r-hint{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--gray-light);}
-  .round-info .r-hint b{margin-left:0;color:var(--gray);font-weight:800;}
   .round-info b{color:var(--ink);font-weight:700;margin-left:6px;}
 
   /* 패키지 모드 */
@@ -498,6 +496,9 @@
   .ln-sec li{font-size:12.5px;line-height:1.58;color:#4a4436;padding-left:11px;position:relative;}
   .ln-sec li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:#e5bf5e;}
   .ln-sec li b{font-weight:800;color:#2b2b2b;}
+  /* 스킨 절은 시안 절과 같은 배경이라 구분선을 직접 준다 */
+  .ln-sec.skin{border-top:1px solid #f2e0ac;}
+  .ln-sec h4 .h4-sub{font-weight:600;color:#a08a54;letter-spacing:0;}
   .ln-foot{padding:9px 14px;border-top:1px solid #f2e0ac;font-size:12px;line-height:1.6;color:#8d7d5b;font-weight:600;}
   .ln-foot b{color:#8a6212;font-weight:800;}
   #sideShell{display:none;gap:18px;align-items:flex-start;margin-top:16px;}
@@ -594,6 +595,11 @@
       <div class="ln-sec">
         <h4 id="lnH1"></h4>
         <ul id="lnList"></ul>
+      </div>
+      <!-- 스킨은 구조와 별개의 축 — 시안 설명과 같은 자리에서 같이 읽히게 -->
+      <div class="ln-sec skin">
+        <h4 id="lnSkinH"></h4>
+        <ul id="lnSkinList"></ul>
       </div>
       <div class="ln-foot" id="lnFoot"></div>
     </div>
@@ -1209,17 +1215,11 @@ function roundTabsHTML(){
 }
 function roundInfoHTML(){
   const r=ROUNDS.find(x=>x.id===roundSel);
-  /* 라벨을 빼면서 같이 사라진 규칙 안내의 대체.
-     "개설 차수만 표시"라던 옛 문구는 사실과 달랐다 — 미개설 차수는 걸러내는 게 아니라
-     비활성으로 남긴다. 그래서 ① 목록이 무엇에 따라 달라지는지 ② 지금 이 과정의 결과가
-     어떤지를 같이 적는다. 현행은 전 차수를 무조건 노출하므로 이 줄이 없다 */
-  const open=openRoundIds().length, off=ROUNDS.length-open;
-  const hint = off
-    ? `개설 차수는 <b>과정 × 수강방식</b>에 따라 달라집니다 — 회색 <b>${off}개</b>는 이 과정 미개설`
-    : `개설 차수는 <b>과정 × 수강방식</b>에 따라 달라집니다 — 이 과정은 <b>${open}개 차수 모두</b> 개설`;
+  /* 규칙 안내("개설 차수는 과정 × 수강방식에 따라…")는 제거했다 — 미개설 차수는 탭 자체가
+     비활성 + "이 과정 미개설"로 이미 말하고 있어 한 줄 더 붙일 값이 없었다.
+     전제 자체는 기획설명의 공통 전제에 남아 있다 */
   return (roundWarn?`<span class="rrow-warn">⚠ ${roundWarn}</span>`:"")
-    + `<span>학습기간<b>${r.period}</b></span><span>학점인정<b>${r.credit}</b></span><span>학위취득<b>${r.degree}</b></span>`
-    + `<span class="r-hint">${hint}</span>`;
+    + `<span>학습기간<b>${r.period}</b></span><span>학점인정<b>${r.credit}</b></span><span>학위취득<b>${r.degree}</b></span>`;
 }
 function renderRoundPicker(){
   $("rrowSeg").innerHTML = roundTabsHTML();
@@ -1276,8 +1276,38 @@ const NOTES={
     f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
   }
 };
+/* 스킨 기획설명 — 스킨은 구조와 독립된 두 번째 축이라 시안 설명과 별도 절로 붙인다.
+   "왜 커머스형인가" 같은 이름의 근거가 화면만 보고는 안 읽히던 자리 */
+const SKIN_NOTES={
+  old:{ s:"현행 표현 그대로 · 비교 기준선",
+    li:[
+      `현행 사이트의 표현을 그대로 — <b>격자선 표</b>, 각진 컨트롤, 현행 색`,
+      `현행 화면에서는 이 스킨으로 <b>고정</b>됩니다. 구조를 비교하는 중에 표현까지 같이 바뀌면 <b>무엇이 구조 차이인지 흐려지기</b> 때문`
+    ]},
+  air:{ s:"격자선 → 여백 · 라운드",
+    li:[
+      `영역을 <b>선이 아니라 여백과 라운드</b>로 나눕니다 — 표는 세로 격자를 없애고 행 구분선만, 헤더 배경도 제거`,
+      `칩 · 버튼은 테두리 대신 <b>회색 면</b>. 패키지/단과 토글은 활성 항목만 흰 카드로 뜨는 <b>세그먼트형</b>`,
+      `트레이드오프 — 한 화면에 담기는 정보량이 줄고 <b>세로가 길어집니다</b>. 늘어난 만큼은 상단 <b>한눈에 비교</b>의 '첫 상품까지' 실측값에 그대로 나옵니다`
+    ]},
+  shop:{ s:"수강신청을 구매 경험으로",
+    li:[
+      `<b>커머스형이라 부르는 이유</b> — 쇼핑몰 상품 목록의 관용구를 그대로 씁니다. 패키지를 세로 리스트가 아니라 <b>2단 카드 그리드</b>로 깔고, 카드마다 <b>전폭 신청 버튼</b>을 답니다`,
+      `가격을 화면에서 가장 큰 글자로 (최종가 25px), 할인율은 <b>빨간 채운 뱃지</b>로 — 값을 읽는 순서를 이름 → 가격에서 <b>가격 → 이름</b>으로 뒤집습니다`,
+      `강조색은 <b>배움 오렌지</b>(#F26B21) 하나로 통일 — 현행 사이트 수강신청 버튼과 같은 계열. CTA · 가격 · 리본 · 하단 장바구니 바가 모두 이 색`,
+      `트레이드오프 — <b>패키지 발견에는 유리</b>하지만, 카드가 자리를 많이 먹어 <b>단과 171과목을 훑기에는 불리</b>합니다`
+    ]}
+};
 let noteOpen=true;
+/* 현행은 스킨이 고정이므로 '지금 실제로 적용된 스킨'을 기준으로 적는다 (syncSkin과 같은 규칙) */
+function renderSkinNote(){
+  const on = layout==="cur" ? "old" : skin;
+  const k=SKINS.find(x=>x.id===on), n=SKIN_NOTES[on]; if(!n) return;
+  $("lnSkinH").innerHTML=`스킨 : ${k.n} <span class="h4-sub">— ${n.s}</span>`;
+  $("lnSkinList").innerHTML=n.li.map(x=>`<li>${x}</li>`).join("");
+}
 function renderNote(){
+  renderSkinNote();
   const n=NOTES[layout]; if(!n) return;
   $("lnTitle").textContent=n.t;
   $("lnHyp").textContent=n.h;
@@ -1395,6 +1425,7 @@ function syncSkin(){
     `<button class="skin ${skin===k.id?"act":""}" title="${k.d||"현행 화면의 표현을 그대로"}" onclick="applySkin('${k.id}')">${k.n}</button>`).join("");
   const cur=SKINS.find(k=>k.id===skin);
   $("skinNote").textContent = layout==="cur" ? "현행은 기준선 — 스킨 고정" : (cur.d||"");
+  renderSkinNote();
 }
 
 let layout="stack", modeSaved=null;
