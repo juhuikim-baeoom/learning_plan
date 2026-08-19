@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수강신청 개편 v2 — 현행 + 레이아웃 시안 3종 비교</title>
+<title>수강신청 개편 v2 — 현행 + 레이아웃 시안 2종 비교</title>
 <link rel="stylesheet" href="../assets/tokens.css">
 <style>
   :root{
@@ -191,74 +191,6 @@
   tr.na td{background:#fafbfc;}
   tr.na td.grp{background:#fbfbfc;}
 
-  /* ── 레이아웃 시안 C: 학기 플래너 ── */
-  #planShell{display:none;gap:16px;align-items:flex-start;margin-top:16px;}
-  .plan-pool{width:210px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:#fff;position:sticky;top:12px;display:flex;flex-direction:column;max-height:calc(100vh - 24px);}
-  .pp-head{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800;line-height:1.3;}
-  .pp-head small{display:block;font-size:10.5px;font-weight:600;color:var(--gray-light);margin-top:3px;}
-  .pp-pkg{border-bottom:1px solid var(--line);padding:9px 10px;background:var(--panel);}
-  .pp-pkg .ppk-t{font-size:11px;font-weight:800;color:var(--gray);margin-bottom:7px;}
-  .ppk{border:1px solid var(--line);border-radius:5px;background:#fff;padding:8px 10px;margin-bottom:6px;cursor:pointer;}
-  .ppk.on{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main);}
-  .ppk .k1{font-size:11.5px;font-weight:800;line-height:1.35;}
-  .ppk .k2{font-size:10.5px;color:var(--gray-light);margin-top:2px;}
-  .ppk .k3{font-size:11.5px;font-weight:800;color:var(--main);margin-top:3px;}
-  .ppk-clear{width:100%;border:1px solid var(--line-dark);background:#fff;border-radius:4px;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--gray);padding:5px;cursor:pointer;}
-  .pp-list{overflow-y:auto;padding:4px 0;}
-  .pay-alt{width:100%;border-top:1px dashed var(--line);margin-top:12px;padding-top:11px;font-size:12px;color:var(--gray);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .pay-alt b{color:var(--ink);font-weight:800;}
-  .pay-alt .cheaper{color:var(--red);font-weight:800;}
-  .pay-alt button{background:#fff;border:1px solid var(--main);color:var(--main);border-radius:5px;font-family:inherit;font-size:12.5px;font-weight:800;padding:8px 16px;cursor:pointer;margin-left:auto;}
-  .pp-item{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px dashed var(--line);}
-  .pp-item .ppn{flex:1;min-width:0;font-size:12px;font-weight:700;line-height:1.35;}
-  .pp-item .ppn small{display:block;font-size:10.5px;font-weight:500;color:var(--gray-light);margin-top:1px;}
-  .pp-item.on{background:var(--soft);}
-  .pp-item.off .ppn{color:var(--gray-light);font-weight:600;}
-  .pp-add{border:1px solid var(--main);background:#fff;color:var(--main);border-radius:4px;font-family:inherit;font-size:11px;font-weight:800;padding:4px 9px;cursor:pointer;white-space:nowrap;}
-  .pp-item.on .pp-add{background:var(--main);color:#fff;}
-  .pp-item.off .pp-add{border-color:var(--line-dark);color:var(--gray-light);}
-  .plan-main{flex:1;min-width:0;}
-  .plan-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px;}
-  .plan-head label{font-size:12px;font-weight:800;color:var(--gray);}
-  .plan-head select{font-family:inherit;font-size:13px;font-weight:700;border:1px solid var(--line-dark);border-radius:4px;padding:7px 10px;background:#fff;color:var(--ink);cursor:pointer;}
-  .plan-top{border:1px solid var(--line);border-radius:8px;padding:12px 16px;background:var(--panel);font-size:12.5px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
-  .plan-top b{color:var(--main);font-weight:800;}
-  .plan-warn{background:var(--red-soft);color:var(--red);font-weight:700;border-radius:3px;padding:3px 9px;}
-  .plan-tracks{display:flex;gap:8px;margin-top:12px;align-items:stretch;}
-  .track{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;background:#fff;display:flex;flex-direction:column;}
-  .track.cur{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main);}
-  .track.tbd{background:#fafbfc;border-style:dashed;}
-  .track.un{background:#fff8f0;border-color:#f0c98a;}
-  .track.un .tr-head{border-bottom-color:#f0c98a;}
-  .track.un .t2{color:#b07c10;}
-  .tr-head{padding:9px 10px;}
-  .tr-head .t2{font-size:13.5px;}
-  .tr-body{padding:7px;}
-  .tr-card{padding:6px 8px;}
-  .tr-foot{padding:8px 10px;font-size:11px;}
-  .tr-head{padding:10px 12px;border-bottom:1px solid var(--line);}
-  .tr-head .t1{font-size:11.5px;color:var(--gray);}
-  .tr-head .t2{font-size:14.5px;font-weight:800;margin-top:1px;letter-spacing:-.3px;}
-  .tr-head .t3{font-size:10.5px;color:var(--gray-light);margin-top:2px;}
-  .tr-body{padding:8px;flex:1;}
-  .tr-card{border:1px solid var(--line);border-radius:5px;padding:7px 9px;margin-bottom:6px;background:#fff;}
-  .tr-card .tc-n{font-size:11.5px;font-weight:700;line-height:1.35;}
-  .tr-card .tc-p{font-size:10.5px;color:var(--gray-light);margin-top:1px;}
-  .tr-card .tc-b{display:flex;gap:4px;margin-top:6px;}
-  .tr-card button{border:1px solid var(--line-dark);background:#fff;border-radius:3px;font-family:inherit;font-size:10px;font-weight:700;color:var(--gray);padding:2px 6px;cursor:pointer;}
-  .tr-empty{font-size:11px;color:var(--gray-light);text-align:center;padding:26px 6px;line-height:1.6;}
-  .tr-foot{border-top:1px solid var(--line);padding:9px 12px;font-size:11.5px;color:var(--gray);}
-  .tr-foot b{color:var(--ink);font-weight:800;}
-  .tr-bar{height:6px;background:#e8ebef;border-radius:4px;overflow:hidden;margin:6px 0 5px;}
-  .tr-bar i{display:block;height:100%;background:var(--main);}
-  .tr-bar i.over{background:var(--red);}
-  .tr-pay{font-weight:800;color:var(--main);}
-  .plan-pay{margin-top:14px;border:2px solid var(--main);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .plan-pay .pp-t{flex:1;min-width:240px;font-size:12.5px;color:var(--gray);}
-  .plan-pay .pp-t b{color:var(--ink);font-weight:700;}
-  .plan-pay .pp-s{font-size:21px;font-weight:800;letter-spacing:-.5px;}
-  .plan-pay button{background:var(--main);color:#fff;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:800;padding:12px 26px;cursor:pointer;}
-  .plan-pay button:disabled{background:var(--line-dark);cursor:default;}
   .st-txt.done{color:#1a9c6b;}
   .done-mark{color:#1a9c6b;font-weight:800;font-size:14px;}
   .pkg-none{border:1px dashed var(--line-dark);border-radius:8px;background:var(--panel);padding:34px 20px;text-align:center;}
@@ -327,11 +259,14 @@
   .lay-switch button.base.act{background:#4a4a4a;border-color:#4a4a4a;color:#fff;}
   .lay-switch button.cmp-tog{margin-left:auto;border-style:dashed;}
   /* 스킨은 구조와 다른 축이므로 색을 달리 준다 */
+  /* 스킨 버튼 묶음은 래퍼가 아니라 바로 플렉스 항목이 되게 — 래퍼의 라인박스가 바 높이를 키운다 */
+  #skinBtns{display:contents;}
   .lay-switch span.sk-lab{color:#2a7f6d;margin-left:2px;}
   .lay-switch button.skin{border-color:#9fd0c4;color:#2a7f6d;}
   .lay-switch button.skin:hover{background:#e8f6f2;}
   .lay-switch button.skin.act{background:#2a9d8f;border-color:#2a9d8f;color:#fff;}
-  .lay-switch .sk-note{color:#7fb3a8;}
+  /* 설명은 남는 폭만 차지하고 줄바꿈을 유발하지 않게 — 바는 항상 한 줄 */
+  .lay-switch .sk-note{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7fb3a8;}
 
   /* 한눈에 비교표 — 네 화면의 축을 같은 행에 놓고 대조 */
   .cmp-note{display:none;border:1px solid #e0e0e0;border-radius:8px;background:#fff;margin:-6px 0 18px;overflow-x:auto;}
@@ -463,11 +398,11 @@
   body.skin-air .pkg-row{border:none;border-radius:14px;box-shadow:0 1px 6px rgba(20,30,50,.08);background:#fff;padding:16px 20px;margin-bottom:10px;}
   body.skin-air .cross-zone .pkg-row{background:#fff;}
   body.skin-air .benefit{border:none;background:#f2f5f8;border-radius:9px;}
-  body.skin-air .credit-sum,body.skin-air .plan-top{border:none;border-radius:13px;}
+  body.skin-air .credit-sum{border:none;border-radius:13px;}
   body.skin-air .compose-preview{border-radius:10px;}
   body.skin-air .btn-compose{border:none;background:#f0f2f5;border-radius:8px;padding:4px 10px;}
   body.skin-air .apply-sm{border-radius:10px;padding:10px 20px;}
-  body.skin-air .pkg-apply,body.skin-air .cart-cta,body.skin-air .plan-pay button{border-radius:11px;}
+  body.skin-air .pkg-apply,body.skin-air .cart-cta{border-radius:11px;}
   body.skin-air .pkg-none{border:none;border-radius:16px;}
   body.skin-air .cross-zone{border-top:1px solid var(--line);}
 
@@ -489,20 +424,7 @@
   body.skin-air .sn-item.act{background:var(--main);color:#fff;border-left:none;}
   body.skin-air .sn-item.act em{color:#fff;border-color:rgba(255,255,255,.55);}
 
-  /* 플래너 (C) */
-  body.skin-air .plan-pool{border:none;background:var(--panel);border-radius:16px;}
-  body.skin-air .pp-head,body.skin-air .pp-pkg,body.skin-air .pp-item{border-bottom-color:#e4e8ec;}
-  body.skin-air .pp-pkg{background:transparent;}
-  body.skin-air .ppk,body.skin-air .tr-card{border:none;border-radius:10px;box-shadow:0 1px 3px rgba(20,30,50,.1);}
-  body.skin-air .track{border:none;background:var(--panel);border-radius:16px;}
-  body.skin-air .track.cur{background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.11);}
-  body.skin-air .tr-head,body.skin-air .tr-foot{border-color:#e4e8ec;}
-  body.skin-air .plan-head select{border:none;background:#f0f2f5;border-radius:10px;padding:9px 12px;}
-  body.skin-air .plan-pay{border:none;border-radius:16px;background:#fff;box-shadow:0 3px 16px rgba(20,30,50,.11);}
 
-  /* 트랙 상태색은 유지 — 미배치·미개설은 배경으로 구분하는 정보라 스킨이 지우면 안 된다 */
-  body.skin-air .track.un{background:#fff7ed;}
-  body.skin-air .track.tbd{background:#f7f9fb;}
 
   /* 하단 합산 바 */
   body.skin-air .cart-bar{border-top:none;box-shadow:0 -3px 22px rgba(20,30,50,.13);}
@@ -545,88 +467,13 @@
     font-size:14px;font-weight:800;padding:13px;border-radius:8px;}
   body.skin-shop .pkg-apply{background:var(--cta);font-size:15px;padding:15px 32px;}
   body.skin-shop .hero-price .fin,body.skin-shop .pkg-price .fin,body.skin-shop .hero-price .m-main b{color:var(--cta);}
-  body.skin-shop .ribbon,body.skin-shop .cart-cta,body.skin-shop .plan-pay button{background:var(--cta);}
-  body.skin-shop .pp-add{border-color:var(--cta);color:var(--cta);}
-  body.skin-shop .pp-item.on .pp-add{background:var(--cta);color:#fff;}
-  body.skin-shop .tr-pay,body.skin-shop .plan-top b{color:var(--cta);}
+  body.skin-shop .ribbon,body.skin-shop .cart-cta{background:var(--cta);}
 
   /* 표 — 가격을 CTA 색으로 올리고 행 호버 추가 */
   body.skin-shop table.subj tbody tr:hover td{background:#fffaf6;}
   body.skin-shop td.fee .f{font-size:16px;color:var(--cta);}
   body.skin-shop .f-chip.act{background:var(--ink);border-color:var(--ink);}
 
-  /* ══ 딥헤더형 스킨 — '고르는 곳'과 '보는 곳'을 색으로 가른다 ══
-     선택 축(과정·수강방식·개강일)만 짙은 판에 올리고 상품 영역은 흰색으로 남긴다.
-     시안마다 축을 어디에 뒀는지가 짙은 덩어리의 위치·크기로 바로 드러난다 */
-  body.skin-dark{--dk:#1d232e;--dk2:#2b3341;--dkline:#3b4553;--dktx:#c3ccd9;--dkdim:#8593a6;}
-
-  /* A — 세 블록을 붙여 하나의 짙은 판으로 (상품은 #contentHolder라 영향 없음) */
-  body.skin-dark .course-tabs{background:var(--dk);border:none;border-bottom:1px solid var(--dkline);
-    border-radius:14px 14px 0 0;padding:4px 20px 0;gap:6px;}
-  body.skin-dark .course-tab{border:none;background:transparent;color:var(--dktx);
-    border-bottom:2px solid transparent;font-size:14.5px;padding:15px 4px;}
-  body.skin-dark .course-tab .cat-desc{color:var(--dkdim);}
-  body.skin-dark .course-tab.act{background:transparent;border-top:none;border-bottom:2px solid #fff;color:#fff;}
-  body.skin-dark .course-tab.act .cat-desc{color:#fff;opacity:.7;}
-  body.skin-dark .course-tab.act::after{display:none;}
-  body.skin-dark .course-row,body.skin-dark .course-row.rows{background:var(--dk);border:none;padding:15px 20px 2px;}
-  body.skin-dark .c-chip{background:var(--dk2);border-color:var(--dkline);color:var(--dktx);border-radius:9px;}
-  body.skin-dark .c-chip.act{background:#fff;border-color:#fff;color:var(--dk);}
-  body.skin-dark .c-chip .mb,body.skin-dark .course-tab .mini-badge{background:var(--dk2);border-color:var(--main);color:#7fd4ff;}
-  body.skin-dark .chip-label{color:#fff;}
-  body.skin-dark .chip-label small{color:var(--dkdim);}
-  body.skin-dark .chip-line + .chip-line{border-top-color:var(--dkline);}
-  body.skin-dark .select-zone{background:var(--dk);border:none;border-radius:0 0 14px 14px;padding:10px 20px 20px;}
-  body.skin-dark .sel-row + .sel-row{border-top-color:var(--dkline);}
-  body.skin-dark #contentHolder{margin-top:2px;}
-
-  /* 축 컨트롤 — 어두운 판 위에서 읽히도록 */
-  body.skin-dark .mode-toggle button,body.skin-dark .mtabs button{background:var(--dk2);border-color:var(--dkline);color:var(--dktx);}
-  body.skin-dark .mode-toggle button small,body.skin-dark .mtabs button small{color:var(--dkdim);}
-  body.skin-dark .mode-toggle button.active,body.skin-dark .mtabs button.active{background:var(--main);border-color:var(--main);color:#fff;}
-  body.skin-dark .mode-toggle button.active small,body.skin-dark .mtabs button.active small{color:rgba(255,255,255,.85);}
-  body.skin-dark .round-tab{background:var(--dk2);border-color:var(--dkline);}
-  body.skin-dark .round-tab .rt1{color:var(--dkdim);}
-  body.skin-dark .round-tab .rt2{color:var(--dktx);}
-  body.skin-dark .round-tab .rt3{color:var(--dkdim);}
-  body.skin-dark .round-tab.off{background:#232a36;}
-  body.skin-dark .round-tab.act{background:var(--main);border-color:var(--main);}
-  body.skin-dark .round-tab.act .rt1,body.skin-dark .round-tab.act .rt2,body.skin-dark .round-tab.act .rt3{color:#fff;opacity:1;}
-  body.skin-dark .rt-badge{background:var(--dk);}
-  body.skin-dark .round-info{background:transparent;border:none;color:var(--dkdim);padding:13px 2px 0;}
-  body.skin-dark .round-info b{color:#fff;}
-
-  /* B — 좌측바와 상단 블록이 각각 짙은 판. 축을 둘로 나눠 뒀다는 게 그대로 보인다 */
-  body.skin-dark .side-nav{background:var(--dk);border:none;border-radius:14px;padding:14px 8px 12px;}
-  body.skin-dark .sn-title{color:var(--dkdim);border-bottom-color:var(--dkline);padding:0 10px 9px;}
-  body.skin-dark .sn-head{color:#fff;padding:0 10px 7px;}
-  body.skin-dark .sn-head small{color:var(--dkdim);}
-  body.skin-dark .sn-item{color:var(--dktx);border-left:none;border-radius:9px;padding:8px 10px;}
-  body.skin-dark .sn-item:hover{background:var(--dk2);color:#fff;}
-  body.skin-dark .sn-item.act{background:var(--main);color:#fff;}
-  body.skin-dark .sn-item.act em{color:#fff;border-color:rgba(255,255,255,.5);}
-  body.skin-dark .side-top{background:var(--dk);border-radius:14px;padding:8px 18px 16px;margin-bottom:14px;}
-  body.skin-dark .main-top{border-bottom-color:var(--dkline);}
-  body.skin-dark .rrow{border-bottom:none;}
-
-  /* C — 과목 풀과 상단 컨트롤만 짙게. 학기 트랙(=상품)은 흰색으로 남는다 */
-  body.skin-dark .plan-pool{background:var(--dk);border:none;border-radius:14px;}
-  body.skin-dark .pp-head{color:#fff;border-bottom-color:var(--dkline);}
-  body.skin-dark .pp-head small,body.skin-dark .pp-pkg .ppk-t{color:var(--dkdim);}
-  body.skin-dark .pp-pkg{background:transparent;border-bottom-color:var(--dkline);}
-  body.skin-dark .ppk{background:var(--dk2);border-color:var(--dkline);}
-  body.skin-dark .ppk .k1{color:#fff;}
-  body.skin-dark .ppk .k2{color:var(--dkdim);}
-  body.skin-dark .ppk .k3{color:#7fd4ff;}
-  body.skin-dark .ppk-clear{background:transparent;border-color:var(--dkline);color:var(--dkdim);}
-  body.skin-dark .pp-item{border-bottom-color:var(--dkline);}
-  body.skin-dark .pp-item .ppn{color:var(--dktx);}
-  body.skin-dark .pp-item .ppn small{color:var(--dkdim);}
-  body.skin-dark .pp-item.on{background:var(--dk2);}
-  body.skin-dark .pp-item.off .ppn{color:#6b7788;}
-  body.skin-dark .pp-add{background:transparent;}
-  body.skin-dark .plan-head{background:var(--dk);border-radius:12px;padding:12px 16px;}
-  body.skin-dark .plan-head label{color:var(--dkdim);}
 
   /* 기획설명 — 시연 전용 (선택한 시안의 의도·전제를 화면에서 바로 읽히게) */
   .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:-6px 0 18px;}
@@ -709,7 +556,6 @@
     <i class="div"></i>
     <button id="layStack" onclick="applyLayout('stack')">A. 축 재배열형</button>
     <button id="laySide" onclick="applyLayout('side')">B. 좌측바형</button>
-    <button id="layPlan" onclick="applyLayout('plan')">C. 학기 플래너</button>
     <i class="div"></i>
     <span class="sk-lab">스킨</span>
     <span id="skinBtns"></span>
@@ -734,7 +580,7 @@
     </div>
     <div id="lnWrap">
       <div class="ln-sec shade">
-        <h4 id="lnCommonH">세 시안 공통 전제</h4>
+        <h4 id="lnCommonH">두 시안 공통 전제</h4>
         <ul id="lnCommon"></ul>
       </div>
       <div class="ln-sec">
@@ -796,25 +642,6 @@
   </div>
 </div><!-- /curShell -->
 
-<!-- ══ C. 학기 플래너 — 개강일을 필터가 아니라 캔버스의 가로축으로 ══ -->
-<div id="planShell">
-  <aside class="plan-pool">
-    <div class="pp-head" id="planPoolHead"></div>
-    <div class="pp-pkg" id="planPkgs"></div>
-    <div class="pp-list" id="planPool"></div>
-  </aside>
-  <div class="plan-main">
-    <div class="plan-head">
-      <label for="planCourse">목표 과정</label>
-      <select id="planCourse" onchange="planPickCourse(this.value)"></select>
-      <label for="planRound">시작 개강일</label>
-      <select id="planRound" onchange="pickRound(this.value)"></select>
-    </div>
-    <div class="plan-top" id="planTop"></div>
-    <div class="plan-tracks" id="planTracks"></div>
-    <div class="plan-pay" id="planPay"></div>
-  </div>
-</div>
 
 <!-- ══ A. 축 재배열형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
 <div id="stackShell">
@@ -1293,7 +1120,7 @@ function pickRound(id){
   roundSel=id; roundWarn="";
   // 차수를 바꾸면 그 차수에 신청 불가한 과목은 장바구니에서 자동 제외
   [...picked].forEach(pid=>{ const c=stOf(SUBJECTS.find(x=>x.id===pid)); if(c!=="O"&&c!=="H") picked.delete(pid); });
-  renderRounds(); renderRoundPicker(); renderPkg(); renderTable(); updateCartBar(); renderPlan();
+  renderRounds(); renderRoundPicker(); renderPkg(); renderTable(); updateCartBar();
   if(layout==="cur") renderCur();
 }
 // 과정을 고르면 단과 목록도 같은 인정 과정으로 맞춘다 (태그 없는 과정은 전체)
@@ -1377,134 +1204,9 @@ function renderRoundPicker(){
   $("rrowSeg").innerHTML = roundTabsHTML();
   $("rrowInfo").innerHTML = roundInfoHTML();
 }
-/* ── 레이아웃 시안 C: 학기 플래너 ──
-   개강일이 필터가 아니라 캔버스의 가로축. 과목을 학기 트랙에 배치하고 첫 학기분만 결제한다.
-   학기 한도(8과목·24학점)와 연간 한도(14과목·42학점)는 현행 페이지 상단 안내에 명시된 실제 규칙 */
-const TERMS=[
-  {id:"t1", name:"2026년 2학기", rounds:["r1","r2"]},
-  {id:"t2", name:"2027년 1학기", rounds:["r3"]},
-  {id:"t3", name:"2027년 2학기", rounds:[], tbd:true},
-  {id:"tx", name:"미배치", rounds:[], un:true}   // 학기 한도·개설 제약으로 배치되지 않은 과목
-];
-const SEM_MAX_SUBJ=8, SEM_MAX_CR=24, YEAR_MAX_SUBJ=14, CREDIT_PER=3;
-let plan={};   // 과목 id → 학기 id
-function termAvail(s,t){
-  if(t.tbd||t.un) return true;   // 개설 미확정 학기 / 미배치함 — 계획에는 담되 결제는 불가
-  return t.rounds.some(rid=>{ const c=s.st[ROUNDS.findIndex(r=>r.id===rid)]; return c==="O"||c==="H"; });
-}
-function poolSubjects(){ return SUBJECTS.filter(s=>(s.hash||"").includes(courseTag()||"")); }
-function termList(tid){ return Object.keys(plan).filter(k=>plan[k]===tid).map(k=>SUBJECTS.find(s=>s.id===+k)); }
-function termPrice(tid){ const l=termList(tid); return l.reduce((a,s)=>a+unitPrice(s,l.length),0); }
-// 학기 한도(8과목)에 걸리거나 개설된 학기가 없으면 미배치함으로 — 조용히 사라지지 않게
-function firstFit(s){
-  for(const t of TERMS){
-    if(t.un) continue;
-    if(termAvail(s,t) && termList(t.id).length<SEM_MAX_SUBJ) return t.id;
-  }
-  return "tx";
-}
-function planAdd(id){
-  if(plan[id]) delete plan[id];
-  else plan[id]=firstFit(SUBJECTS.find(x=>x.id===id));
-  renderPlan();
-}
-function planMove(id,dir){
-  const s=SUBJECTS.find(x=>x.id===id), ni=TERMS.findIndex(t=>t.id===plan[id])+dir;
-  if(ni<0||ni>=TERMS.length) return;
-  const t=TERMS[ni];
-  if(!termAvail(s,t)){ alert(`${t.name}에는 이 과목이 개설되지 않습니다 (시연)`); return; }
-  if(!t.un && termList(t.id).length>=SEM_MAX_SUBJ){ alert(`${t.name}는 학기 한도 ${SEM_MAX_SUBJ}과목을 초과합니다 (시연)`); return; }
-  plan[id]=t.id; renderPlan();
-}
-function planRemove(id){ delete plan[id]; if(planPkg) planPkg=null; renderPlan(); }
-/* 패키지 = 계획 프리셋. 구성과목을 학기 트랙에 한 번에 배치해 "27과목 80학점"이 몇 학기인지 드러낸다 */
-let planPkg=null;
-function applyPkg(pid){
-  if(planPkg===pid){ planPkg=null; plan={}; renderPlan(); return; }
-  const d=PKG_SUBJ[pid]; if(!d) return;
-  plan={}; planPkg=pid;
-  d.items.forEach(it=>{
-    const cand=SUBJECTS.filter(s=>s.name===it.n);
-    const s=cand.find(x=>firstFit(x)) || cand[0];
-    if(!s) return;
-    const t=firstFit(s); if(t) plan[s.id]=t;
-  });
-  renderPlan();
-}
-function planTotal(){ return TERMS.filter(t=>!t.un).reduce((a,t)=>a+termPrice(t.id),0); }
-function planPickCourse(v){
-  const [cat,id]=v.split("|");
-  catSel=cat; courseSel=id; plan={}; planPkg=null;
-  renderCats(); renderCourseRow(); renderSideNav();
-  syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
-  syncDept(); renderTable(); renderPlan();
-}
-function renderPlan(){
-  if(!$("planShell")) return;
-  const c=curCourse(), pool=poolSubjects();
-  $("planCourse").innerHTML = [["cert","자격증 취득"],["deg","학위 취득"],["free","교양 · 단과"]]
-    .map(([k,label])=>`<optgroup label="${label}">${COURSES2[k].map(x=>`<option value="${k}|${x.id}" ${courseSel===x.id?"selected":""}>${x.name}</option>`).join("")}</optgroup>`).join("");
-  $("planRound").innerHTML = ROUNDS.map(r=>`<option value="${r.id}" ${r.id===roundSel?"selected":""}>${r.term} · ${r.d}</option>`).join("");
-  $("planPoolHead").innerHTML = `${c?c.name:"전체"}<small>담을 과목 ${pool.length}개 · 담으면 자동 배치</small>`;
-  const pk=curPkgs();
-  $("planPkgs").innerHTML = pk.length
-    ? `<div class="ppk-t">패키지로 한 번에 채우기</div>` + pk.map(p=>`
-        <div class="ppk ${planPkg===p.id?"on":""}" onclick="applyPkg('${p.id}')">
-          <div class="k1">${p.name.replace(/^.*?(2급|학사|전문학사)\s*/,"")||p.name}</div>
-          <div class="k2">${p.comp}</div>
-          <div class="k3">${fmt(p.price)}</div>
-        </div>`).join("")
-      + (planPkg?`<button class="ppk-clear" onclick="applyPkg('${planPkg}')">구성 비우기</button>`:"")
-    : `<div class="ppk-t">이 과정은 패키지가 없습니다 — 과목을 직접 담아 계획하세요</div>`;
-  $("planPool").innerHTML = pool.map(s=>{
-    const on=!!plan[s.id], fit=on||firstFit(s);
-    return `<div class="pp-item ${on?"on":""} ${fit?"":"off"}">
-      <span class="ppn">${s.name}<small>${s.prof} 교수 · ${fmt(s.price)}</small></span>
-      <button class="pp-add" onclick="planAdd(${s.id})">${on?"빼기":"담기"}</button></div>`;
-  }).join("") || '<div class="tr-empty">이 과정의 과목이 없습니다</div>';
-
-  const total=Object.keys(plan).length, yearN=termList("t1").length+termList("t2").length, unN=termList("tx").length;
-  const last=[...TERMS].filter(t=>!t.un).reverse().find(t=>termList(t.id).length);
-  const pkg=planPkg?findPkg(planPkg):null;
-  $("planTop").innerHTML = (pkg?`<span><b>${pkg.name}</b> 구성 적용</span>`:"")
-    + `<span>담은 과목 <b>${total}</b>과목 · <b>${total*CREDIT_PER}</b>학점</span>`
-    + `<span>예상 완료 ${unN?"—":last?`<b>${last.name}</b>`:"—"}</span>`
-    + `<span>연간 한도 ${yearN}/${YEAR_MAX_SUBJ}과목</span>`
-    + (yearN>YEAR_MAX_SUBJ?`<span class="plan-warn">⚠ 1년 내 최대 ${YEAR_MAX_SUBJ}과목(${YEAR_MAX_SUBJ*CREDIT_PER}학점)을 초과했습니다</span>`:"")
-    + (unN?`<span class="plan-warn">⚠ ${unN}과목이 미배치 — 학기 한도(${SEM_MAX_SUBJ}과목) 또는 개설 차수 제약</span>`:"");
-
-  $("planTracks").innerHTML = TERMS.map((t,ti)=>{
-    const list=termList(t.id), n=list.length, over=n>SEM_MAX_SUBJ;
-    const r=t.rounds.includes(roundSel)?ROUNDS.find(x=>x.id===roundSel):ROUNDS.find(x=>t.rounds.includes(x.id));
-    return `<div class="track ${ti===0?"cur":""} ${t.tbd||t.un?"tbd":""} ${t.un?"un":""}">
-      <div class="tr-head"><div class="t1">${t.un?"학기 배정 필요":t.name}</div>
-        <div class="t2">${t.un?"미배치":r?r.d:"개강일 미정"}</div>
-        <div class="t3">${t.un?"한도·개설 제약으로 남은 과목":r?`학습기간 ${r.pshort}`:"개설 과목 미확정"}</div></div>
-      <div class="tr-body">${n?list.map(s=>`
-        <div class="tr-card"><div class="tc-n">${s.name}</div><div class="tc-p">${s.prof} 교수 · ${fmt(s.price)}</div>
-          <div class="tc-b">${ti>0?`<button onclick="planMove(${s.id},-1)">◀ 앞</button>`:""}${ti<TERMS.length-1?`<button onclick="planMove(${s.id},1)">뒤 ▶</button>`:""}<button onclick="planRemove(${s.id})">✕</button></div>
-        </div>`).join(""):`<div class="tr-empty">${t.un?"미배치 과목 없음":"왼쪽에서 과목을 담으면<br>여기에 자동 배치됩니다"}</div>`}</div>
-      <div class="tr-foot">${t.un
-        ? `<b>${n}</b>과목 대기<div class="tr-bar"></div>이후 학기 개설 시 배치`
-        : `<b>${n}</b>과목 · <b>${n*CREDIT_PER}</b>학점 <span style="color:var(--gray-light)">/ 한도 ${SEM_MAX_SUBJ}과목 ${SEM_MAX_CR}학점</span>
-           <div class="tr-bar"><i class="${over?"over":""}" style="width:${Math.min(100,n/SEM_MAX_SUBJ*100)}%"></i></div>
-           ${ti===0?`<span class="tr-pay">이번 결제 ${fmt(termPrice(t.id))}</span>`:t.tbd?"개설 확정 후 신청":"개강 전 재신청"}`}</div>
-    </div>`;
-  }).join("");
-
-  const n1=termList("t1").length, r1=ROUNDS.find(x=>x.id===roundSel);
-  const split=planTotal(), diff=pkg?split-pkg.price:0;
-  $("planPay").innerHTML = `<span class="pp-t">${TERMS[0].name} · <b>${r1.d}</b>분만 결제합니다 — 이후 학기는 계획으로 저장되고 개강 전에 다시 신청합니다</span>
-    <span class="pp-s">${fmt(termPrice("t1"))}</span>
-    <button ${n1?"":"disabled"} onclick="alert('결제 이동 (시연)\\n${TERMS[0].name} ${r1.d} · ${n1}과목')">${n1?`${n1}과목 신청하기`:"과목을 담아 주세요"}</button>`
-    + (pkg?`<div class="pay-alt">또는 <b>${pkg.name}</b> 전체 결제 <b>${fmt(pkg.price)}</b>
-        — 학기별로 나눠 단과 결제하면 합계 ${fmt(split)}로 <span class="cheaper">${diff>0?`${fmt(Math.abs(diff))} 비쌈`:diff<0?`${fmt(Math.abs(diff))} 저렴`:"동일"}</span>
-        <button onclick="openConfirm('pkg','${pkg.id}')">패키지 전체 결제</button></div>`:"");
-}
-
 /* ── 기획설명 ── */
 const NOTE_COMMON=[
-  `현행 = <b>개강 차수가 최상위</b>인 관리자 기준 구조 → 세 시안 모두 <b>과정 목적 → 수강방식 → 개강일</b> 순으로 축 재배열`,
+  `현행 = <b>개강 차수가 최상위</b>인 관리자 기준 구조 → 두 시안 모두 <b>과정 목적 → 수강방식 → 개강일</b> 순으로 축 재배열`,
   `과정 3분류 = <b>자격증 취득 · 학위 취득 · 교양/단과</b>. 과정이 늘어도 카테고리는 불변`,
   `학위의 4년제/2년제는 전공의 상위 계층이 아닌 <b>직교 축</b> → depth 추가 없이 라벨 붙인 2행 칩으로 병렬 배치. 라벨에 요건 학점·최단 기간 병기(기관 언어인 "전문학사/학사"만으로는 판단 불가)`,
   `개설 차수 = <b>과정 × 수강방식</b>의 종속값 → 반드시 부모 아래 배치. 미개설 차수는 숨김이 아니라 비활성 + 사유 표기(사라지면 원래 없었는지 없어졌는지 불명), 선택 중이던 차수가 미개설이 되면 자동 전환 후 경고`,
@@ -1513,8 +1215,8 @@ const NOTE_COMMON=[
   `과목 · 가격 · 차수별 개설 현황 = <b>실데이터</b> (career.baeoom.com, 171과목 / 3개 차수)`
 ];
 const NOTES={
-  cur:{ t:"현행 — 지금의 수강신청 화면", h:"비교 기준선 — 세 시안이 무엇을 바꾸는지 이 화면과 대조",
-    ch:"세 시안이 공통으로 바꾸려는 것",
+  cur:{ t:"현행 — 지금의 수강신청 화면", h:"비교 기준선 — 두 시안이 무엇을 바꾸는지 이 화면과 대조",
+    ch:"두 시안이 공통으로 바꾸려는 것",
     h1:"현행 — 이 화면이 하는 것 · 그래서 생기는 일",
     li:[
       `최상위 축 = <b>개강 차수</b>. "무엇을 얻는지"보다 "언제 시작하는지"를 먼저 묻는 관리자 기준 순서`,
@@ -1525,7 +1227,7 @@ const NOTES={
       `마감 과목은 '대기접수'만 · 다음 차수 안내 없음. 잔여석 대신 '마감임박' 문구만`,
       `우측 레일 = 단과 할인 이벤트 <b>정가표</b> + 장바구니. 할인 조건(3과목 · 5과목)이 <b>지금 담긴 수량과 연결되지 않음</b>`
     ],
-    f:`<b>확인 포인트</b> — 세 시안이 공통으로 건드리는 지점은 ① 최상위 축을 과정으로 ② 패키지를 같은 화면 안으로 ③ 개설 차수를 과정 종속값으로. 나머지 차이는 <b>한눈에 비교</b> 표에서 한 번에 대조`
+    f:`<b>확인 포인트</b> — 두 시안이 공통으로 건드리는 지점은 ① 최상위 축을 과정으로 ② 패키지를 같은 화면 안으로 ③ 개설 차수를 과정 종속값으로. 나머지 차이는 <b>한눈에 비교</b> 표에서 한 번에 대조`
   },
   stack:{
     t:"A. 축 재배열형",
@@ -1551,19 +1253,6 @@ const NOTES={
       `레퍼런스 — 휴넷(좌측바), 고시스쿨(패키지/단과 분리)`
     ],
     f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
-  },
-  plan:{
-    t:"C. 학기 플래너",
-    h:"가설 — 수강신청을 단일 차수 구매가 아니라 다학기 계획으로 재정의하면 나은가",
-    h1:"C. 학기 플래너 — 이 시안이 하는 것",
-    li:[
-      `개강일을 선택 축에서 빼고 <b>캔버스의 가로축</b>으로 전환 → A·B가 씨름한 "개강일을 어디 둘까" 문제 자체가 소멸`,
-      `과목 담기 → <b>가장 이른 신청 가능 학기에 자동 배치</b>. 미개설 학기로는 이동 차단, 한도·개설 제약으로 못 담은 과목은 <b>미배치 트랙</b>에 잔류(조용히 사라지지 않게)`,
-      `상단 안내 문구로만 있던 <b>학기 8과목(24학점) · 연간 14과목(42학점)</b> 한도를 화면이 직접 강제`,
-      `패키지 = <b>계획 프리셋</b> → 27과목 80학점이 실제 몇 학기인지를 상품이 스스로 설명`,
-      `결제는 <b>첫 학기분만</b>, 나머지는 계획으로 저장 → 개강 전 재신청하는 재방문 동선 형성`
-    ],
-    f:`<b>확인 포인트</b> — 학습설계 툴(builder)과 모델이 사실상 동일. 기회이자 위험이므로 <b>두 기능의 역할 정리가 선행 과제</b>`
   }
 };
 let noteOpen=true;
@@ -1572,7 +1261,7 @@ function renderNote(){
   $("lnTitle").textContent=n.t;
   $("lnHyp").textContent=n.h;
   $("lnH1").textContent=n.h1;
-  $("lnCommonH").textContent=n.ch||"세 시안 공통 전제";
+  $("lnCommonH").textContent=n.ch||"두 시안 공통 전제";
   $("lnList").innerHTML=n.li.map(x=>`<li>${x}</li>`).join("");
   $("lnCommon").innerHTML=NOTE_COMMON.map(x=>`<li>${x}</li>`).join("");
   $("lnFoot").innerHTML=n.f;
@@ -1584,7 +1273,7 @@ function toggleNote(){
 }
 
 /* ── 현행 재현 ──
-   career.baeoom.com/lectureN 의 실제 탭 구조. 세 시안이 무엇을 바꾸는지 대조할 기준선이므로
+   career.baeoom.com/lectureN 의 실제 탭 구조. 두 시안이 무엇을 바꾸는지 대조할 기준선이므로
    개선하지 않고 있는 그대로 옮긴다 — 축 순서, 분류 기준이 섞인 8개 탭, 호버 드롭다운,
    화면 밖으로 나가는 패키지 링크, 본문과 분리된 우측 레일까지.
    선택 상태는 시안(catSel/courseSel)과 분리해 curTab/curSub로 따로 들고, 표에는 deptSel로만 반영한다 */
@@ -1671,9 +1360,8 @@ function renderCur(){
    표현까지 같이 바뀌면 무엇이 구조 차이인지 흐려진다 */
 const SKINS=[
   {id:"old",  n:"현행풍",   cls:""},
-  {id:"air",  n:"여백형",   cls:"skin-air",  d:"격자선을 걷고 여백·라운드로"},
-  {id:"shop", n:"커머스형", cls:"skin-shop", d:"상품 카드 그리드 · 가격과 CTA 강조"},
-  {id:"dark", n:"딥헤더형", cls:"skin-dark", d:"선택 축을 짙은 판으로 분리"}
+  {id:"air",  n:"여백형",   cls:"skin-air",  d:"격자선 → 여백·라운드"},
+  {id:"shop", n:"커머스형", cls:"skin-shop", d:"카드 그리드 · 가격 강조"}
 ];
 let skin="old";
 // 비교표의 '첫 상품까지'는 스킨별 값이므로 스킨을 바꾸면 표도 다시 그린다
@@ -1691,26 +1379,23 @@ function syncSkin(){
 let layout="stack", modeSaved=null;
 function applyLayout(l){
   layout=l;
-  const cur=l==="cur", side=l==="side", planL=l==="plan";
+  const cur=l==="cur", side=l==="side";
   $("curShell").style.display = cur?"block":"none";
-  $("stackShell").style.display = (cur||side||planL)?"none":"block";
+  $("stackShell").style.display = (cur||side)?"none":"block";
   $("sideShell").style.display = side?"flex":"none";
-  $("planShell").style.display = planL?"flex":"none";
   (cur?$("curMount"):side?$("sideMount"):$("stackShell")).appendChild($("contentHolder"));
   $("layCur").classList.toggle("act",cur);
   $("layStack").classList.toggle("act",l==="stack");
   $("laySide").classList.toggle("act",side);
-  $("layPlan").classList.toggle("act",planL);
   document.body.classList.toggle("lay-cur",cur);
   document.body.classList.toggle("lay-side",side);
-  document.body.classList.toggle("lay-plan",planL);
   syncSkin();
   // 과정 축이 시안과 현행에서 따로 놀므로, 들어갈 때마다 표 필터를 그 화면의 선택으로 되돌린다
   cur ? syncCurDept() : syncDept();
   // 현행에는 안내 칩이 없다 — 원문 한 줄이 상시 노출
   $("guideFull").style.display = cur?"block":"none";
   renderNote(); renderCmp();
-  renderSideNav(); renderRoundPicker(); renderPlan(); renderCur();
+  renderSideNav(); renderRoundPicker(); renderCur();
   // 현행에는 화면 안 패키지가 없다 (별도 랜딩) → 단과 표 고정.
   // 시안으로 돌아갈 때 원래 보던 수강방식을 되돌려 준다
   if(cur){ if(modeSaved===null) modeSaved=mode; setMode("single"); }
@@ -1721,19 +1406,18 @@ let cmpOpen=false;
 /* 한눈에 비교 — 네 화면을 같은 축 위에 놓고 대조. 현행 열이 기준선 */
 const CMP_COLS=[
   {k:"cur", n:"현행", base:true}, {k:"stack", n:"A. 축 재배열형"},
-  {k:"side", n:"B. 좌측바형"}, {k:"plan", n:"C. 학기 플래너"}
+  {k:"side", n:"B. 좌측바형"}
 ];
 const CMP_ROWS=[
-  {ax:"최상위 축", cur:"<b>개강 차수</b> — 언제 시작하는지를 먼저 묻는다", stack:"<b>과정</b> — 무엇을 얻는지를 먼저 묻는다", side:"<b>과정</b> (좌측바 상시 노출)", plan:"<b>목표 과정</b> — 고르면 학기 계획으로 바로 진입"},
-  {ax:"축 순서", cur:"개강 차수 → 과정 → 과목", stack:"과정 → 수강방식 → 개강일", side:"과정 → 수강방식 → 개강일 (성격별로 분배)", plan:"과정 → 학기 배치 (개강일이 캔버스 가로축)"},
-  {ax:"과정 선택", cur:"탭 8개 + <b>호버 드롭다운</b> 하위 24개. 고른 하위 항목이 상단에 남지 않음", stack:"카테고리 3개 + 과정 칩 (학위는 2행)", side:"좌측바 4개 그룹 26개 과정 전부 상시 노출", plan:"드롭다운 1개"},
-  {ax:"분류 기준", cur:"수준(자격증·학사·전문학사)과 개별 과정(KICPA·한국어교원·미용)이 <b>같은 줄에 혼재</b> · 한국어교원·미용은 두 곳에 중복", stack:"목적 3분류로 통일 (자격증 취득 · 학위 취득 · 교양/단과)", side:"좌동", plan:"좌동"},
-  {ax:"패키지", cur:"<b>이 화면에 없음</b> — 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 열고, 개강일·장바구니가 끊김", stack:"같은 화면 안 <b>패키지/단과 탭</b>", side:"좌동", plan:"<b>계획 프리셋</b> — 적용하면 학기 트랙에 자동 배치"},
-  {ax:"개설 차수", cur:"과정과 무관하게 전 차수 고정 노출. 미개설·마감 여부 표기 없음", stack:"<b>과정 × 수강방식</b>의 종속값 · 미개설은 비활성 + 사유", side:"좌동", plan:"학기 트랙의 축 자체 · 배치 불가 과목은 미배치 트랙"},
-  {ax:"마감 과목", cur:"'대기접수' 버튼만 · 다음 차수 안내 없음", stack:"<b>다음 차수 전환</b> 유도", side:"좌동", plan:"<b>다음 학기로 이월</b>"},
-  {ax:"잔여석", cur:"'마감임박' 문구만", stack:"10석 미만에서만 <b>잔여 N석</b>", side:"좌동", plan:"좌동"},
-  {ax:"장바구니 · 할인", cur:"우측 레일에 정가표만. <b>담긴 수량과 연결 안 됨</b>", stack:"하단 고정 바에서 <b>실시간 할인 반영</b>", side:"좌동", plan:"학기별 금액 · <b>첫 학기분만 결제</b>"},
-  {ax:"다학기 설계", cur:"없음 — 한 차수 단위 구매", stack:"없음", side:"없음", plan:"<b>학기 트랙 · 한도(8과목·24학점) 강제</b>"},
+  {ax:"최상위 축", cur:"<b>개강 차수</b> — 언제 시작하는지를 먼저 묻는다", stack:"<b>과정</b> — 무엇을 얻는지를 먼저 묻는다", side:"<b>과정</b> (좌측바 상시 노출)"},
+  {ax:"축 순서", cur:"개강 차수 → 과정 → 과목", stack:"과정 → 수강방식 → 개강일", side:"과정 → 수강방식 → 개강일 (성격별로 분배)"},
+  {ax:"과정 선택", cur:"탭 8개 + <b>호버 드롭다운</b> 하위 24개. 고른 하위 항목이 상단에 남지 않음", stack:"카테고리 3개 + 과정 칩 (학위는 2행)", side:"좌측바 4개 그룹 26개 과정 전부 상시 노출"},
+  {ax:"분류 기준", cur:"수준(자격증·학사·전문학사)과 개별 과정(KICPA·한국어교원·미용)이 <b>같은 줄에 혼재</b> · 한국어교원·미용은 두 곳에 중복", stack:"목적 3분류로 통일 (자격증 취득 · 학위 취득 · 교양/단과)", side:"좌동"},
+  {ax:"패키지", cur:"<b>이 화면에 없음</b> — 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 열고, 개강일·장바구니가 끊김", stack:"같은 화면 안 <b>패키지/단과 탭</b>", side:"좌동"},
+  {ax:"개설 차수", cur:"과정과 무관하게 전 차수 고정 노출. 미개설·마감 여부 표기 없음", stack:"<b>과정 × 수강방식</b>의 종속값 · 미개설은 비활성 + 사유", side:"좌동"},
+  {ax:"마감 과목", cur:"'대기접수' 버튼만 · 다음 차수 안내 없음", stack:"<b>다음 차수 전환</b> 유도", side:"좌동"},
+  {ax:"잔여석", cur:"'마감임박' 문구만", stack:"10석 미만에서만 <b>잔여 N석</b>", side:"좌동"},
+  {ax:"장바구니 · 할인", cur:"우측 레일에 정가표만. <b>담긴 수량과 연결 안 됨</b>", stack:"하단 고정 바에서 <b>실시간 할인 반영</b>", side:"좌동"},
 ];
 /* '첫 상품까지' = 수강신청 타이틀 상단 → 첫 상품(패키지 카드 · 현행은 과목 표 첫 행)까지의 세로 거리.
    스킨이 여백을 바꾸면 값도 바뀌고, 하드코딩하면 CSS를 손댈 때마다 낡는다 (A안의 709px이 그랬다).
@@ -1768,7 +1452,7 @@ function pxRow(){
   const p=pxCache&&pxCache[skin], f=v=>v==null?"—":`약 <b>${v}px</b>`;
   return {ax:"첫 상품까지",
     cur:`${f(p&&p.cur)}<small>과목 표 첫 행 — 화면 안에 패키지가 없음</small>`,
-    stack:f(p&&p.stack), side:f(p&&p.side), plan:"— (좌측 과목 풀 상시 노출)"};
+    stack:f(p&&p.stack), side:f(p&&p.side)};
 }
 // 스킨을 바꾸면 세로 길이가 얼마나 달라지는지 — 표 아래 한 줄로 같이 본다
 function pxStrip(){
@@ -2044,7 +1728,7 @@ syncDept();
 renderCats(); renderCourseRow(); renderRounds(); renderPkg(); renderFilters(); renderTable();
 const _q=new URLSearchParams(location.search), _l=_q.get("layout");
 const _s=_q.get("skin"); if(SKINS.some(k=>k.id===_s)) skin=_s;
-applyLayout(["cur","side","plan"].includes(_l) ? _l : "stack");
+applyLayout(["cur","side"].includes(_l) ? _l : "stack");
 </script>
 </body>
 </html>
