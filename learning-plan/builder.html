@@ -732,7 +732,7 @@
     { subjects:[
       {id:116,name:"경영분석",credit:3,area:"melec"},{id:117,name:"무역학개론",credit:3,area:"melec"},
       {id:118,name:"리더십",credit:3,area:"melec"},{id:119,name:"사회학개론",credit:3,area:"gen"},
-      {id:120,name:"인간관계론",credit:3,area:"melec"},{id:121,name:"원가관리회계1",credit:3,area:"melec"},
+      {id:120,name:"컴퓨터개론",credit:3,area:"gen"},{id:121,name:"한국문학개론",credit:3,area:"gen"},
       {id:122,name:"데이터베이스",credit:3,area:"melec"},
       // 요건 슬롯 — 과목을 특정하지 않은 타기관 요건 (엑셀 관행 "전공1 (타사)"). 어떤 과목으로 채울지는 학생이 정함
       {id:123,name:"",credit:3,area:"melec",origin:"ext",slot:true}]}
@@ -746,7 +746,12 @@
     {id:205,name:"대학국어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
     {id:206,name:"교양영어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
     {id:207,name:"철학의이해",credit:3,area:"free",status:"unset",origin:"transfer",when:"OO대학(전적대)"},
-    {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"OO대학(전적대)"}
+    {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"OO대학(전적대)"},
+    // 전문학사 학위 일괄 인정 — 과목 단위가 아니라 학점 단위로 들어온다 (자격증 학점인정과 같은 kind:"cr").
+    // 전문대졸 편입은 개별 과목 대조 없이 학위 자체로 인정받는 몫이 커서, 이 줄들이 없으면 총 학점이 안 찬다
+    {id:209,name:"전문학사 학위 인정 · 전공",credit:12,area:"melec",status:"recog",kind:"cr",origin:"transfer",when:"OO전문대학 졸업"},
+    {id:210,name:"전문학사 학위 인정 · 교양",credit:21,area:"gen",status:"recog",kind:"cr",origin:"transfer",when:"OO전문대학 졸업"},
+    {id:211,name:"전문학사 학위 인정 · 일반선택",credit:28,area:"free",status:"recog",kind:"cr",origin:"transfer",when:"OO전문대학 졸업"}
   ];
   // scope = 탭 분류 (pkg 패키지 / mine 내 템플릿 / team 팀 공유)
   // origin = 만들어진 경로 (pkg 패키지 자동변환 / direct 직접 등록 / pattern 저장된 설계 패턴)
