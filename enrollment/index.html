@@ -117,7 +117,10 @@
   .round-tab.act .rt2{color:var(--main);}
   .round-tab .rt3{font-size:11px;color:var(--gray-light);margin-top:2px;}
   .round-tab.act .rt3{color:var(--main);opacity:.75;}
-  .round-info{display:flex;gap:26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-top:none;padding:11px 16px;font-size:12.5px;color:var(--gray);}
+  .round-info{display:flex;gap:6px 26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-top:none;padding:11px 16px;font-size:12.5px;color:var(--gray);}
+  /* 개설 차수 규칙 안내 — 값이 아니라 규칙이므로 톤을 낮추고 오른쪽 끝에 둔다 */
+  .round-info .r-hint{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--gray-light);}
+  .round-info .r-hint b{margin-left:0;color:var(--gray);font-weight:800;}
   .round-info b{color:var(--ink);font-weight:700;margin-left:6px;}
 
   /* 패키지 모드 */
@@ -1197,8 +1200,17 @@ function roundTabsHTML(){
 }
 function roundInfoHTML(){
   const r=ROUNDS.find(x=>x.id===roundSel);
+  /* 라벨을 빼면서 같이 사라진 규칙 안내의 대체.
+     "개설 차수만 표시"라던 옛 문구는 사실과 달랐다 — 미개설 차수는 걸러내는 게 아니라
+     비활성으로 남긴다. 그래서 ① 목록이 무엇에 따라 달라지는지 ② 지금 이 과정의 결과가
+     어떤지를 같이 적는다. 현행은 전 차수를 무조건 노출하므로 이 줄이 없다 */
+  const open=openRoundIds().length, off=ROUNDS.length-open;
+  const hint = off
+    ? `개설 차수는 <b>과정 × 수강방식</b>에 따라 달라집니다 — 회색 <b>${off}개</b>는 이 과정 미개설`
+    : `개설 차수는 <b>과정 × 수강방식</b>에 따라 달라집니다 — 이 과정은 <b>${open}개 차수 모두</b> 개설`;
   return (roundWarn?`<span class="rrow-warn">⚠ ${roundWarn}</span>`:"")
-    + `<span>학습기간<b>${r.period}</b></span><span>학점인정<b>${r.credit}</b></span><span>학위취득<b>${r.degree}</b></span>`;
+    + `<span>학습기간<b>${r.period}</b></span><span>학점인정<b>${r.credit}</b></span><span>학위취득<b>${r.degree}</b></span>`
+    + `<span class="r-hint">${hint}</span>`;
 }
 function renderRoundPicker(){
   $("rrowSeg").innerHTML = roundTabsHTML();
