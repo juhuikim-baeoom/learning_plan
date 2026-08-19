@@ -345,7 +345,17 @@
   .cmp-note thead th.base.on{background:#e2e2e2;color:#222;}
   .cmp-note td b{font-weight:800;color:#111;}
   .cmp-note td.base b{color:#7a4b00;}
+  .cmp-note td small{display:block;font-size:11px;font-weight:600;color:#999;margin-top:2px;}
   .cmp-foot{border-top:1px solid #efefef;padding:9px 12px;font-size:11.5px;font-weight:600;color:#888;}
+  .cmp-foot b{color:#555;font-weight:800;}
+  /* 스킨을 바꾸면 세로 길이가 얼마나 달라지는지 — 표 아래 한 줄 */
+  .cmp-px{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid #efefef;padding:10px 12px;}
+  .cmp-px .pxl{font-size:11px;font-weight:800;color:#999;margin-right:2px;}
+  .cmp-px .pxi{display:flex;align-items:center;gap:7px;border:1px solid #ececec;border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:700;color:#888;}
+  .cmp-px .pxi.on{border-color:#e0a0c0;background:#fff6fa;color:#c2185b;}
+  .cmp-px .pxi b{font-weight:800;color:#333;font-size:12px;}
+  .cmp-px .pxi.on b{color:#c2185b;}
+  .cmp-px .pxn{margin-left:auto;font-size:11px;font-weight:700;color:#aaa;}
 
   /* ── 현행 재현 — career.baeoom.com/lectureN 구조를 그대로 옮긴 비교 기준선 ── */
   #curShell{display:none;}
@@ -710,7 +720,8 @@
   <!-- 4개 축 비교표 — 현행 · A · B · C를 한 화면에서 대조 (시연 전용) -->
   <div class="cmp-note" id="cmpNote">
     <table id="cmpTable"></table>
-    <div class="cmp-foot">현행 열이 기준선 · 지금 보고 있는 화면의 열이 강조됩니다. '첫 상품까지'는 1280px 폭에서 수강신청 타이틀 상단부터 첫 상품(패키지 카드 · 현행은 과목 표 첫 행)까지의 세로 거리 — 시연용 상단 바는 제외한 값입니다.</div>
+    <div id="cmpPx"></div>
+    <div class="cmp-foot">현행 열이 기준선 · 지금 보고 있는 화면의 열이 강조됩니다. '첫 상품까지'는 수강신청 타이틀 상단부터 첫 상품(패키지 카드 · 현행은 과목 표 첫 행)까지의 세로 거리로, 이 창의 실제 폭에서 <b id="cmpSkin"></b> 스킨 기준으로 <b>매번 실측</b>합니다 — 시연용 상단 바는 제외합니다.</div>
   </div>
 
   <!-- 기획설명 — 선택한 시안의 의도·전제 (시연 전용) -->
@@ -1524,7 +1535,7 @@ const NOTES={
       `현행의 <b>위 → 아래 단계 진행</b> 형태 유지, 최상위 축만 개강일 → 과정 목적으로 교체`,
       `과정 · 수강방식 · 개강일 각 1행. 현행 컨트롤(개강일 대형 탭 · 학습기간 스트립)을 형태 그대로 하위로 이동 → <b>이식 비용 최소</b>`,
       `과정 영역 2단 — 1행 카테고리 3개 고정, 2행 과정 칩. 1행 스크롤 칩(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 2행 학위 칩은 전공 전량 노출`,
-      `한계 — 축이 하나 늘 때마다 상품이 아래로 밀림. <b>첫 상품까지 약 511px</b> (현행 456px)`
+      `한계 — 축이 하나 늘 때마다 상품이 아래로 밀림. <b>첫 상품까지</b>가 현행보다 길어진다 (실측값은 상단 <b>한눈에 비교</b>에서 스킨별로 확인)`
     ],
     f:`<b>확인 포인트</b> — 늘어난 세로 길이를 감수할 만한가 · 학위 2행 칩이 자격증 1행 칩과 섞이지 않고 읽히는가`
   },
@@ -1536,7 +1547,7 @@ const NOTES={
       `선택 축을 성격에 맞는 컨트롤에 분배 — 항목 많고 계층 있는 <b>과정은 좌측바</b>, 2택인 <b>수강방식은 본문 상단 탭</b>, <b>개강일은 그 아래</b> 대형 탭`,
       `개강일을 좌측바로 올리지 않은 이유 — 부모(과정·수강방식)를 바꿀 때 차수가 시야 밖에서 조용히 갱신되면 결제 사고로 직결`,
       `상단 블록 통째 스티키 → 과목표를 내려보는 동안에도 <b>지금 보고 있는 차수</b> 유지`,
-      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지 약 348px</b> (축 재배열형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
+      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지가 현행보다도 짧다</b> (축 재배열형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
       `레퍼런스 — 휴넷(좌측바), 고시스쿨(패키지/단과 분리)`
     ],
     f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
@@ -1665,7 +1676,8 @@ const SKINS=[
   {id:"dark", n:"딥헤더형", cls:"skin-dark", d:"선택 축을 짙은 판으로 분리"}
 ];
 let skin="old";
-function applySkin(s){ skin=s; syncSkin(); }
+// 비교표의 '첫 상품까지'는 스킨별 값이므로 스킨을 바꾸면 표도 다시 그린다
+function applySkin(s){ skin=s; syncSkin(); renderCmp(); }
 function syncSkin(){
   // 현행은 기준선이므로 언제나 현행풍 — 표현까지 바뀌면 무엇이 구조 차이인지 흐려진다
   const on = layout==="cur" ? "old" : skin;
@@ -1722,13 +1734,59 @@ const CMP_ROWS=[
   {ax:"잔여석", cur:"'마감임박' 문구만", stack:"10석 미만에서만 <b>잔여 N석</b>", side:"좌동", plan:"좌동"},
   {ax:"장바구니 · 할인", cur:"우측 레일에 정가표만. <b>담긴 수량과 연결 안 됨</b>", stack:"하단 고정 바에서 <b>실시간 할인 반영</b>", side:"좌동", plan:"학기별 금액 · <b>첫 학기분만 결제</b>"},
   {ax:"다학기 설계", cur:"없음 — 한 차수 단위 구매", stack:"없음", side:"없음", plan:"<b>학기 트랙 · 한도(8과목·24학점) 강제</b>"},
-  {ax:"첫 상품까지", cur:"약 <b>456px</b> (과목 표 첫 행 — 화면 안에 패키지가 없음)", stack:"약 <b>511px</b>", side:"약 <b>348px</b>", plan:"— (좌측 과목 풀 상시 노출)"}
 ];
+/* '첫 상품까지' = 수강신청 타이틀 상단 → 첫 상품(패키지 카드 · 현행은 과목 표 첫 행)까지의 세로 거리.
+   스킨이 여백을 바꾸면 값도 바뀌고, 하드코딩하면 CSS를 손댈 때마다 낡는다 (A안의 709px이 그랬다).
+   그래서 비교표를 열 때 네 스킨 × 세 레이아웃을 실제로 훑어 잰다. C안은 좌측 과목 풀이
+   상시 노출이라 '첫 상품까지'라는 개념이 없어 제외 */
+const PX_LAYOUTS=["cur","stack","side"];
+let pxCache=null, measuring=false;
+function measureFirst(){
+  const base=document.querySelector(".page-top").getBoundingClientRect().top+window.scrollY;
+  const el=document.querySelector("#singleBody.show")
+    ? document.querySelector("#subjBody tr")
+    : document.querySelector("#pkgBody .pkg-hero, #pkgBody .pkg-row");
+  return el ? Math.round(el.getBoundingClientRect().top+window.scrollY-base) : null;
+}
+function measurePx(){
+  if(measuring) return;
+  measuring=true;
+  const s0=skin, l0=layout, m0=mode, r0=roundSel, y0=window.scrollY, out={};
+  SKINS.forEach(k=>{
+    out[k.id]={};
+    PX_LAYOUTS.forEach(l=>{
+      skin=k.id; applyLayout(l);
+      if(l!=="cur") setMode("pkg");
+      out[k.id][l]=measureFirst();
+    });
+  });
+  pxCache=out; measuring=false;
+  skin=s0; roundSel=r0; applyLayout(l0); setMode(m0); window.scrollTo(0,y0);
+}
+window.addEventListener("resize",()=>{ pxCache=null; });
+function pxRow(){
+  const p=pxCache&&pxCache[skin], f=v=>v==null?"—":`약 <b>${v}px</b>`;
+  return {ax:"첫 상품까지",
+    cur:`${f(p&&p.cur)}<small>과목 표 첫 행 — 화면 안에 패키지가 없음</small>`,
+    stack:f(p&&p.stack), side:f(p&&p.side), plan:"— (좌측 과목 풀 상시 노출)"};
+}
+// 스킨을 바꾸면 세로 길이가 얼마나 달라지는지 — 표 아래 한 줄로 같이 본다
+function pxStrip(){
+  if(!pxCache) return "";
+  return `<div class="cmp-px"><span class="pxl">스킨별 첫 상품까지</span>${SKINS.map(k=>{
+    const p=pxCache[k.id];
+    return `<span class="pxi ${skin===k.id?"on":""}">${k.n}<b>A ${p.stack??"—"}</b><b>B ${p.side??"—"}</b></span>`;
+  }).join("")}<span class="pxn">현행 ${pxCache.old.cur??"—"}px (스킨 무관)</span></div>`;
+}
 function renderCmp(){
+  if(cmpOpen && !pxCache && !measuring) measurePx();
+  const rows=[...CMP_ROWS, pxRow()];
   $("cmpTable").innerHTML =
     `<thead><tr><th class="ax">축</th>${CMP_COLS.map(c=>`<th class="${c.base?"base ":""}${layout===c.k?"on":""}">${c.n}</th>`).join("")}</tr></thead>`
-    + `<tbody>${CMP_ROWS.map(r=>`<tr><th class="ax">${r.ax}</th>${CMP_COLS.map(c=>
+    + `<tbody>${rows.map(r=>`<tr><th class="ax">${r.ax}</th>${CMP_COLS.map(c=>
         `<td class="${c.base?"base ":""}${layout===c.k?"on":""}">${r[c.k]}</td>`).join("")}</tr>`).join("")}</tbody>`;
+  $("cmpPx").innerHTML = pxStrip();
+  $("cmpSkin").textContent = SKINS.find(k=>k.id===skin).n;
 }
 function toggleCmp(){
   cmpOpen=!cmpOpen;
