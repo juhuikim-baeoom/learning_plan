@@ -360,14 +360,18 @@
      현행은 격자선·테두리로 영역을 나눈다. 여기서는 그 선을 걷어내고 여백·배경·라운드로 나눈다.
      구조(A·B)는 손대지 않고 표현만 바꾸므로, 두 축을 교차해서 무엇이 구조 차이이고
      무엇이 표현 차이인지 분리해 볼 수 있다. 현행 탭에는 적용하지 않는다 (기준선 유지) */
-  body.skin-air{--line:#eceef1;--line-dark:#dde1e6;--panel:#f5f7f9;--gray:#5b6470;--gray-light:#98a1ad;--ink:#171a1f;}
+  /* 바탕을 옅은 회색으로 깔고 콘텐츠 덩어리를 흰 카드로 띄운다.
+     선을 28군데 걷어낸 자리를 여백만으로 두면 흰 카드가 흰 배경에 묻혀 영역이 안 읽힌다
+     (그림자 alpha .08~.1로는 부족). 대비를 배경 쪽에서 만들어 여백은 그대로 둔다 */
+  body.skin-air{--line:#eceef1;--line-dark:#dde1e6;--panel:#eff2f6;--gray:#5b6470;--gray-light:#98a1ad;--ink:#171a1f;
+    background:#f4f6f9;}
 
   /* 타이틀 · 안내 */
   body.skin-air .page-top{border-bottom:none;padding-bottom:4px;}
   body.skin-air .page-top h1{font-size:34px;letter-spacing:-1.4px;}
-  body.skin-air .g-chip{border:none;background:#f0f2f5;border-radius:9px;padding:6px 13px;}
+  body.skin-air .g-chip{border:none;background:#fff;border-radius:9px;padding:6px 13px;}
   body.skin-air .g-chip.strong{background:var(--soft);border:none;color:var(--main);}
-  body.skin-air .top-btn{border:none;background:#f0f2f5;border-radius:9px;padding:6px 14px;}
+  body.skin-air .top-btn{border:none;background:#fff;border-radius:9px;padding:6px 14px;}
 
   /* 과정 카테고리 — 박스 탭 → 밑줄 탭 */
   body.skin-air .course-tabs{border-left:none;gap:6px;border-bottom:1px solid var(--line);}
@@ -378,7 +382,7 @@
   /* 과정 칩 — 테두리 대신 배경 */
   body.skin-air .course-row{border:none;background:transparent;padding:16px 0 2px;}
   body.skin-air .course-row.rows{padding:14px 0 2px;}
-  body.skin-air .c-chip{border:none;background:#f0f2f5;border-radius:11px;padding:10px 17px;}
+  body.skin-air .c-chip{border:none;background:#fff;border-radius:11px;padding:10px 17px;}
   body.skin-air .c-chip.act{background:var(--main);color:#fff;}
   body.skin-air .c-chip.more{background:transparent;box-shadow:inset 0 0 0 1px var(--line-dark);}
   body.skin-air .chip-line + .chip-line{border-top:1px solid var(--line);}
@@ -403,26 +407,27 @@
   body.skin-air .pkg-hero{border:none;border-radius:18px;box-shadow:0 3px 16px rgba(20,30,50,.1);padding:26px 28px;}
   body.skin-air .pkg-row{border:none;border-radius:14px;box-shadow:0 1px 6px rgba(20,30,50,.08);background:#fff;padding:16px 20px;margin-bottom:10px;}
   body.skin-air .cross-zone .pkg-row{background:#fff;}
-  body.skin-air .benefit{border:none;background:#f2f5f8;border-radius:9px;}
+  body.skin-air .benefit{border:none;background:#fff;border-radius:9px;}
   body.skin-air .credit-sum{border:none;border-radius:13px;}
   body.skin-air .compose-preview{border-radius:10px;}
-  body.skin-air .btn-compose{border:none;background:#f0f2f5;border-radius:8px;padding:4px 10px;}
+  body.skin-air .btn-compose{border:none;background:#fff;border-radius:8px;padding:4px 10px;}
   body.skin-air .apply-sm{border-radius:10px;padding:10px 20px;}
   body.skin-air .pkg-apply,body.skin-air .cart-cta{border-radius:11px;}
-  body.skin-air .pkg-none{border:none;border-radius:16px;}
+  body.skin-air .pkg-none{border:none;border-radius:16px;background:#fff;box-shadow:0 1px 6px rgba(20,30,50,.07);}
   body.skin-air .cross-zone{border-top:1px solid var(--line);}
 
-  /* 과목표 — 격자 제거, 행 구분선만 */
+  /* 과목표 — 격자 제거, 행 구분선만. 회색 바탕 위에서는 표 전체가 하나의 흰 카드가 된다 */
+  body.skin-air .single-body.show{background:#fff;border-radius:16px;padding:4px 20px 18px;box-shadow:0 1px 6px rgba(20,30,50,.07);}
   body.skin-air table.subj{font-size:13.5px;}
   body.skin-air table.subj th{background:transparent;border:none;border-bottom:1px solid var(--line-dark);padding:11px 6px;font-size:11.5px;color:var(--gray-light);white-space:nowrap;}
   body.skin-air table.subj td{border:none;border-bottom:1px solid var(--line);padding:16px 12px;}
   body.skin-air table.subj td.grp{background:transparent;border-right:1px solid var(--line);color:var(--gray-light);font-size:12px;}
-  body.skin-air .f-chip{border:none;background:#f0f2f5;border-radius:10px;padding:7px 15px;}
+  body.skin-air .f-chip{border:none;background:#fff;border-radius:10px;padding:7px 15px;}
   body.skin-air .f-chip.act{background:var(--main);color:#fff;}
   body.skin-air .login-demo{border-radius:8px;}
 
   /* 좌측바 (B) */
-  body.skin-air .side-nav{border:none;background:#f2f5f8;border-radius:16px;padding:14px 8px 10px;}
+  body.skin-air .side-nav{border:none;background:#fff;box-shadow:0 1px 6px rgba(20,30,50,.07);border-radius:16px;padding:14px 8px 10px;}
   body.skin-air .sn-title{border-bottom:none;padding:0 10px 8px;}
   body.skin-air .sn-head{padding:0 10px 7px;}
   body.skin-air .sn-item{border-left:none;border-radius:10px;padding:8px 10px;}
@@ -1292,8 +1297,9 @@ const SKIN_NOTES={
   air:{ s:"격자선 → 여백 · 라운드",
     li:[
       `영역 구분을 <b>선에서 여백 · 라운드</b>로 — 표는 세로 격자 제거 후 행 구분선만, 헤더 배경도 제거`,
-      `칩 · 버튼은 테두리 대신 <b>회색 면</b>. 패키지/단과 토글은 활성 항목만 흰 카드로 뜨는 <b>세그먼트형</b>`,
-      `트레이드오프 — 화면당 정보량이 줄고 <b>세로가 길어짐</b>. 늘어난 만큼은 상단 <b>한눈에 비교</b>의 '첫 상품까지' 실측값에 그대로 반영`
+      `<b>전제는 옅은 회색 바탕</b> — 걷어낸 선의 역할을 배경 대비가 대신한다. 흰 바탕에 흰 카드를 올리면 그림자만으로는 경계가 안 잡혀 화면이 빈다`,
+      `칩 · 버튼은 테두리 대신 <b>흰 면</b>으로 바탕에서 떠오르고, 패키지/단과 토글은 활성 항목만 흰 카드로 뜨는 <b>세그먼트형</b>`,
+      `실측 — 표 행이 <b>86 → 93px</b>로 성겨지는 대신, 상단 구분선·여백이 줄어 <b>첫 상품까지는 53px 짧다</b> (스킨별 실측값은 상단 <b>한눈에 비교</b>)`
     ]},
   shop:{ s:"수강신청을 구매 경험으로",
     li:[
