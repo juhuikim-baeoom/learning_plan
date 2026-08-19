@@ -268,7 +268,7 @@
   /* 설명은 남는 폭만 차지하고 줄바꿈을 유발하지 않게 — 바는 항상 한 줄 */
   .lay-switch .sk-note{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7fb3a8;}
 
-  /* 한눈에 비교표 — 네 화면의 축을 같은 행에 놓고 대조 */
+  /* 한눈에 비교표 — 세 화면을 같은 항목 위에 놓고 대조 */
   .cmp-note{display:none;border:1px solid #e0e0e0;border-radius:8px;background:#fff;margin:-6px 0 18px;overflow-x:auto;}
   .cmp-note table{width:100%;border-collapse:collapse;min-width:860px;}
   .cmp-note th,.cmp-note td{border:1px solid #efefef;font-size:12px;line-height:1.52;padding:9px 11px;vertical-align:top;text-align:left;}
@@ -301,7 +301,7 @@
   .cur-main{flex:1;min-width:0;}
   .cur-rail{width:166px;flex:none;position:sticky;top:10px;}
 
-  /* 개강 차수 = 최상위 축. 과정과 무관하게 항상 전 차수가 같은 크기로 노출된다 */
+  /* 개강 차수 = 가장 먼저 묻는 것. 과정과 무관하게 항상 전 차수가 같은 크기로 노출된다 */
   .cur-rounds{display:flex;border:1px solid #cfcfcf;}
   .cur-rt{flex:1;text-align:center;padding:15px 6px;background:#f4f4f4;border-right:1px solid #e0e0e0;cursor:pointer;}
   .cur-rt:last-child{border-right:none;}
@@ -352,7 +352,7 @@
 
   /* ══ 개편풍 스킨 (여백형) — 구조와 별개의 두 번째 축 ══
      현행은 격자선·테두리로 영역을 나눈다. 여기서는 그 선을 걷어내고 여백·배경·라운드로 나눈다.
-     구조(A·B·C)는 손대지 않고 표현만 바꾸므로, 두 축을 교차해서 무엇이 구조 차이이고
+     구조(A·B)는 손대지 않고 표현만 바꾸므로, 두 축을 교차해서 무엇이 구조 차이이고
      무엇이 표현 차이인지 분리해 볼 수 있다. 현행 탭에는 적용하지 않는다 (기준선 유지) */
   body.skin-air{--line:#eceef1;--line-dark:#dde1e6;--panel:#f5f7f9;--gray:#5b6470;--gray-light:#98a1ad;--ink:#171a1f;}
 
@@ -554,7 +554,7 @@
     <span>레이아웃 시안</span>
     <button id="layCur" class="base" onclick="applyLayout('cur')">현행</button>
     <i class="div"></i>
-    <button id="layStack" onclick="applyLayout('stack')">A. 축 재배열형</button>
+    <button id="layStack" onclick="applyLayout('stack')">A. 순서 재배열형</button>
     <button id="laySide" onclick="applyLayout('side')">B. 좌측바형</button>
     <i class="div"></i>
     <span class="sk-lab">스킨</span>
@@ -563,7 +563,7 @@
     <button class="cmp-tog" id="cmpTog" onclick="toggleCmp()">한눈에 비교 ▾</button>
   </div>
 
-  <!-- 4개 축 비교표 — 현행 · A · B · C를 한 화면에서 대조 (시연 전용) -->
+  <!-- 비교표 — 현행 · A · B를 한 화면에서 대조 (시연 전용) -->
   <div class="cmp-note" id="cmpNote">
     <table id="cmpTable"></table>
     <div id="cmpPx"></div>
@@ -611,7 +611,7 @@
   </div>
 
 <!-- ══ 현행 — career.baeoom.com/lectureN 의 실제 구조를 그대로 재현한 비교 기준선 ══
-     개강 차수가 최상위 축 · 과정은 2뎁스 호버 드롭다운 · 패키지는 이 화면에 없고 별도 랜딩 새창 -->
+     개강 차수를 가장 먼저 묻고 · 과정은 2뎁스 호버 드롭다운 · 패키지는 이 화면에 없고 별도 랜딩 새창 -->
 <div id="curShell">
   <div class="cur-dday" id="curDday"></div>
   <div class="cur-body">
@@ -643,7 +643,7 @@
 </div><!-- /curShell -->
 
 
-<!-- ══ A. 축 재배열형 — 선택 축 4개를 상품 위에 세로로 적층 ══ -->
+<!-- ══ A. 순서 재배열형 — 고르는 단계 4개를 상품 위에 세로로 적층 ══ -->
 <div id="stackShell">
 
   <!-- ① 과정 선택 (2단: 카테고리 → 과정) -->
@@ -670,11 +670,11 @@
 
 </div><!-- /stackShell -->
 
-<!-- ══ B. 좌측바형 — 선택 축을 성격별로 분배: 과정=좌측바 / 수강방식=본문 탭 / 개강일=우측 드롭다운 ══ -->
+<!-- ══ B. 좌측바형 — 고르는 단계를 성격별로 분배: 과정=좌측바 / 수강방식=본문 탭 / 개강일=우측 드롭다운 ══ -->
 <div id="sideShell">
   <aside class="side-nav" id="sideNav"></aside>
   <div class="side-main">
-    <!-- 선택 축은 의존 순서대로: 과정(좌측바) → 수강방식 → 개강일. 이 블록 전체가 스티키 -->
+    <!-- 고르는 단계는 의존 순서대로: 과정(좌측바) → 수강방식 → 개강일. 이 블록 전체가 스티키 -->
     <div class="side-top">
       <div class="main-top">
         <div class="mtabs">
@@ -702,7 +702,7 @@
   <!-- 단과 모드 -->
   <div class="mode-body single-body" id="singleBody">
     <!-- 학습설계 빌더 연계 진입점은 학습설계 확정 후 재검토 (보류) -->
-    <!-- 인정 과정 필터 줄 제거 — 과정 축은 상단 하나로 통일 (전체 훑기는 교양·단과 › 전체 과목) -->
+    <!-- 인정 과정 필터 줄 제거 — 과정 선택은 상단 하나로 통일 (전체 훑기는 교양·단과 › 전체 과목) -->
     <div class="filter-chips" id="filterChips"></div>
     <table class="subj">
       <thead><tr><th>이수구분</th><th>신청</th><th style="text-align:left;padding-left:14px;">교과목</th><th id="thStatus">상태</th><th>수강료</th><th>수업계획서</th><th>미리보기</th></tr></thead>
@@ -1104,7 +1104,7 @@ function setMode(m){
   // 인라인 display 대신 클래스 — 스킨이 표시 방식(블록/그리드)을 바꿀 수 있어야 한다
   $("pkgBody").classList.toggle("show", m==="pkg");
   $("singleBody").classList.toggle("show",m==="single");
-  // 수강방식도 개설 차수 집합을 바꾸는 부모 축
+  // 수강방식도 개설 차수 집합을 바꾸는 부모 단계
   syncRound(); renderRounds(); renderRoundPicker();
   updateCartBar();
 }
@@ -1206,9 +1206,9 @@ function renderRoundPicker(){
 }
 /* ── 기획설명 ── */
 const NOTE_COMMON=[
-  `현행 = <b>개강 차수가 최상위</b>인 관리자 기준 구조 → 두 시안 모두 <b>과정 목적 → 수강방식 → 개강일</b> 순으로 축 재배열`,
+  `현행 = <b>개강 차수가 최상위</b>인 관리자 기준 구조 → 두 시안 모두 <b>과정 목적 → 수강방식 → 개강일</b> 순으로 순서 재배열`,
   `과정 3분류 = <b>자격증 취득 · 학위 취득 · 교양/단과</b>. 과정이 늘어도 카테고리는 불변`,
-  `학위의 4년제/2년제는 전공의 상위 계층이 아닌 <b>직교 축</b> → depth 추가 없이 라벨 붙인 2행 칩으로 병렬 배치. 라벨에 요건 학점·최단 기간 병기(기관 언어인 "전문학사/학사"만으로는 판단 불가)`,
+  `학위의 4년제/2년제는 전공의 상위 계층이 아니라 <b>나란한 별개 구분</b> → depth 추가 없이 라벨 붙인 2행 칩으로 병렬 배치. 라벨에 요건 학점·최단 기간 병기(기관 언어인 "전문학사/학사"만으로는 판단 불가)`,
   `개설 차수 = <b>과정 × 수강방식</b>의 종속값 → 반드시 부모 아래 배치. 미개설 차수는 숨김이 아니라 비활성 + 사유 표기(사라지면 원래 없었는지 없어졌는지 불명), 선택 중이던 차수가 미개설이 되면 자동 전환 후 경고`,
   `패키지 : 과정 = <b>N:M</b> → 과정마다 편성 여부 상이. 미편성 과정은 빈 화면 대신 단과 동선으로 연결`,
   `마감 과목은 다음 차수로 전환 유도 · 잔여석은 10석 미만에서만 노출(마감임박 남발 방지) · 기이수 과목은 이수완료 표기(중복 신청 방지)`,
@@ -1219,7 +1219,7 @@ const NOTES={
     ch:"두 시안이 공통으로 바꾸려는 것",
     h1:"현행 — 이 화면이 하는 것 · 그래서 생기는 일",
     li:[
-      `최상위 축 = <b>개강 차수</b>. "무엇을 얻는지"보다 "언제 시작하는지"를 먼저 묻는 관리자 기준 순서`,
+      `<b>가장 먼저 묻는 것</b> = 개강 차수. "무엇을 얻는지"보다 "언제 시작하는지"를 먼저 묻는 관리자 기준 순서`,
       `과정 = 탭 8개 + <b>호버 드롭다운</b> 하위 24종. 하위를 고르면 상단에는 대분류만 남아 <b>지금 무엇을 보고 있는지 화면에 안 남음</b>`,
       `분류 기준 혼재 — 수준(자격증 · 학사 · 전문학사)과 개별 과정(KICPA · 한국어교원 · 미용)이 같은 줄. <b>한국어교원 · 미용은 두 곳에 중복</b>`,
       `<b>패키지가 이 화면에 없음</b> — 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 염. 고른 개강일도 장바구니도 이어지지 않음`,
@@ -1227,17 +1227,17 @@ const NOTES={
       `마감 과목은 '대기접수'만 · 다음 차수 안내 없음. 잔여석 대신 '마감임박' 문구만`,
       `우측 레일 = 단과 할인 이벤트 <b>정가표</b> + 장바구니. 할인 조건(3과목 · 5과목)이 <b>지금 담긴 수량과 연결되지 않음</b>`
     ],
-    f:`<b>확인 포인트</b> — 두 시안이 공통으로 건드리는 지점은 ① 최상위 축을 과정으로 ② 패키지를 같은 화면 안으로 ③ 개설 차수를 과정 종속값으로. 나머지 차이는 <b>한눈에 비교</b> 표에서 한 번에 대조`
+    f:`<b>확인 포인트</b> — 두 시안이 공통으로 건드리는 지점은 ① 가장 먼저 묻는 것을 과정으로 ② 패키지를 같은 화면 안으로 ③ 개설 차수를 과정 종속값으로. 나머지 차이는 <b>한눈에 비교</b> 표에서 한 번에 대조`
   },
   stack:{
-    t:"A. 축 재배열형",
-    h:"가설 — 현행 화면 구조를 두고 축 순서만 바꿔도 충분한가",
-    h1:"A. 축 재배열형 — 이 시안이 하는 것",
+    t:"A. 순서 재배열형",
+    h:"가설 — 현행 화면 구조를 두고 순서만 바꿔도 충분한가",
+    h1:"A. 순서 재배열형 — 이 시안이 하는 것",
     li:[
-      `현행의 <b>위 → 아래 단계 진행</b> 형태 유지, 최상위 축만 개강일 → 과정 목적으로 교체`,
+      `현행의 <b>위 → 아래 단계 진행</b> 형태 유지, <b>가장 먼저 묻는 것</b>만 개강일 → 과정 목적으로 교체`,
       `과정 · 수강방식 · 개강일 각 1행. 현행 컨트롤(개강일 대형 탭 · 학습기간 스트립)을 형태 그대로 하위로 이동 → <b>이식 비용 최소</b>`,
       `과정 영역 2단 — 1행 카테고리 3개 고정, 2행 과정 칩. 1행 스크롤 칩(자격·교양)은 8개 초과 시 대표 8개 + 전체 보기, 2행 학위 칩은 전공 전량 노출`,
-      `한계 — 축이 하나 늘 때마다 상품이 아래로 밀림. <b>첫 상품까지</b>가 현행보다 길어진다 (실측값은 상단 <b>한눈에 비교</b>에서 스킨별로 확인)`
+      `한계 — 고르는 단계가 하나 늘 때마다 상품이 아래로 밀림. <b>첫 상품까지</b>가 현행보다 길어진다 (실측값은 상단 <b>한눈에 비교</b>에서 스킨별로 확인)`
     ],
     f:`<b>확인 포인트</b> — 늘어난 세로 길이를 감수할 만한가 · 학위 2행 칩이 자격증 1행 칩과 섞이지 않고 읽히는가`
   },
@@ -1246,10 +1246,10 @@ const NOTES={
     h:"가설 — 필터를 옆으로 빼고 상품을 먼저 보이게 하면 나은가",
     h1:"B. 좌측바형 — 이 시안이 하는 것",
     li:[
-      `선택 축을 성격에 맞는 컨트롤에 분배 — 항목 많고 계층 있는 <b>과정은 좌측바</b>, 2택인 <b>수강방식은 본문 상단 탭</b>, <b>개강일은 그 아래</b> 대형 탭`,
+      `고르는 단계를 성격에 맞는 컨트롤에 분배 — 항목 많고 계층 있는 <b>과정은 좌측바</b>, 2택인 <b>수강방식은 본문 상단 탭</b>, <b>개강일은 그 아래</b> 대형 탭`,
       `개강일을 좌측바로 올리지 않은 이유 — 부모(과정·수강방식)를 바꿀 때 차수가 시야 밖에서 조용히 갱신되면 결제 사고로 직결`,
       `상단 블록 통째 스티키 → 과목표를 내려보는 동안에도 <b>지금 보고 있는 차수</b> 유지`,
-      `축을 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지가 현행보다도 짧다</b> (축 재배열형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
+      `단계를 더해도 상품이 아래로 밀리지 않음 — <b>첫 상품까지가 현행보다도 짧다</b> (순서 재배열형과의 핵심 차이). 과정 간 이동도 뒤로 가기 없이 한 번에`,
       `레퍼런스 — 휴넷(좌측바), 고시스쿨(패키지/단과 분리)`
     ],
     f:`<b>확인 포인트</b> — 좌측바에 과정 17종이 모두 들어갔을 때의 길이 · 모바일에서의 대체 형태`
@@ -1274,7 +1274,7 @@ function toggleNote(){
 
 /* ── 현행 재현 ──
    career.baeoom.com/lectureN 의 실제 탭 구조. 두 시안이 무엇을 바꾸는지 대조할 기준선이므로
-   개선하지 않고 있는 그대로 옮긴다 — 축 순서, 분류 기준이 섞인 8개 탭, 호버 드롭다운,
+   개선하지 않고 있는 그대로 옮긴다 — 고르는 순서, 분류 기준이 섞인 8개 탭, 호버 드롭다운,
    화면 밖으로 나가는 패키지 링크, 본문과 분리된 우측 레일까지.
    선택 상태는 시안(catSel/courseSel)과 분리해 curTab/curSub로 따로 들고, 표에는 deptSel로만 반영한다 */
 const CUR_TABS=[
@@ -1390,7 +1390,7 @@ function applyLayout(l){
   document.body.classList.toggle("lay-cur",cur);
   document.body.classList.toggle("lay-side",side);
   syncSkin();
-  // 과정 축이 시안과 현행에서 따로 놀므로, 들어갈 때마다 표 필터를 그 화면의 선택으로 되돌린다
+  // 과정 선택이 시안과 현행에서 따로 놀므로, 들어갈 때마다 표 필터를 그 화면의 선택으로 되돌린다
   cur ? syncCurDept() : syncDept();
   // 현행에는 안내 칩이 없다 — 원문 한 줄이 상시 노출
   $("guideFull").style.display = cur?"block":"none";
@@ -1403,14 +1403,14 @@ function applyLayout(l){
   renderTable();
 }
 let cmpOpen=false;
-/* 한눈에 비교 — 네 화면을 같은 축 위에 놓고 대조. 현행 열이 기준선 */
+/* 한눈에 비교 — 세 화면을 같은 항목 위에 놓고 대조. 현행 열이 기준선 */
 const CMP_COLS=[
-  {k:"cur", n:"현행", base:true}, {k:"stack", n:"A. 축 재배열형"},
+  {k:"cur", n:"현행", base:true}, {k:"stack", n:"A. 순서 재배열형"},
   {k:"side", n:"B. 좌측바형"}
 ];
 const CMP_ROWS=[
-  {ax:"최상위 축", cur:"<b>개강 차수</b> — 언제 시작하는지를 먼저 묻는다", stack:"<b>과정</b> — 무엇을 얻는지를 먼저 묻는다", side:"<b>과정</b> (좌측바 상시 노출)"},
-  {ax:"축 순서", cur:"개강 차수 → 과정 → 과목", stack:"과정 → 수강방식 → 개강일", side:"과정 → 수강방식 → 개강일 (성격별로 분배)"},
+  {ax:"먼저 묻는 것", cur:"<b>개강 차수</b> — 언제 시작하는지를 먼저 묻는다", stack:"<b>과정</b> — 무엇을 얻는지를 먼저 묻는다", side:"<b>과정</b> (좌측바 상시 노출)"},
+  {ax:"고르는 순서", cur:"개강 차수 → 과정 → 과목", stack:"과정 → 수강방식 → 개강일", side:"과정 → 수강방식 → 개강일 (성격별로 분배)"},
   {ax:"과정 선택", cur:"탭 8개 + <b>호버 드롭다운</b> 하위 24개. 고른 하위 항목이 상단에 남지 않음", stack:"카테고리 3개 + 과정 칩 (학위는 2행)", side:"좌측바 4개 그룹 26개 과정 전부 상시 노출"},
   {ax:"분류 기준", cur:"수준(자격증·학사·전문학사)과 개별 과정(KICPA·한국어교원·미용)이 <b>같은 줄에 혼재</b> · 한국어교원·미용은 두 곳에 중복", stack:"목적 3분류로 통일 (자격증 취득 · 학위 취득 · 교양/단과)", side:"좌동"},
   {ax:"패키지", cur:"<b>이 화면에 없음</b> — 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 열고, 개강일·장바구니가 끊김", stack:"같은 화면 안 <b>패키지/단과 탭</b>", side:"좌동"},
@@ -1466,7 +1466,7 @@ function renderCmp(){
   if(cmpOpen && !pxCache && !measuring) measurePx();
   const rows=[...CMP_ROWS, pxRow()];
   $("cmpTable").innerHTML =
-    `<thead><tr><th class="ax">축</th>${CMP_COLS.map(c=>`<th class="${c.base?"base ":""}${layout===c.k?"on":""}">${c.n}</th>`).join("")}</tr></thead>`
+    `<thead><tr><th class="ax">비교 항목</th>${CMP_COLS.map(c=>`<th class="${c.base?"base ":""}${layout===c.k?"on":""}">${c.n}</th>`).join("")}</tr></thead>`
     + `<tbody>${rows.map(r=>`<tr><th class="ax">${r.ax}</th>${CMP_COLS.map(c=>
         `<td class="${c.base?"base ":""}${layout===c.k?"on":""}">${r[c.k]}</td>`).join("")}</tr>`).join("")}</tbody>`;
   $("cmpPx").innerHTML = pxStrip();
