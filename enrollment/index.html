@@ -480,6 +480,10 @@
   body.skin-shop table.subj tbody tr:hover td{background:#fffaf6;}
   body.skin-shop td.fee .f{font-size:16px;color:var(--cta);}
   body.skin-shop .f-chip.act{background:var(--ink);border-color:var(--ink);}
+  /* 좌측바 가격 뱃지 — 내비게이션(.sn-item.act)은 브랜드 파랑으로 두고, 값이 가격인 것만 CTA 색으로.
+     주황 글자는 활성 행의 연파랑 바탕에서 1.8:1까지 떨어져 안 읽힌다 → 칩을 주황으로 채우고
+     글자를 잉크색으로. 활성/비활성 어느 바탕에서도 7.2:1 */
+  body.skin-shop .sn-item em{background:var(--cta);border-color:var(--cta);color:var(--ink);}
 
 
   /* 기획설명 — 시연 전용 (선택한 시안의 의도·전제를 화면에서 바로 읽히게) */
