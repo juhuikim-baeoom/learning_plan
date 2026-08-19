@@ -175,6 +175,23 @@
   .modal{display:none;position:fixed;inset:0;background:rgba(27,42,74,.45);z-index:60;align-items:center;justify-content:center;}
   .modal.open{display:flex;}
   .modal-box{background:#fff;border-radius:18px;padding:24px;width:420px;max-height:84vh;overflow-y:auto;}
+  .modal-box.wide{width:660px;}
+  /* 엑셀 양식 미리보기 */
+  .xl-wrap{overflow-x:auto;border:1.5px solid var(--line);border-radius:10px;margin-bottom:12px;}
+  .xl{width:100%;border-collapse:collapse;font-size:11.5px;white-space:nowrap;}
+  .xl th{background:#eef1f6;color:var(--ink);font-weight:800;font-size:10.5px;padding:8px 10px;border-right:1px solid #dfe3ec;border-bottom:1.5px solid #dfe3ec;text-align:left;}
+  .xl th:last-child{border-right:none;}
+  .xl td{padding:8px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--gray);}
+  .xl td:last-child{border-right:none;}
+  .xl tr:last-child td{border-bottom:none;}
+  .xl .rn{background:#f8f9fc;color:var(--gray-light);font-weight:700;text-align:center;width:32px;}
+  .xl .ex{color:var(--ink);font-weight:600;}
+  .xl-cols{font-size:11px;color:var(--gray);line-height:1.85;margin-bottom:10px;}
+  .xl-cols b{color:var(--ink);}
+  .xl-cols .req{display:inline-block;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px;background:var(--blue-soft);color:var(--blue);margin-right:4px;}
+  .xl-cols .opt{display:inline-block;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px;background:#f0f1f4;color:var(--gray-light);margin-right:4px;}
+  .xl-warn{background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;border-radius:10px;padding:10px 12px;font-size:11px;line-height:1.75;}
+  .xl-warn b{color:#6b4c08;}
   .modal-box h4{font-size:16px;font-weight:800;margin-bottom:4px;}
   .modal-box .md{font-size:11.5px;color:var(--gray);margin-bottom:14px;}
   .law-ver{background:#f8f9fc;border-radius:9px;padding:8px 12px;font-size:11px;color:var(--gray);margin-bottom:12px;}
@@ -478,7 +495,7 @@
           <div class="ut">기이수 현황 엑셀 업로드</div>
           <div class="ud">타기관(전적대) 이수 과목만 표준 양식으로 일괄 등록<br>자사 이수는 LMS 자동 조회 — 업로드 불필요</div>
           <div class="ubtns">
-            <button class="btn-tmpl-dl" onclick="alert('기이수 현황 양식.xlsx 다운로드 (시연)\n열: 이수구분·과목명·학점원·연도-학기(YYYY-N)·학점·기관명\n이수구분은 상담사 기입 (1단계 자동 분류 없음)\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
+            <button class="btn-tmpl-dl" onclick="openFormSpec()">양식 보기</button>
             <button class="btn-upload" onclick="uploadExcel()">파일 업로드</button>
           </div>
           <div class="upload-done" id="uploadDone" style="display:none;">✓ 3과목 등록 — 이수구분은 양식 값 그대로, 인정 상태만 미분류</div>
@@ -559,6 +576,43 @@
     </div>
   </div>
 
+</div>
+
+<!-- 기이수 현황 엑셀 양식 미리보기 -->
+<div class="modal" id="fsModal" onclick="if(event.target===this)closeFormSpec()">
+  <div class="modal-box wide">
+    <h4>기이수 현황 엑셀 양식</h4>
+    <div class="md">아래 표 형태로 작성해서 업로드하세요 — <b>타기관(전적대) 이수분만</b> 넣습니다</div>
+
+    <div class="xl-wrap">
+      <table class="xl">
+        <tr><th class="rn"></th><th>이수구분</th><th>과목명</th><th>학점원</th><th>학점</th><th>기관명</th></tr>
+        <tr><td class="rn">1</td><td class="ex">전공</td><td class="ex">사회복지윤리와철학</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td></tr>
+        <tr><td class="rn">2</td><td class="ex">교양</td><td class="ex">대학영어</td><td class="ex">전적대</td><td class="ex">2</td><td class="ex">OO대학</td></tr>
+        <tr><td class="rn">3</td><td class="ex">전공</td><td class="ex">아동복지론</td><td class="ex">자격증</td><td class="ex">3</td><td class="ex">—</td></tr>
+        <tr><td class="rn">4</td><td colspan="5" style="color:var(--gray-light)">…</td></tr>
+      </table>
+    </div>
+
+    <div class="xl-cols">
+      <div><span class="req">필수</span><b>이수구분</b> — 자격증 과정: 전공 · 교양 / 학위 과정: 전필 · 전선 · 교양 · 일선. <b>상담사가 직접 기입합니다</b> (1단계에는 자동 분류 없음)</div>
+      <div><span class="req">필수</span><b>과목명</b> — 성적증명서에 적힌 그대로</div>
+      <div><span class="req">필수</span><b>학점원</b> — 전적대 · 자격증 · 기타</div>
+      <div><span class="req">필수</span><b>학점</b> — 숫자만 (1~6)</div>
+      <div><span class="opt">선택</span><b>기관명</b> — 학점원이 자격증이면 비워둡니다</div>
+    </div>
+
+    <div class="xl-warn">
+      · <b>연도·학기 열은 없습니다.</b> 인정 여부 판단에 쓰지 않기로 해서 양식에서 뺐습니다<br>
+      · <b>자사 수강 이력은 넣지 마세요</b> — LMS에서 자동 조회됩니다 (중복 등록 방지)<br>
+      · 업로드 직후 인정 상태는 전부 <b>미분류</b>입니다. 이수구분은 양식 값 그대로 들어오고, 인정/미인정은 상담사가 확정합니다
+    </div>
+
+    <div class="modal-actions">
+      <button class="ma-close" onclick="closeFormSpec()">닫기</button>
+      <button class="ma-send" onclick="alert('기이수 현황 양식.xlsx 다운로드 (시연)\n위 표 그대로 · 입력 예시 3행 + 주의사항 시트 포함')">양식 다운로드</button>
+    </div>
+  </div>
 </div>
 
 <!-- 저장 전 검증 모달 -->
@@ -645,13 +699,13 @@
   let certIH = [
     {id:1, name:"사회복지학개론", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · (주)배움(자사)", fromSem:0},
     {id:2, name:"인간행동과사회환경", credit:3, area:"major", status:"recog", kind:"sub", origin:"internal", when:"2025년 1학기 · (주)배움(자사)", fromSem:0},
-    {id:8, name:"사회복지조사론", credit:2, area:"major", status:"recog", kind:"sub", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)", fromSem:0},
+    {id:8, name:"사회복지조사론", credit:2, area:"major", status:"recog", kind:"sub", origin:"transfer", when:"OO대학(전적대)", fromSem:0},
     {id:10, name:"아동복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
     {id:13, name:"장애인복지론", credit:3, area:"major", status:"recog", kind:"cr", origin:"cert", when:"자격증 학점인정", fromSem:1},
-    {id:20, name:"사회복지윤리와철학", credit:3, area:"major", status:"unset", origin:"transfer", when:"2024년 2학기 · OO대학(전적대)"},
-    {id:21, name:"대학영어", credit:2, area:"gen", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
-    {id:23, name:"한국사", credit:2, area:"gen", status:"unset", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
-    {id:24, name:"현대사회와복지", credit:3, area:"major", status:"excl", origin:"transfer", when:"2023년 1학기 · OO대학(전적대)"},
+    {id:20, name:"사회복지윤리와철학", credit:3, area:"major", status:"unset", origin:"transfer", when:"OO대학(전적대)"},
+    {id:21, name:"대학영어", credit:2, area:"gen", status:"unset", origin:"transfer", when:"OO대학(전적대)"},
+    {id:23, name:"한국사", credit:2, area:"gen", status:"unset", origin:"transfer", when:"OO대학(전적대)"},
+    {id:24, name:"현대사회와복지", credit:3, area:"major", status:"excl", origin:"transfer", when:"OO대학(전적대)"},
     {id:22, name:"자원봉사론", credit:3, area:"major", status:"recog", kind:"pre", origin:"cert", when:"보육교사 2급 취득 예정"}
   ];
   const DEG_TARGET = {total:140, mreq:18, melec:42, gen:30, free:0};
@@ -676,14 +730,14 @@
   ];
   // 학위 이수 현황 (전적대 인정분 — 4분류)
   let degIH = [
-    {id:201,name:"미시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"2022년 1학기 · OO대학(전적대)"},
-    {id:202,name:"거시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"2022년 1학기 · OO대학(전적대)"},
-    {id:203,name:"경영통계",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"2022년 2학기 · OO대학(전적대)"},
-    {id:204,name:"국제무역론",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"2022년 2학기 · OO대학(전적대)"},
-    {id:205,name:"대학국어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"2021년 1학기 · OO대학(전적대)"},
-    {id:206,name:"교양영어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"2021년 1학기 · OO대학(전적대)"},
-    {id:207,name:"철학의이해",credit:3,area:"free",status:"unset",origin:"transfer",when:"2021년 2학기 · OO대학(전적대)"},
-    {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"2021년 2학기 · OO대학(전적대)"}
+    {id:201,name:"미시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:202,name:"거시경제학",credit:3,area:"mreq",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:203,name:"경영통계",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:204,name:"국제무역론",credit:3,area:"melec",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:205,name:"대학국어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:206,name:"교양영어",credit:3,area:"gen",status:"recog",kind:"sub",origin:"transfer",when:"OO대학(전적대)"},
+    {id:207,name:"철학의이해",credit:3,area:"free",status:"unset",origin:"transfer",when:"OO대학(전적대)"},
+    {id:208,name:"체육실기",credit:1,area:"free",status:"excl",origin:"transfer",when:"OO대학(전적대)"}
   ];
   const templates = {
     cert: [
@@ -768,13 +822,21 @@
   function areaMeta(a){ return (AREA_META[mode] && AREA_META[mode][a]) || {label:a, cls:"gen"}; }
   function originLabel(o){ return o==="internal"?"학은제(자사)":o==="transfer"?"전적대":o==="cert"?"자격증":"기타"; }
   // when("2023년 1학기 · OO대학(전적대)") → {term:"2023-1", org:"OO대학"}
+  // 엑셀 양식에서 연도·학기를 뺐으므로 "OO대학(전적대)"처럼 기관만 있는 값도 들어온다 → 통째로 기관으로 본다
   function parseWhen(w){
     if(!w) return {term:"-", org:"-"};
     const parts=w.split("·").map(s=>s.trim());
-    let term=parts[0]||"-";
-    let org=parts.length>=2?parts.slice(1).join(" · "):"-";
+    const TERM_RE=/(\d{4})\s*년?\s*(\d)\s*학기/;
+    let term, org;
+    if(TERM_RE.test(parts[0])){
+      term=parts[0];
+      org=parts.length>=2?parts.slice(1).join(" · "):"-";
+    } else {                       // 연도·학기 없음 — 전체를 기관명으로
+      term="-";
+      org=parts.join(" · ");
+    }
     // 연도·학기 → 2023-1
-    const m=term.match(/(\d{4})\s*년?\s*(\d)\s*학기/);
+    const m=term.match(TERM_RE);
     if(m) term=`${m[1]}-${m[2]}`;
     // 기관명 괄호 라벨 제거: "OO대학(전적대)" → "OO대학", "(주)배움(자사)" → "(주)배움"
     org=org.replace(/\s*\([^)]*\)\s*$/,"").trim()||"-";
@@ -827,16 +889,17 @@
   function uploadExcel(){
     if(uploaded){ alert("이미 업로드된 내역이 있습니다 (시연)"); return; }
     if(mode!=="cert"){ alert("시연 데이터는 자격증 과정 기준입니다."); return; }
+    // 양식에 연도·학기 열이 없으므로 when에는 기관명만 담긴다
     const rows=[
-      {id:4, fromSem:0, when:"2023년 2학기 · OO대학(전적대)"},
-      {id:6, fromSem:0, when:"2023년 2학기 · OO대학(전적대)"}
+      {id:4, fromSem:0, when:"OO대학(전적대)"},
+      {id:6, fromSem:0, when:"OO대학(전적대)"}
     ];
     rows.forEach(r=>{ const arr=sems();
       for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===r.id);
         if(idx>-1){ const s=arr[i].subjects.splice(idx,1)[0];
           certIH.push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:"unset",origin:"transfer",when:r.when,fromSem:r.fromSem}); break; } } });
     // 우리 커리큘럼에 없는 전적대 과목도 일단 미분류로 등록 (기록 보존, 상담사가 미인정 처리)
-    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"unset",origin:"transfer",when:"2023년 2학기 · OO대학(전적대)"});
+    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"unset",origin:"transfer",when:"OO대학(전적대)"});
     uploaded=true;
     ihTab="unset"; ihOpen=true;
     document.getElementById("uploadDone").style.display="block";
@@ -1191,6 +1254,8 @@
     document.getElementById("vModal").classList.add("open");
   }
   function closeValidate(){ document.getElementById("vModal").classList.remove("open"); }
+  function openFormSpec(){ document.getElementById("fsModal").classList.add("open"); }
+  function closeFormSpec(){ document.getElementById("fsModal").classList.remove("open"); }
   function doSend(){
     closeValidate();
     alert("발송 완료 (시연)\n· 스냅샷 고정: 학기·과목·학점·가격(할인 산식 포함)·차수·검증결과·기준버전·유효기간\n· 상태: 임시저장 → 발송 완료 (v2)\n· 학생에게 설계 완료 알림 발송");

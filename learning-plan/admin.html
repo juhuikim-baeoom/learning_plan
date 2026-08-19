@@ -185,11 +185,36 @@
   .mt tr.re td{background:#f7f3ff;}
   .mt .slotv{color:var(--violet);font-weight:700;font-size:11px;}
   .semp .chip.slot{border-style:dashed;}
-  .readonly-bar code{background:#eef1f6;border-radius:4px;padding:1px 5px;font-size:11px;}
+  .readonly-bar code,.xl-cols code,.xl-warn code{background:#eef1f6;border-radius:4px;padding:1px 5px;font-size:11px;color:var(--ink);}
   .semp .chip.e{background:var(--violet-soft);border-color:#d8c8f7;color:var(--violet);}
   #viewTmplNew .note{display:block;line-height:1.65;}
   #viewTmplNew .note::before{margin-right:6px;}
   @media(max-width:900px){.tn-grid{grid-template-columns:1fr;}}
+  /* 엑셀 양식 미리보기 모달 */
+  .fs-modal{display:none;position:fixed;inset:0;background:rgba(27,42,74,.45);z-index:90;align-items:center;justify-content:center;padding:20px;}
+  .fs-modal.open{display:flex;}
+  .fs-box{background:#fff;border-radius:18px;padding:24px;width:640px;max-width:100%;max-height:86vh;overflow-y:auto;}
+  .fs-box h4{font-size:16px;font-weight:800;margin-bottom:4px;}
+  .fs-box .md{font-size:11.5px;color:var(--gray);margin-bottom:14px;}
+  .xl-wrap{overflow-x:auto;border:1.5px solid var(--line);border-radius:10px;margin-bottom:12px;}
+  .xl{width:100%;border-collapse:collapse;font-size:11.5px;white-space:nowrap;}
+  .xl th{background:#eef1f6;color:var(--ink);font-weight:800;font-size:10.5px;padding:8px 10px;border-right:1px solid #dfe3ec;border-bottom:1.5px solid #dfe3ec;text-align:left;}
+  .xl th:last-child{border-right:none;}
+  .xl td{padding:8px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--gray);}
+  .xl td:last-child{border-right:none;}
+  .xl tr:last-child td{border-bottom:none;}
+  .xl .rn{background:#f8f9fc;color:var(--gray-light);font-weight:700;text-align:center;width:32px;}
+  .xl .ex{color:var(--ink);font-weight:600;}
+  .xl .ext{color:var(--violet);font-weight:700;}
+  .xl-cols{font-size:11px;color:var(--gray);line-height:1.85;margin-bottom:10px;}
+  .xl-cols b{color:var(--ink);}
+  .xl-cols .req{display:inline-block;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px;background:var(--blue-soft);color:var(--blue);margin-right:4px;}
+  .xl-warn{background:#fff7e6;border:1px solid #f5d98a;color:#8a6212;border-radius:10px;padding:10px 12px;font-size:11px;line-height:1.75;}
+  .xl-warn b{color:#6b4c08;}
+  .fs-acts{display:flex;gap:8px;margin-top:14px;}
+  .fs-acts button{flex:1;border-radius:11px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .fs-close{background:#fff;border:1.5px solid var(--line);color:var(--gray);}
+  .fs-dl{background:var(--blue);color:#fff;border:none;}
   .hidden{display:none;}
   @media(max-width:860px){.layout{grid-template-columns:1fr;}}
 </style>
@@ -383,7 +408,7 @@
                 <div class="ut">학습계획 엑셀 업로드</div>
                 <div class="ud">열: 학기(1·2·3…) · 과목명 · 학점 · 이수구분<br><b>가격·개강일 열은 없습니다</b> — 과목·차수 정보에서 자동으로 붙습니다<br>타기관에서 들을 과목은 지금 쓰시던 대로 <b>과목명 뒤에 (타사)</b> — 그대로 읽습니다</div>
                 <div class="ub">
-                  <button onclick="alert('학습계획 양식.xlsx 다운로드 (시연)\n열: 학기 · 과목명 · 학점 · 이수구분\n· 학기는 상대 학기(1,2,3…) — 실제 개강일 아님\n· 가격·차수 열 없음 (자동)\n· 과목명은 최대한 정확히 — 매칭 실패 시 수기 지정 필요\n\n[타기관 수강분 표기 — 기존 설계표와 동일]\n· 과목을 아는 경우: 아동권리와복지 (타사)\n· 과목을 안 정한 경우: 전공1 (타사)  ← 이수구분+학점만 잡힘\n\n입력 예시 1행 + 주의사항 포함')">양식 다운로드</button>
+                  <button onclick="openFormSpec()">양식 보기</button>
                   <button class="pri" onclick="tnUpload()">파일 업로드</button>
                 </div>
                 <div class="done" id="upDone" style="display:none;">✓ 16행 읽음 — 아래 매칭 확인 단계에서 결과를 확인하세요</div>
@@ -475,7 +500,47 @@
   </div>
 </div>
 
+<!-- 학습계획 엑셀 양식 미리보기 -->
+<div class="fs-modal" id="fsModal" onclick="if(event.target===this)closeFormSpec()">
+  <div class="fs-box">
+    <h4>학습계획 엑셀 양식</h4>
+    <div class="md">아래 표 형태로 작성해서 업로드하세요 — 지금 쓰시는 설계표와 같은 형태입니다</div>
+
+    <div class="xl-wrap">
+      <table class="xl">
+        <tr><th class="rn"></th><th>학기</th><th>과목명</th><th>학점</th><th>이수구분</th></tr>
+        <tr><td class="rn">1</td><td class="ex">1</td><td class="ex">인간행동과사회환경</td><td class="ex">3</td><td class="ex">필수</td></tr>
+        <tr><td class="rn">2</td><td class="ex">1</td><td class="ex">사회복지실천론</td><td class="ex">3</td><td class="ex">필수</td></tr>
+        <tr><td class="rn">3</td><td class="ex">2</td><td class="ex">노인복지론</td><td class="ex">3</td><td class="ex">선택</td></tr>
+        <tr><td class="rn">4</td><td class="ex">2</td><td class="ext">아동권리와복지 (타사)</td><td class="ex">3</td><td class="ex">선택</td></tr>
+        <tr><td class="rn">5</td><td class="ex">3</td><td class="ext">전공1 (타사)</td><td class="ex">3</td><td class="ex">선택</td></tr>
+        <tr><td class="rn">6</td><td colspan="4" style="color:var(--gray-light)">…</td></tr>
+      </table>
+    </div>
+
+    <div class="xl-cols">
+      <div><span class="req">필수</span><b>학기</b> — 상대 학기 <code>1</code>·<code>2</code>·<code>3</code>… <b>실제 개강일이 아닙니다.</b> 개강일은 빌더에서 학생별로 정합니다</div>
+      <div><span class="req">필수</span><b>과목명</b> — 우리 과목명과 최대한 똑같이. 다르면 업로드 후 수기로 지정해야 합니다</div>
+      <div><span class="req">필수</span><b>학점</b> — 숫자만 (1~6)</div>
+      <div><span class="req">필수</span><b>이수구분</b> — 자격증 과정: 필수 · 선택 / 학위 과정: 전필 · 전선 · 교양 · 일선</div>
+    </div>
+
+    <div class="xl-warn">
+      · <b>타기관에서 들을 과목은 과목명 뒤에 <code>(타사)</code></b> — 지금 설계표에 쓰시는 그대로 적으시면 업로드할 때 자동으로 읽습니다 (4행)<br>
+      · <b>과목을 안 정한 경우도 그대로</b> — <code>전공1 (타사)</code>처럼 적으면 이수구분·학점만 잡히는 요건 슬롯이 됩니다 (5행)<br>
+      · <b>가격·차수·개강일 열은 없습니다</b> — 과목·차수 정보에서 자동으로 붙습니다
+    </div>
+
+    <div class="fs-acts">
+      <button class="fs-close" onclick="closeFormSpec()">닫기</button>
+      <button class="fs-dl" onclick="alert('학습계획 양식.xlsx 다운로드 (시연)\n위 표 그대로 · 입력 예시 5행 + 주의사항 시트 포함')">양식 다운로드</button>
+    </div>
+  </div>
+</div>
+
 <script>
+  function openFormSpec(){ document.getElementById("fsModal").classList.add("open"); }
+  function closeFormSpec(){ document.getElementById("fsModal").classList.remove("open"); }
   // 페이지 연결 — 같은 레포에 배포된 실제 파일명으로 수정해서 사용
   const LINK_BUILDER="builder.html";
   function goBuilder(){ location.href=LINK_BUILDER; }
