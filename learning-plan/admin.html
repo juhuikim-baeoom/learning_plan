@@ -153,6 +153,10 @@
   .sum .s.ok{border-color:#bfe6d5;} .sum .s.ok .v{color:var(--green);}
   .sum .s.warn{border-color:#f0dba8;} .sum .s.warn .v{color:var(--amber);}
   .sum .s.bad{border-color:#f3b8c0;} .sum .s.bad .v{color:var(--red);}
+  .tn-bulk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--amber-soft);border:1.5px solid #f0dba8;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:#8a6212;line-height:1.6;}
+  .tn-bulk span{flex:1;min-width:200px;}
+  .tn-bulk b{color:#6b4c08;}
+  .tn-bulk button{border:1.5px solid var(--amber);background:var(--amber);color:#fff;border-radius:8px;font-size:11.5px;font-weight:800;padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap;}
   .mt-wrap{overflow-x:auto;}
   .mt{width:100%;border-collapse:collapse;font-size:11.5px;}
   .mt th{text-align:left;font-size:10px;font-weight:800;color:var(--gray-light);border-bottom:1.5px solid var(--line);padding:7px 6px;white-space:nowrap;}
@@ -438,9 +442,9 @@
         <!-- 3. 매칭 확인 — 표가 넓어 전체 폭 사용 -->
             <div class="blk tn-wide" data-step="3">
               <h3>3. 과목 매칭 확인</h3>
-              <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. 판정이 안 끝난 행이 남으면 저장할 수 없습니다 — 정체를 모르는 과목이 설계에 들어가면 가격·학점 자동 계산이 깨지기 때문입니다</div>
+              <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. <b>미판정·확인 필요가 남으면 저장할 수 없습니다</b> — 템플릿은 여러 설계에 재사용되므로, 틀린 과목이 한 번 들어가면 그 템플릿으로 만든 설계가 전부 영향을 받습니다</div>
               <div id="tnMatch"></div>
-              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 세 갈래로 갈립니다</b> — 저장을 막는 것은 <b>미판정</b>뿐이고, 나머지 둘은 정상 저장됩니다.<br>
+              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 세 갈래로 갈립니다</b> — 판정만 끝나면 셋 다 정상 저장됩니다.<br>
                 · <b>표기만 다른 것</b> (사회복지개론 → 사회복지학개론) → [과목 지정]으로 우리 과목에 연결<br>
                 · <b>우리가 안 파는 과목</b> (타기관에서 들어야 하는 과목) → [타기관 이수] — 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
                 · <b>과목을 특정하지 않은 요건</b> (엑셀의 <code>전공1 (타사)</code>) → [요건 슬롯] — 이수구분·학점만 확정, 어떤 과목으로 채울지는 학생이 정함<br>
@@ -632,7 +636,7 @@
       " / 타기관 "+ex.length+" (자동 인식) / 미판정 "+TN_ROWS.filter(r=>r.m==="none").length+
       "\n· 과목명 끝의 '(타사)' 표기를 읽어 타기관 이수로 자동 판정했습니다"+
       (sl.length?"\n· 그중 "+sl.length+"건은 과목명이 아니라 요건 표현('전공1')이라 요건 슬롯으로 담았습니다":"")+
-      "\n· 미판정이 0이 되어야 저장할 수 있습니다");
+      "\n· 미판정과 확인 필요가 모두 0이 되어야 저장할 수 있습니다");
   }
   function tnAccept(i){ TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender(); }
   function tnPick(i){
@@ -652,9 +656,21 @@
   }
   function tnDrop(i){ TN_ROWS[i].m="drop"; tnRender(); }
   function tnUndo(i){ TN_ROWS[i].m="none"; TN_ROWS[i].slot=false; TN_ROWS[i].to=""; tnRender(); }
+  // 추천 일괄 적용 — 확인 필요 건이 많을 때 한 번에. 확인 자체는 명시적으로 일어난다
+  function tnAcceptAll(){
+    const near=TN_ROWS.filter(r=>r.m==="near");
+    if(!near.length) return;
+    if(!confirm("추천 과목 "+near.length+"건을 그대로 적용합니다 (시연)\n\n"+
+      near.map(r=>"· "+r.raw+"  →  "+r.to).join("\n")+
+      "\n\n템플릿은 여러 설계에 재사용되므로, 틀린 과목이 들어가면 그 템플릿으로 만든 설계가 전부 영향을 받습니다.\n위 연결이 모두 맞습니까?")) return;
+    near.forEach(r=>{ r.m="fixed"; });
+    tnRender();
+  }
   function tnSaveGo(){
     const n=TN_ROWS.filter(r=>r.m==="none").length;
     if(n>0){ alert("판정이 안 끝난 과목이 "+n+"건 남아 있어 저장할 수 없습니다 (시연)"); return; }
+    const nr=TN_ROWS.filter(r=>r.m==="near").length;
+    if(nr>0){ alert("확인이 안 끝난 과목이 "+nr+"건 남아 있어 저장할 수 없습니다 (시연)\n추천 과목이 맞는지 확인하고 [추천 적용] 또는 [추천 전부 적용]을 눌러주세요"); return; }
     const live=TN_ROWS.filter(r=>r.m!=="drop");
     const ext=live.filter(r=>r.m==="ext").length;
     alert("템플릿 저장 (시연)\n· 저장 범위: "+(tnScopeV==="mine"?"내 템플릿":"팀 공유")+
@@ -705,6 +721,8 @@
           '<div class="s bad"><div class="v">'+cNone+'</div><div class="k">미판정</div></div>'+
           '<div class="s"><div class="v">'+cDrop+'</div><div class="k">제외</div></div>'+
         '</div>'+
+        (cNear?'<div class="tn-bulk"><span>확인 필요 <b>'+cNear+'건</b> — 이름이 정확히 일치하지 않아 비슷한 과목을 추천만 해둔 상태입니다. 맞는지 확인해야 저장할 수 있습니다</span>'+
+               '<button onclick="tnAcceptAll()">추천 전부 적용</button></div>':'')+
         '<div class="mt-wrap"><table class="mt"><thead><tr><th>학기</th><th>엑셀 과목명</th><th></th><th>연결된 과목</th><th>학점</th><th>이수구분</th><th>상태</th><th>가격</th><th></th></tr></thead>'+
         '<tbody>'+rows+'</tbody></table></div>';
     }
@@ -738,7 +756,7 @@
     const sv=document.getElementById("tnSave"), bl=document.getElementById("tnBlocked");
     if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 — 위 [과목 구성 방식]에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
     else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 — 과목 지정 · 타기관 이수 · 요건 슬롯 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
-    else if(cNear>0){ sv.disabled=false; bl.textContent="확인 필요 "+cNear+"건 — 추천값 그대로 저장됩니다"; bl.style.color="var(--amber)"; }
+    else if(cNear>0){ sv.disabled=true; bl.textContent="확인 필요 "+cNear+"건 — 추천 과목이 맞는지 확인해야 저장할 수 있습니다 (템플릿은 여러 설계에 재사용됩니다)"; bl.style.color="var(--amber)"; }
     else { sv.disabled=false; bl.textContent=""; }
   }
 
