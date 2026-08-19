@@ -186,6 +186,8 @@
   .xl tr:last-child td{border-bottom:none;}
   .xl .rn{background:#f8f9fc;color:var(--gray-light);font-weight:700;text-align:center;width:32px;}
   .xl .ex{color:var(--ink);font-weight:600;}
+  .xl .ok{color:var(--green);font-weight:800;}
+  .xl .no{color:var(--red);font-weight:800;}
   .xl-cols{font-size:11px;color:var(--gray);line-height:1.85;margin-bottom:10px;}
   .xl-cols b{color:var(--ink);}
   .xl-cols .req{display:inline-block;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px;background:var(--blue-soft);color:var(--blue);margin-right:4px;}
@@ -493,12 +495,12 @@
         <span class="note">자사 수강 이력은 LMS 자동 조회 — 엑셀에 포함하지 마세요 (중복 방지)</span>
         <div class="upload-box">
           <div class="ut">기이수 현황 엑셀 업로드</div>
-          <div class="ud">타기관(전적대) 이수 과목만 표준 양식으로 일괄 등록<br>자사 이수는 LMS 자동 조회 — 업로드 불필요</div>
+          <div class="ud">타기관(전적대) 이수 과목만 표준 양식으로 일괄 등록<br>양식의 <b>인정여부 열이 그대로 반영</b>됩니다 — 업로드 후 목록에서 확인<br>자사 이수는 LMS 자동 조회 — 업로드 불필요</div>
           <div class="ubtns">
             <button class="btn-tmpl-dl" onclick="openFormSpec()">양식 보기</button>
             <button class="btn-upload" onclick="uploadExcel()">파일 업로드</button>
           </div>
-          <div class="upload-done" id="uploadDone" style="display:none;">✓ 3과목 등록 — 이수구분은 양식 값 그대로, 인정 상태만 미분류</div>
+          <div class="upload-done" id="uploadDone" style="display:none;">✓ 4과목 등록 — 인정 2 · 미인정 1 · 미분류 1 (양식 값 그대로)</div>
         </div>
       </div>
 
@@ -586,11 +588,12 @@
 
     <div class="xl-wrap">
       <table class="xl">
-        <tr><th class="rn"></th><th>이수구분</th><th>과목명</th><th>학점원</th><th>학점</th><th>기관명</th></tr>
-        <tr><td class="rn">1</td><td class="ex">전공</td><td class="ex">사회복지윤리와철학</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td></tr>
-        <tr><td class="rn">2</td><td class="ex">교양</td><td class="ex">대학영어</td><td class="ex">전적대</td><td class="ex">2</td><td class="ex">OO대학</td></tr>
-        <tr><td class="rn">3</td><td class="ex">전공</td><td class="ex">아동복지론</td><td class="ex">자격증</td><td class="ex">3</td><td class="ex">—</td></tr>
-        <tr><td class="rn">4</td><td colspan="5" style="color:var(--gray-light)">…</td></tr>
+        <tr><th class="rn"></th><th>이수구분</th><th>과목명</th><th>학점원</th><th>학점</th><th>기관명</th><th>인정여부</th></tr>
+        <tr><td class="rn">1</td><td class="ex">전공</td><td class="ex">사회복지윤리와철학</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td class="ex ok">인정</td></tr>
+        <tr><td class="rn">2</td><td class="ex">교양</td><td class="ex">대학영어</td><td class="ex">전적대</td><td class="ex">2</td><td class="ex">OO대학</td><td class="ex ok">인정</td></tr>
+        <tr><td class="rn">3</td><td class="ex">교양</td><td class="ex">현대문학의이해</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td class="ex no">미인정</td></tr>
+        <tr><td class="rn">4</td><td class="ex">전공</td><td class="ex">사회학개론</td><td class="ex">전적대</td><td class="ex">3</td><td class="ex">OO대학</td><td style="color:var(--gray-light)">(비움)</td></tr>
+        <tr><td class="rn">5</td><td colspan="6" style="color:var(--gray-light)">…</td></tr>
       </table>
     </div>
 
@@ -600,12 +603,14 @@
       <div><span class="req">필수</span><b>학점원</b> — 전적대 · 자격증 · 기타</div>
       <div><span class="req">필수</span><b>학점</b> — 숫자만 (1~6)</div>
       <div><span class="opt">선택</span><b>기관명</b> — 학점원이 자격증이면 비워둡니다</div>
+      <div><span class="opt">선택</span><b>인정여부</b> — 인정 · 미인정. <b>적어둔 값 그대로 반영됩니다.</b> 비워두면 미분류로 들어옵니다</div>
     </div>
 
     <div class="xl-warn">
+      · <b>인정여부는 적은 대로 바로 반영됩니다</b> — 업로드 후 [전체] 탭에서 목록을 확인하고, 바꿀 것만 고치시면 됩니다<br>
       · <b>연도·학기 열은 없습니다.</b> 인정 여부 판단에 쓰지 않기로 해서 양식에서 뺐습니다<br>
       · <b>자사 수강 이력은 넣지 마세요</b> — LMS에서 자동 조회됩니다 (중복 등록 방지)<br>
-      · 업로드 직후 인정 상태는 전부 <b>미분류</b>입니다. 이수구분은 양식 값 그대로 들어오고, 인정/미인정은 상담사가 확정합니다
+      · 이수구분도 양식 값 그대로 들어옵니다 (1단계에는 자동 분류 없음)
     </div>
 
     <div class="modal-actions">
@@ -889,21 +894,26 @@
   function uploadExcel(){
     if(uploaded){ alert("이미 업로드된 내역이 있습니다 (시연)"); return; }
     if(mode!=="cert"){ alert("시연 데이터는 자격증 과정 기준입니다."); return; }
-    // 양식에 연도·학기 열이 없으므로 when에는 기관명만 담긴다
+    // 양식에 연도·학기 열이 없으므로 when에는 기관명만 담긴다.
+    // st = 양식의 [인정여부] 열 — 적힌 값을 그대로 반영하고, 비어 있으면 미분류로 둔다
     const rows=[
-      {id:4, fromSem:0, when:"OO대학(전적대)"},
-      {id:6, fromSem:0, when:"OO대학(전적대)"}
+      {id:4, fromSem:0, when:"OO대학(전적대)", st:"recog"},
+      {id:6, fromSem:0, when:"OO대학(전적대)", st:"recog"}
     ];
     rows.forEach(r=>{ const arr=sems();
       for(let i=0;i<arr.length;i++){ const idx=arr[i].subjects.findIndex(s=>s.id===r.id);
         if(idx>-1){ const s=arr[i].subjects.splice(idx,1)[0];
-          certIH.push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:"unset",origin:"transfer",when:r.when,fromSem:r.fromSem}); break; } } });
-    // 우리 커리큘럼에 없는 전적대 과목도 일단 미분류로 등록 (기록 보존, 상담사가 미인정 처리)
-    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"unset",origin:"transfer",when:"OO대학(전적대)"});
+          certIH.push({id:s.id,name:s.name,credit:s.credit,area:s.area,status:r.st,
+                       kind:r.st==="recog"?"sub":undefined,origin:"transfer",when:r.when,fromSem:r.fromSem}); break; } } });
+    // 우리 커리큘럼에 없는 전적대 과목 — 양식에 [미인정]으로 적어 올린 건
+    certIH.push({id:90,name:"현대문학의이해",credit:3,area:"gen",status:"excl",origin:"transfer",when:"OO대학(전적대)"});
+    // 인정여부를 비워 올린 건 — 판단 보류. 미분류로 들어와 상담사가 확정
+    certIH.push({id:91,name:"사회학개론",credit:3,area:"major",status:"unset",origin:"transfer",when:"OO대학(전적대)"});
     uploaded=true;
-    ihTab="unset"; ihOpen=true;
+    ihTab="all"; ihOpen=true;   // 업로드 직후엔 전체 목록을 펼쳐 되훑을 수 있게
     document.getElementById("uploadDone").style.display="block";
-    alert("업로드 완료 (시연)\n· 이수구분은 양식 값 그대로 등록, 인정 상태만 '미분류'로 시작\n· 타기관 이수분만 등록 (자사 이수는 LMS 자동 조회 — 중복 제외)\n· [미분류] 탭에서 체크 후 일괄 [인정]/[미인정] 처리하세요");
+    const un=certIH.filter(x=>x.status==="unset").length;
+    alert("업로드 완료 (시연) — 4과목\n· 인정 2 / 미인정 1 / 미분류 1 — 양식의 [인정여부] 열 그대로 반영했습니다\n· 인정여부를 비워 올린 행만 미분류로 들어옵니다\n· 타기관 이수분만 등록 (자사 이수는 LMS 자동 조회 — 중복 제외)\n\n[전체] 탭에서 목록을 확인하고 바꿀 것만 고치세요"+(un?"\n미분류 "+un+"과목은 처리해야 집계에 반영됩니다":""));
     renderBuilder();
   }
 
@@ -1002,7 +1012,7 @@
         </div>
         ${bulkBar}
         <table class="ih-table"><thead>${headRow}</thead><tbody>${bodyRows}</tbody></table>
-        <div style="font-size:10.5px;color:var(--gray-light);margin-top:8px;">· 업로드/불러온 직후는 <b style="color:var(--amber)">미분류</b> 상태 — 체크박스 선택 후 일괄 [인정]/[미인정] 처리 · 인정분만 집계표에 반영</div>
+        <div style="font-size:10.5px;color:var(--gray-light);margin-top:8px;">· 업로드분은 양식의 <b>인정여부</b> 값 그대로 들어옵니다 — 비워 올린 행만 <b style="color:var(--amber)">미분류</b>. 체크박스 선택 후 일괄 [인정]/[미인정]으로 수정 · 인정분만 집계표에 반영</div>
       </div>
     </div>`;
   }
