@@ -95,10 +95,10 @@
 </style>
 </head>
 <body>
-<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item act">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
+<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">설계 결과 화면</a><a href="learner.html" class="gnb-item act">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
 <div class="learner-stage">
 
-<div class="page-note">학습자 LMS <b>학습설계</b> 메뉴 (로그인 기반) — <b>반응형 단일 화면</b>: 같은 데이터를 모바일·PC로 렌더링. 신청과 확인은 탭 없이 한 목록에서 상태만 바뀝니다</div>
+<div class="page-note">학습자 LMS <b>학습설계</b> 메뉴 (로그인 기반) - <b>반응형 단일 화면</b>: 같은 데이터를 모바일·PC로 렌더링. 신청과 확인은 탭 없이 한 목록에서 상태만 바뀝니다</div>
 
 <div class="dev-toggle">
   <button id="devPc" class="active" onclick="switchDev('pc')">PC</button>
@@ -135,14 +135,14 @@
       <div class="exp-list" id="expL">
         <div class="d-card">
           <div class="d-info"><div class="top"><span class="cn">사회복지사 2급</span><span class="d-badge mine">내 신청</span><span class="d-badge st-exp">만료</span></div>
-          <div class="meta">v1 · 06.01 만료 — 열람은 가능, 결제 불가</div></div>
+          <div class="meta">v1 · 06.01 만료 - 열람은 가능, 결제 불가</div></div>
           <div class="cta-line"><button class="d-btn line">열람</button><button class="d-btn" onclick="event.stopPropagation();alert('재설계 요청 생성 (시연, E2)')">최신 설계 다시 받기</button></div>
         </div>
       </div>
     </div>
 
     <button class="btn-apply" onclick="switchV('form')">+ 학습설계 신청하기</button>
-    <button class="btn-back" style="margin-top:8px" onclick="alert('기존 무료학습설계 결과 화면으로 이동 (시연)\n2026.07 이전 발송분 — 데이터 이관 없이 기존 화면 그대로 열람\n(상담지원실 > 무료학습설계 > 학습설계 결과확인)')">이전 학습설계 결과 보기 (2026.07 이전 발송분)</button>
+    <button class="btn-back" style="margin-top:8px" onclick="alert('기존 무료학습설계 결과 화면으로 이동 (시연)\n2026.07 이전 발송분 - 데이터 이관 없이 기존 화면 그대로 열람\n(상담지원실 > 무료학습설계 > 학습설계 결과확인)')">이전 학습설계 결과 보기 (2026.07 이전 발송분)</button>
     <div class="apply-hint">보유학점·자격증이 있다면 성적증명서를 첨부해 주세요.<br>맞춤 설계로 수강 과목이 줄어들 수 있습니다.</div>
   </div>
 
@@ -161,7 +161,7 @@
     </div>
 
     <div class="f-sec">
-      <label>최종학력 <span>· 가입 정보 자동 입력 — 다르면 수정</span></label>
+      <label>최종학력 <span>· 가입 정보 자동 입력 - 다르면 수정</span></label>
       <div class="opt-grid">
         <div class="opt" onclick="pick(this)">고등학교 졸업</div>
         <div class="opt on" onclick="pick(this)">전문대학 졸업</div>
@@ -172,18 +172,18 @@
     <div class="f-sec">
       <label>보유학점·자격증이 있나요?</label>
       <div class="opt-grid">
-        <div class="opt on" onclick="pick(this);document.getElementById('fileSec').style.display='block'">있음 <span class="sm">맞춤 설계 — 성적증명서 첨부</span></div>
+        <div class="opt on" onclick="pick(this);document.getElementById('fileSec').style.display='block'">있음 <span class="sm">맞춤 설계 - 성적증명서 첨부</span></div>
         <div class="opt" onclick="pick(this);document.getElementById('fileSec').style.display='none'">없음 <span class="sm">기본 설계</span></div>
       </div>
     </div>
 
     <div class="f-sec" id="fileSec">
       <label>성적증명서 첨부</label>
-      <div class="file-box" onclick="alert('파일 선택 (시연) — PDF/이미지')">📄 파일 선택<span class="sm">전적대·학점은행 성적증명서, 자격증 사본</span></div>
+      <div class="file-box" onclick="alert('파일 선택 (시연) - PDF/이미지')">📄 파일 선택<span class="sm">전적대·학점은행 성적증명서, 자격증 사본</span></div>
     </div>
 
     <div class="f-sec">
-      <div class="agree"><input type="checkbox" id="agreeChk" onchange="document.getElementById('btnSubmit').disabled=!this.checked"><span>학습설계 목적의 개인정보(학력·이수내역·첨부서류) 수집·이용에 동의합니다. <u onclick="alert('개인정보처리방침 (시연) — 보관 기간·파기 규칙 명시')">자세히</u></span></div>
+      <div class="agree"><input type="checkbox" id="agreeChk" onchange="document.getElementById('btnSubmit').disabled=!this.checked"><span>학습설계 목적의 개인정보(학력·이수내역·첨부서류) 수집·이용에 동의합니다. <u onclick="alert('개인정보처리방침 (시연) - 보관 기간·파기 규칙 명시')">자세히</u></span></div>
     </div>
 
     <button class="btn-submit" id="btnSubmit" disabled onclick="submitReq()">학습설계 신청</button>
@@ -192,7 +192,7 @@
 </div>
 
 <div class="pc-frame" id="pcFrame">
-  <div class="pc-top">(주)배움 · 마이페이지 <span>PC — 동일 데이터, 화면 크기별 자동 렌더링</span></div>
+  <div class="pc-top">(주)배움 · 마이페이지 <span>PC - 동일 데이터, 화면 크기별 자동 렌더링</span></div>
   <div class="pc-grid">
     <div class="pc-inner" id="pcInner"></div>
   </div>
@@ -220,7 +220,7 @@
   function submitReq(){
     document.getElementById("reqCard").style.display="block";
     switchV("list");
-    alert("신청 완료 (시연)\n· 목록에 '접수됨' 카드 생성 — 별도 신청 내역 탭 없음\n· 관리자 설계 목록에 접수 건으로 도착 → 담당자 배정\n· 설계 발송 시 같은 카드가 '설계 도착'으로 전환 + 알림");
+    alert("신청 완료 (시연)\n· 목록에 '접수됨' 카드 생성 - 별도 신청 내역 탭 없음\n· 관리자 설계 목록에 접수 건으로 도착 → 담당자 배정\n· 설계 발송 시 같은 카드가 '설계 도착'으로 전환 + 알림");
   }
 </script>
 </div>
