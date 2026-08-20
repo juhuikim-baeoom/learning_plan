@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원클릭 제안</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  :root{
+    --navy:#12435a; --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
+    --ink:#1d2433; --gray:#6b7280; --gray-light:#9aa3b2; --line:#e6e9f0;
+    --bg:#ffffff; --bg-soft:#f4f6fb; --card:#fff; --red:#e23b4e; --red-soft:#fdf1f2;
+    --green:#1a9c6b; --green-soft:#e7f5ef; --amber:#b07c10; --amber-soft:#fdf3dc;
+    --violet:#7c4fe0; --violet-soft:#f1ebfd;
+    --radius:14px; --shadow:0 2px 14px rgba(27,42,74,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 20px 80px;}
+
+  /* GNB */
+  .gnb{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:16px;background:#fff;border-bottom:1px solid var(--line);padding:11px 20px;flex-wrap:wrap;}
+  .gnb-logo{font-size:14px;font-weight:800;color:var(--main);text-decoration:none;letter-spacing:-.3px;white-space:nowrap;}
+  .gnb-nav{display:flex;gap:4px;flex-wrap:wrap;flex:1;}
+  .gnb-item{font-size:12.5px;font-weight:700;color:var(--gray);text-decoration:none;padding:7px 13px;border-radius:9px;white-space:nowrap;}
+  .gnb-item:hover{background:var(--soft);color:var(--main);}
+  .gnb-item.act{background:var(--main);color:#fff;}
+  .gnb-tag{font-size:10.5px;font-weight:800;color:#fff;background:var(--main);border-radius:20px;padding:4px 11px;white-space:nowrap;}
+
+  /* 페이지 헤드 */
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:18px 0 14px;}
+  .page-head h1{font-size:21px;font-weight:800;letter-spacing:-.4px;}
+  .page-head .sub{font-size:12px;color:var(--gray);margin-top:5px;line-height:1.6;}
+  .toggles{display:flex;gap:8px;flex-wrap:wrap;}
+  .vw-toggle{display:flex;background:var(--bg-soft);border:1px solid var(--line);border-radius:24px;padding:3px;}
+  .vw-toggle button{border:none;background:transparent;font-size:12px;font-weight:700;color:var(--gray);padding:7px 15px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .vw-toggle button.active{background:var(--navy);color:#fff;}
+
+  /* 기획설명 - 시연 전용 주석. 브랜드 블루와 의도적으로 다른 앰버 톤 */
+  .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:0 0 16px;}
+  .ln-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #f2e0ac;}
+  .ln-tag{background:#e0a71e;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.02em;}
+  .ln-head b{font-size:13.5px;font-weight:800;color:#8a6212;}
+  .ln-tog{margin-left:auto;border:1px solid #e6c878;background:#fff;border-radius:13px;font-family:inherit;font-size:11.5px;font-weight:700;color:#8a6212;padding:4px 12px;cursor:pointer;}
+  .ln-tog:hover{background:#fdf3d8;}
+  .ln-body{display:block;}
+  .ln-sec{padding:11px 14px 12px;}
+  .ln-sec.shade{background:#fff8e2;border-bottom:1px solid #f2e0ac;}
+  .ln-sec+.ln-sec{border-top:1px solid #f2e0ac;}
+  .ln-sec h4{font-size:10.5px;font-weight:800;color:#8a6212;letter-spacing:.03em;margin-bottom:7px;}
+  .ln-sec h4 .h4-sub{font-weight:600;color:#a08a54;letter-spacing:0;}
+  .ln-sec ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+  .ln-sec li{font-size:12.5px;line-height:1.58;color:#4a4436;padding-left:11px;position:relative;}
+  .ln-sec li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:#e5bf5e;}
+  .ln-sec li b{font-weight:800;color:#2b2b2b;}
+  .ln-foot{padding:9px 14px;border-top:1px solid #f2e0ac;font-size:12px;line-height:1.6;color:#8d7d5b;font-weight:600;}
+  .ln-foot b{color:#8a6212;font-weight:800;}
+  .ln-map{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px;}
+  .ln-map th,.ln-map td{border:1px solid #eddcae;padding:5px 8px;text-align:left;color:#4a4436;}
+  .ln-map th{background:#fdf3d8;font-weight:800;color:#8a6212;font-size:10.5px;}
+  .ln-map td b{font-weight:800;color:#2b2b2b;}
+
+  /* 카드 공통 */
+  .panel{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;}
+  .panel-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 16px;border-bottom:1px solid var(--line);}
+  .panel-head h3{font-size:14.5px;font-weight:800;}
+  .panel-head .ph-sub{font-size:11.5px;color:var(--gray-light);font-weight:600;}
+  .panel-head .right{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+  .panel-body{padding:14px 16px 16px;}
+
+  /* 접수 목록 */
+  .apps{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .apps th{background:var(--bg-soft);color:var(--gray);font-size:11px;font-weight:800;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .apps td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .apps tr:last-child td{border-bottom:none;}
+  .apps tr.sel td{background:var(--soft);}
+  .apps .nm{font-weight:800;}
+  .apps .tel{color:var(--gray);font-variant-numeric:tabular-nums;}
+  .btn-one{border:none;background:var(--main);color:#fff;font-family:inherit;font-size:12px;font-weight:800;border-radius:9px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
+  .btn-one:hover{filter:brightness(.94);}
+  .btn-one.done{background:#fff;color:var(--gray);border:1px solid var(--line);font-weight:700;cursor:default;}
+  .st-pill{display:inline-block;font-size:10.5px;font-weight:800;border-radius:7px;padding:3px 8px;white-space:nowrap;}
+  .st-pill.new{background:var(--amber-soft);color:var(--amber);}
+  .st-pill.sent{background:var(--green-soft);color:var(--green);}
+
+  /* 제안안 */
+  .prop-lead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--mid);border-radius:11px;padding:12px 14px;margin-bottom:14px;}
+  .prop-lead .pl-main{flex:1;min-width:240px;}
+  .prop-lead .pl-t{font-size:13px;font-weight:800;color:var(--navy);}
+  .prop-lead .pl-d{font-size:11.5px;color:#3d6b83;margin-top:4px;line-height:1.6;}
+  .prop-lead .pl-d b{font-weight:800;color:var(--navy);}
+  .auto-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:9px;padding:3px 9px;white-space:nowrap;}
+
+  .pk{border:1.5px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden;background:#fff;}
+  .pk.on{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
+  .pk.off{opacity:.55;}
+  .pk.closed{background:#fafbfc;}
+  .pk-head{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;cursor:pointer;}
+  .pk-chk{width:19px;height:19px;border:2px solid var(--line);border-radius:6px;flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;}
+  .pk.on .pk-chk{background:var(--main);border-color:var(--main);}
+  .pk-main{flex:1;min-width:0;}
+  .pk-no{display:inline-block;font-size:9.5px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px;}
+  .pk-nm{font-size:13.5px;font-weight:800;letter-spacing:-.2px;}
+  .pk-compo{font-size:11.5px;color:var(--gray);margin-top:4px;}
+  .pk-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
+  .mt{font-size:10.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:7px;padding:2px 7px;}
+  .mt.ok{background:var(--green-soft);color:var(--green);border-color:#bfe4d5;}
+  .mt.no{background:var(--red-soft);color:var(--red);border-color:#f5cdd2;}
+  .mt.id{font-variant-numeric:tabular-nums;color:var(--gray-light);}
+  .pk-sub{border-top:1px solid var(--line);background:var(--bg-soft);padding:11px 14px;}
+  .pk-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--gray);}
+  .pk-row+.pk-row{margin-top:8px;}
+  .pk-row label{font-weight:800;color:var(--ink);font-size:11px;}
+  .pk-sel{font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 9px;background:#fff;}
+  .subj-tog{border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:var(--gray);border-radius:8px;padding:5px 10px;cursor:pointer;}
+  .subj-tog:hover{border-color:var(--main);color:var(--main);}
+  .subj-list{display:none;margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;}
+  .subj-list.open{display:block;}
+  .sl-grp{font-size:10.5px;font-weight:800;color:var(--navy);margin:8px 0 5px;}
+  .sl-grp:first-child{margin-top:0;}
+  .sl-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;}
+  .sl-items span{font-size:11.5px;color:var(--ink);padding-left:10px;position:relative;line-height:1.6;}
+  .sl-items span::before{content:"";position:absolute;left:0;top:8px;width:3px;height:3px;border-radius:50%;background:var(--gray-light);}
+  .no-price{font-size:11px;color:var(--gray-light);font-weight:600;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);}
+
+  .excl{border:1px dashed var(--line);border-radius:11px;padding:11px 14px;margin-bottom:11px;background:#fcfcfd;}
+  .excl .et{font-size:11px;font-weight:800;color:var(--gray);margin-bottom:7px;}
+  .excl-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--gray);padding:5px 0;}
+  .excl-item b{color:var(--ink);font-weight:700;}
+  .btn-add{margin-left:auto;border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:var(--main);border-radius:8px;padding:4px 10px;cursor:pointer;white-space:nowrap;}
+  .btn-add:hover{border-color:var(--main);}
+
+  textarea{width:100%;min-height:64px;font-family:inherit;font-size:12.5px;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical;line-height:1.6;}
+  textarea:focus{outline:none;border-color:var(--main);}
+  .fld-lab{font-size:11px;font-weight:800;color:var(--gray);margin:14px 0 6px;}
+  .expire{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--amber-soft);border:1px solid #edd9a8;border-radius:10px;padding:10px 13px;font-size:11.5px;color:#6f5a1e;line-height:1.6;margin-top:14px;}
+  .expire b{font-weight:800;color:var(--amber);}
+  .send-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
+  .btn-send{flex:1;min-width:180px;border:none;background:var(--main);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;border-radius:11px;padding:13px 18px;cursor:pointer;}
+  .btn-send:hover{filter:brightness(.94);}
+  .btn-ghost{border:1.5px solid var(--line);background:#fff;color:var(--gray);font-family:inherit;font-size:12.5px;font-weight:700;border-radius:11px;padding:13px 18px;cursor:pointer;}
+  .btn-ghost:hover{border-color:var(--main);color:var(--main);}
+  .empty{text-align:center;padding:40px 20px;color:var(--gray-light);font-size:12.5px;line-height:1.8;}
+
+  /* 학습자 화면 */
+  .student-view{display:none;flex-direction:column;align-items:center;gap:14px;}
+  .dev-toggle{display:flex;background:#fff;border:1px solid var(--line);border-radius:24px;padding:3px;}
+  .dev-toggle button{border:none;background:transparent;font-size:12px;font-weight:700;color:var(--gray);padding:7px 16px;border-radius:20px;cursor:pointer;font-family:inherit;}
+  .dev-toggle button.active{background:var(--navy);color:#fff;}
+  .phone{width:430px;height:932px;background:#fff;border:10px solid #1a1d24;border-radius:44px;overflow:hidden;box-shadow:0 12px 40px rgba(27,42,74,.18);display:flex;flex-direction:column;}
+  .phone-head{display:flex;border-bottom:1px solid var(--line);flex:none;}
+  .ph-tab{flex:1;text-align:center;font-size:12.5px;font-weight:800;padding:13px 0;color:var(--main);border-bottom:2px solid var(--main);}
+  .phone-body{padding:16px;flex:1;overflow-y:auto;background:var(--bg-soft);}
+  .stu-pc{display:none;width:100%;max-width:1000px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+  .stu-pc-head{display:flex;border-bottom:1px solid var(--line);background:#fff;}
+  .stu-pc-tab{font-size:13px;font-weight:800;padding:14px 22px;color:var(--main);border-bottom:2px solid var(--main);}
+  .stu-pc-body{padding:20px;background:var(--bg-soft);}
+
+  .s-hero{background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:12px;}
+  .s-hero .sh-t{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.45;}
+  .s-hero .sh-t b{color:var(--main);}
+  .s-hero .sh-d{font-size:11.5px;color:var(--gray);margin-top:7px;line-height:1.65;}
+  .s-dday{display:inline-flex;align-items:center;gap:6px;background:var(--amber-soft);color:var(--amber);font-size:11px;font-weight:800;border-radius:8px;padding:5px 10px;margin-top:10px;}
+  .s-guide{font-size:11.5px;color:var(--gray);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:10px 13px;margin-bottom:12px;line-height:1.65;}
+
+  .s-pk{background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:11px;}
+  .s-pk.pick{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
+  .s-pk.dead{background:#fafbfc;border-style:dashed;}
+  .s-pk .sp-badge{display:inline-block;font-size:10px;font-weight:800;border-radius:7px;padding:3px 8px;margin-bottom:8px;background:var(--soft);color:var(--main);}
+  .s-pk.dead .sp-badge{background:var(--bg-soft);color:var(--gray-light);}
+  .s-pk .sp-nm{font-size:15px;font-weight:800;letter-spacing:-.3px;line-height:1.4;}
+  .s-pk .sp-compo{font-size:12px;color:var(--gray);margin-top:5px;}
+  .s-pk .sp-when{font-size:11.5px;color:var(--gray);margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);line-height:1.7;}
+  .s-pk .sp-when b{color:var(--ink);font-weight:800;}
+  .s-cta{width:100%;margin-top:12px;border:none;background:var(--main);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;border-radius:10px;padding:13px;cursor:pointer;}
+  .s-cta:hover{filter:brightness(.94);}
+  .s-cta.dead{background:#fff;color:var(--gray);border:1.5px solid var(--line);cursor:default;}
+  .s-note{font-size:11px;color:var(--gray-light);text-align:center;margin-top:6px;line-height:1.6;}
+  .s-comment{background:var(--soft);border:1px solid var(--mid);border-radius:11px;padding:12px 14px;font-size:12px;color:#2f5f77;line-height:1.7;margin-bottom:12px;}
+  .s-comment b{display:block;font-size:11px;font-weight:800;color:var(--navy);margin-bottom:5px;}
+  .s-ask{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;text-align:center;font-size:11.5px;color:var(--gray);line-height:1.7;}
+  .s-ask b{display:block;font-size:13px;color:var(--ink);margin-bottom:5px;}
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+  @media(max-width:900px){
+    .sl-items{grid-template-columns:1fr;}
+    .pc-grid{grid-template-columns:1fr;}
+    .phone{width:100%;max-width:430px;height:760px;}
+  }
+</style>
+</head>
+<body>
+<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="proposal.html" class="gnb-item act">원클릭 제안</a><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">설계 결과 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
+
+<div class="wrap">
+
+  <div class="lay-note">
+    <div class="ln-head">
+      <span class="ln-tag">기획설명</span>
+      <b>원클릭 제안 - 담당자가 조립하지 않는 학습설계</b>
+      <button class="ln-tog" onclick="lnTog()" id="lnTogBtn">설명 접기</button>
+    </div>
+    <div class="ln-body" id="lnBody">
+      <div class="ln-sec shade">
+        <h4>학습설계 툴과의 분업 <span class="h4-sub">같은 목적, 다른 경로</span></h4>
+        <ul>
+          <li><b>학습설계 툴</b>(설계) - 기이수 인정부터 학기 배치까지 담당자가 <b>쌓아 올리는</b> 화면. 보유학점·자격증 케이스용</li>
+          <li><b>원클릭 제안</b>(제안) - 규칙이 만든 결과를 담당자가 <b>승인만 하는</b> 화면. 보유학점 없는 일반 케이스용</li>
+          <li>접수 건의 대다수가 후자이므로, 두 화면을 나누면 담당자 시간이 맞춤 설계에만 쓰임</li>
+        </ul>
+      </div>
+      <div class="ln-sec">
+        <h4>패키지가 출발점 <span class="h4-sub">LMS 패키지관리 데이터를 그대로 읽음</span></h4>
+        <ul>
+          <li>LMS 패키지 레코드는 <b>과정 × 개강차수</b> 단위 - 사회복지사만 451건, 전체 1,529건</li>
+          <li>구성이 같고 차수만 다른 레코드가 반복되는 구조 - <b>번호 컬럼(노출 순서)이 상품 슬롯</b> 역할</li>
+          <li>원클릭 = 분류로 좁힘 → 슬롯별로 <b>모집중 중 가장 이른 개강 1건</b>씩 집음 → 학력 규칙으로 2~3개만 남김</li>
+          <li>담당자가 보는 건 1,529건이 아니라 항상 <b>카드 2~3장</b></li>
+        </ul>
+      </div>
+      <div class="ln-sec">
+        <h4>수강료 미표시 <span class="h4-sub">2026.08.20 수시회의 결정</span></h4>
+        <ul>
+          <li>제안 화면은 <b>과목 목록만</b> 표시 - 금액은 수강신청·결제 단계에서 처음 노출</li>
+          <li>근거 - 앞단 수강료 노출이 혼란을 유발하고, 쿠폰이 결제 화면 하단에 있어 학생이 놓치는 사례 다수</li>
+          <li>LMS 상세의 과목단가·총결제금액 구조는 그대로 두고 <b>결제로 넘길 때만</b> 사용</li>
+        </ul>
+      </div>
+      <div class="ln-sec">
+        <h4>만료·마감은 기존 필드로 처리 <span class="h4-sub">신규 개발 아님</span></h4>
+        <ul>
+          <li>LMS에 <b>진행상태</b>(모집중·마감) · <b>신청노출여부</b>(노출·비노출) · <b>모집기간</b>이 이미 있음</li>
+          <li>제안 유효기간 = 선택된 개강반의 <b>모집 마감일</b> 자동 산출 - 담당자가 날짜를 입력하지 않음</li>
+          <li>마감 패키지는 학습자 화면에서 비활성 + 문의 유도 - 별도 삭제 작업 불필요</li>
+        </ul>
+      </div>
+      <div class="ln-sec">
+        <h4>학력 매핑 <span class="h4-sub">이 화면이 처음 명문화하는 규칙</span></h4>
+        <table class="ln-map">
+          <tr><th>최종학력</th><th>제안 슬롯</th><th>근거</th></tr>
+          <tr><td>고등학교 졸업</td><td><b>4</b> 전문학사 20과목 · <b>6</b> 이론 8과목</td><td>2급 요건이 전문학사 이상이라 학위가 선행</td></tr>
+          <tr><td>전문대학 졸업 이상</td><td><b>1 또는 2</b> 취득 완성 · <b>3</b> 이론 16과목 · <b>6</b> 이론 8과목</td><td>실습 포함이 기본, 실습 외부 수강이면 3번</td></tr>
+          <tr><td>공통 옵션</td><td><b>5</b> 건강가정사 병행</td><td>병행 의사 확인 시 담당자가 추가</td></tr>
+        </table>
+        <ul style="margin-top:8px;">
+          <li><b>1 vs 2</b>(수도권·전국반)는 LMS 상세의 <b>대표지역</b> 필드로 자동 결정 - 담당자 판단 사항 아님</li>
+          <li>학력 매핑만 <b>근거 문서가 없는 부분</b> - 상담사 경험으로만 돌아가던 규칙이라 상담팀 확인 필요</li>
+        </ul>
+      </div>
+      <div class="ln-foot">
+        <b>미확정</b> - 학력 매핑 값(상담팀 확인 대기, 상수 <code>RULE</code> 하나만 교체). 패키지타입 필터의 의미. 희망과정 선택지에 없는 전공(심리학 등) 안내 방식.
+      </div>
+    </div>
+  </div>
+
+  <div class="page-head">
+    <div>
+      <h1>원클릭 제안 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
+      <div class="sub">패키지 기반 제안형 학습설계 - 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
+    </div>
+    <div class="toggles">
+      <div class="vw-toggle">
+        <button id="vwAdmin" class="active" onclick="switchView('admin')">담당자 화면</button>
+        <button id="vwStu" onclick="switchView('student')">학습자 화면</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 담당자 화면 ══════════ -->
+  <div id="adminView">
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>학습설계 신청 접수</h3>
+        <span class="ph-sub">최소 4필드 - 이름 · 연락처 · 최종학력 · 희망과정</span>
+      </div>
+      <div class="panel-body" style="padding:0;">
+        <table class="apps" id="appTable"></table>
+      </div>
+    </div>
+
+    <div id="propBox"></div>
+
+  </div>
+
+  <!-- ══════════ 학습자 화면 ══════════ -->
+  <div class="student-view" id="studentView">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button class="btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="switchView('admin')">← 담당자 화면</button>
+      <div class="dev-toggle">
+        <button id="devMo" class="active" onclick="switchDevice('mo')">모바일</button>
+        <button id="devPc" onclick="switchDevice('pc')">PC</button>
+      </div>
+    </div>
+    <div class="phone" id="phoneFrame">
+      <div class="phone-head"><div class="ph-tab">학습설계 제안</div></div>
+      <div class="phone-body" id="phoneBody"></div>
+    </div>
+    <div class="stu-pc" id="stuPc">
+      <div class="stu-pc-head"><div class="stu-pc-tab">학습설계 제안</div></div>
+      <div class="stu-pc-body" id="stuPcBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   원클릭 제안 - 시연용 인메모리 데이터
+   시드는 배론 LMS 패키지관리 실데이터 기준 (2026.08.20 확인)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 과정 분류 (LMS 분류 필터) ───────────────────────── */
+const CLS = {
+  sw: {nm:"사회복지사 2급", cnt:451},
+  ko: {nm:"한국어교원 2급", cnt:0},
+};
+
+/* ── 상품 슬롯 = LMS 번호 컬럼(노출 순서) ─────────────
+   구성이 같고 차수만 다른 레코드가 반복되므로,
+   번호가 사실상 상품 축이 된다. */
+const SLOTS = {
+  sw: {
+    1:{nm:"사회복지사2급 취득 완성 패키지(수도권)", compo:"이론 16과목 + 실습 1과목", n:17, region:"수도권", key:"full"},
+    2:{nm:"사회복지사2급 취득 완성 패키지(전국반)", compo:"이론 16과목 + 실습 1과목", n:17, region:"전국",   key:"full"},
+    3:{nm:"사회복지사 이론 16과목 패키지",          compo:"이론 16과목",              n:16, key:"th16"},
+    4:{nm:"사회복지사 이론 20과목 전문학사 패키지",  compo:"이론 16과목 + 교양 4과목",  n:20, key:"deg20"},
+    5:{nm:"사회복지사 X 건강가정사 18과목 패키지",   compo:"이론 18과목",              n:18, key:"hgj18"},
+    6:{nm:"사회복지사 이론 8과목 패키지",            compo:"이론 8과목",                n:8,  key:"th8"},
+  },
+  ko: {
+    1:{nm:"한국어교원 (이론 13과목 + 실습 1과목)", compo:"이론 13과목 + 실습 1과목", n:14, key:"kofull"},
+    2:{nm:"한국어교원 (이론 13과목)",              compo:"이론 13과목",              n:13, key:"koth"},
+  },
+};
+
+/* ── 패키지 레코드 = 분류 × 슬롯 × 차수 ──────────────
+   id·차수·개강반·모집기간·진행상태 모두 LMS 실값 */
+const PKGS = [
+  /* 사회복지사 26-2-8차 - 모집중 */
+  {id:4631, cls:"sw", no:1, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4632, cls:"sw", no:2, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4630, cls:"sw", no:3, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4634, cls:"sw", no:4, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4635, cls:"sw", no:5, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4633, cls:"sw", no:6, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  /* 사회복지사 26-2-7차 - 5번만 마감 (LMS 실값) */
+  {id:4628, cls:"sw", no:1, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4627, cls:"sw", no:2, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4629, cls:"sw", no:3, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4625, cls:"sw", no:4, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4624, cls:"sw", no:5, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"마감",   opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  {id:4626, cls:"sw", no:6, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
+  /* 사회복지사 26-2-5차 - 전량 마감 */
+  {id:4601, cls:"sw", no:1, batch:"26-2-5차", apply:["26.06.18","26.08.13"], status:"마감", opens:["2026년 2학기 8/14개강반","2027년 1학기 12/18개강반","2027년 2학기 5/28개강반"]},
+  {id:4602, cls:"sw", no:3, batch:"26-2-5차", apply:["26.06.18","26.08.13"], status:"마감", opens:["2026년 2학기 8/14개강반","2027년 1학기 12/18개강반","2027년 2학기 5/28개강반"]},
+  /* 한국어교원 */
+  {id:4653, cls:"ko", no:1, batch:"26-2-8차", apply:["26.08.19","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 1/22개강반"]},
+  {id:4644, cls:"ko", no:2, batch:"26-2-8차", apply:["26.08.10","26.09.16"], status:"마감",   opens:["2026년 2학기 9/17개강반","2027년 1학기 1/22개강반"]},
+];
+
+/* ── 개강반별 과목 구성 ──────────────────────────────
+   LMS 상세는 개강반 단위로 과목이 나뉜다 (한 학기분).
+   여기서는 슬롯 key별로 학기 묶음을 둔다. */
+const SUBJ = {
+  full:[
+    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
+    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
+    {t:"3학기 · 선택 4과목 + 현장실습", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론","사회복지현장실습"]},
+  ],
+  th16:[
+    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
+    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
+    {t:"3학기 · 선택 4과목", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론"]},
+  ],
+  deg20:[
+    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
+    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
+    {t:"3학기 · 선택 4과목 + 교양 4과목", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론","대학영어","현대사회와윤리","인간관계론","심리학개론"]},
+  ],
+  hgj18:[
+    {t:"1학기 · 공통 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","가족복지론","가족상담및가족치료","건강가정론"]},
+    {t:"2학기 · 공통 6과목", s:["사회복지실천기술론","사회복지정책론","사회복지조사론","가족생활교육","아동복지론","노인복지론"]},
+    {t:"3학기 · 공통 6과목", s:["사회복지법제와실천","사회복지행정론","지역사회복지론","가족정책론","가정생활복지론","프로그램개발과평가"]},
+  ],
+  th8:[
+    {t:"1학기 · 이론 8과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천","사회복지실천기술론","사회복지행정론"]},
+  ],
+  kofull:[
+    {t:"1학기 · 이론 7과목", s:["외국어로서의한국어교육개론","외국어로서의한국어어휘교육론","외국어로서의한국어표현교육론","외국어로서의한국어학개론","한국의미론","외국어로서의한국어이해교육론","외국어로서의한국어문법교육론"]},
+    {t:"2학기 · 이론 6과목 + 실습", s:["대조언어학","언어학개론","외국어로서의언어교수이론","외국어로서의한국어발음교육론","한국문화교육론","외국어로서의한국어평가론","외국어로서의한국어교육실습"]},
+  ],
+  koth:[
+    {t:"1학기 · 이론 7과목", s:["외국어로서의한국어교육개론","외국어로서의한국어어휘교육론","외국어로서의한국어표현교육론","외국어로서의한국어학개론","한국의미론","외국어로서의한국어이해교육론","외국어로서의한국어문법교육론"]},
+    {t:"2학기 · 이론 6과목", s:["대조언어학","언어학개론","외국어로서의언어교수이론","외국어로서의한국어발음교육론","한국문화교육론","외국어로서의한국어평가론"]},
+  ],
+};
+
+/* ── 학력 → 추천 슬롯 매핑 ───────────────────────────
+   ★ 근거 문서 없음 - 상담팀 확인 대기. 이 상수만 교체하면 규칙이 바뀐다. */
+const RULE = {
+  sw: {
+    /* 지역 슬롯(1 수도권 / 2 전국반)은 쌍으로 넣고 resolveRegion이 하나만 남긴다.
+       한쪽만 적으면 반대 지역 신청자가 취득 완성 패키지를 못 받는다. */
+    "고등학교 졸업":     {slots:[4,6],     why:"2급 요건이 전문학사 이상이라 학위가 선행"},
+    "전문대학 졸업":     {slots:[1,2,3,6], why:"학위 요건 충족 - 실습 포함 취득 완성이 기본"},
+    "대학교 졸업":       {slots:[1,2,3,6], why:"학위 요건 충족 - 실습 포함 취득 완성이 기본"},
+  },
+  ko: {
+    "대학교 졸업":       {slots:[1,2], why:"이론 + 실습 완성과 이론 단독을 함께 제시"},
+    "전문대학 졸업":     {slots:[1,2], why:"이론 + 실습 완성과 이론 단독을 함께 제시"},
+  },
+  /* 병행 옵션 - 자동 제안에서는 빠지고 담당자가 추가 */
+  optional: {sw:[5], ko:[]},
+};
+
+/* ── 신청 접수 (LMS 신청 폼 최소 4필드) ─────────────── */
+const APPS = [
+  {id:"a1", dt:"08.20", nm:"김OO", tel:"010-1234-5678", edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new"},
+  {id:"a2", dt:"08.20", nm:"이OO", tel:"010-2345-6789", edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"new"},
+  {id:"a3", dt:"08.19", nm:"박OO", tel:"010-3456-7890", edu:"대학교 졸업",   cls:"ko", region:"전국",   st:"new"},
+  {id:"a4", dt:"08.19", nm:"최OO", tel:"010-4567-8901", edu:"전문대학 졸업", cls:"sw", region:"전국",   st:"sent"},
+];
+
+/* ══════════════════════════════════════════════════════════
+   상태
+   ══════════════════════════════════════════════════════════ */
+let curApp = null;      // 선택된 접수 건
+let picks = [];         // 제안안 카드 [{no, pkgId, open, on}]
+let view = "admin";
+let device = "mo";
+let sent = null;        // 발송된 제안 (학습자 화면 소스)
+let stuPick = null;     // 학습자가 고른 카드
+
+/* ══════════════════════════════════════════════════════════
+   원클릭 - 규칙으로 제안안 생성
+   ══════════════════════════════════════════════════════════ */
+
+/* 슬롯별로 "모집중 중 가장 이른 개강" 1건을 집는다.
+   차수 번호가 클수록 최신 = 개강이 늦다. 모집중 중 가장 작은 차수가 가장 이른 개강. */
+function pickPkg(cls, no){
+  const cands = PKGS.filter(p => p.cls===cls && p.no===no && p.status==="모집중");
+  if(!cands.length) return null;
+  return cands.sort((a,b) => a.batch.localeCompare(b.batch))[0];
+}
+
+/* 지역 슬롯(1 vs 2)은 접수 건의 대표지역으로 자동 결정 */
+function resolveRegion(cls, slots, region){
+  const has = slots.some(n => SLOTS[cls][n] && SLOTS[cls][n].region);
+  if(!has) return slots;
+  return slots.filter(n => {
+    const s = SLOTS[cls][n];
+    return !s.region || s.region===region;
+  });
+}
+
+function oneClick(appId){
+  const app = APPS.find(a => a.id===appId);
+  if(!app) return;
+  curApp = app;
+  const rule = (RULE[app.cls]||{})[app.edu];
+  let slots = rule ? rule.slots.slice() : Object.keys(SLOTS[app.cls]).map(Number);
+  slots = resolveRegion(app.cls, slots, app.region);
+
+  picks = slots.map(no => {
+    const pkg = pickPkg(app.cls, no);
+    return pkg ? {no, pkgId:pkg.id, open:pkg.opens[0], on:true} : null;
+  }).filter(Boolean);
+
+  renderApps();
+  renderProp();
+  document.getElementById("propBox").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function addSlot(no){
+  const pkg = pickPkg(curApp.cls, no);
+  if(!pkg){ alert("이 슬롯은 현재 모집중인 개강차수가 없음\n· 다음 차수 등록 후 자동으로 나타남"); return; }
+  picks.push({no, pkgId:pkg.id, open:pkg.opens[0], on:true});
+  renderProp();
+}
+
+function togPick(i){ picks[i].on = !picks[i].on; renderProp(); }
+function setOpen(i, v){ picks[i].open = v; renderProp(); }
+function togSubj(i){ document.getElementById("sl"+i).classList.toggle("open"); }
+
+/* ══════════════════════════════════════════════════════════
+   렌더 - 담당자 화면
+   ══════════════════════════════════════════════════════════ */
+function renderApps(){
+  const rows = APPS.map(a => {
+    const on = curApp && curApp.id===a.id;
+    const btn = a.st==="sent"
+      ? `<button class="btn-one done" onclick="viewSent('${a.id}')">제안 완료 · 보기</button>`
+      : `<button class="btn-one" onclick="oneClick('${a.id}')">원클릭 제안</button>`;
+    const pill = a.st==="sent"
+      ? `<span class="st-pill sent">발송 08.19</span>`
+      : `<span class="st-pill new">접수</span>`;
+    return `<tr class="${on?"sel":""}">
+      <td style="color:var(--gray-light);font-size:11.5px;">${a.dt}</td>
+      <td class="nm">${a.nm}</td>
+      <td class="tel">${a.tel}</td>
+      <td>${a.edu}</td>
+      <td>${CLS[a.cls].nm}</td>
+      <td>${pill}</td>
+      <td style="text-align:right;">${btn}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("appTable").innerHTML =
+    `<tr><th>신청일</th><th>이름</th><th>연락처</th><th>최종학력</th><th>희망과정</th><th>상태</th><th></th></tr>${rows}`;
+}
+
+function expireOf(){
+  /* 유효기간 = 선택된 카드들 중 가장 이른 모집 마감일 */
+  const ons = picks.filter(p => p.on);
+  if(!ons.length) return null;
+  const ds = ons.map(p => PKGS.find(x => x.id===p.pkgId).apply[1]).sort();
+  return ds[0];
+}
+
+function renderProp(){
+  const box = document.getElementById("propBox");
+  if(!curApp){ box.innerHTML = ""; return; }
+
+  const cls = curApp.cls;
+  const rule = (RULE[cls]||{})[curApp.edu];
+  const usedNos = picks.map(p => p.no);
+  const optNos = (RULE.optional[cls]||[]).filter(n => !usedNos.includes(n));
+
+  const cards = picks.map((p, i) => {
+    const s = SLOTS[cls][p.no];
+    const pkg = PKGS.find(x => x.id===p.pkgId);
+    const opts = pkg.opens.map(o => `<option value="${o}" ${o===p.open?"selected":""}>${o}</option>`).join("");
+    const subj = (SUBJ[s.key]||[]).map(g =>
+      `<div class="sl-grp">${g.t}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+    ).join("");
+    return `<div class="pk ${p.on?"on":"off"}">
+      <div class="pk-head" onclick="togPick(${i})">
+        <div class="pk-chk">${p.on?"✓":""}</div>
+        <div class="pk-main">
+          <div><span class="pk-no">노출 ${p.no}</span><span class="pk-nm">${s.nm}</span></div>
+          <div class="pk-compo">${s.compo} · 총 ${s.n}과목</div>
+          <div class="pk-meta">
+            <span class="mt id">id ${pkg.id}</span>
+            <span class="mt">${pkg.batch}</span>
+            <span class="mt ok">${pkg.status}</span>
+            <span class="mt">모집 ${pkg.apply[0]} ~ ${pkg.apply[1]}</span>
+          </div>
+        </div>
+      </div>
+      <div class="pk-sub">
+        <div class="pk-row">
+          <label>개강반</label>
+          <select class="pk-sel" onchange="setOpen(${i}, this.value)">${opts}</select>
+          <button class="subj-tog" onclick="togSubj(${i})">과목 ${s.n}개 보기</button>
+        </div>
+        <div class="subj-list" id="sl${i}">${subj}
+          <div class="no-price">수강료는 이 화면에 표시하지 않음 - 학습자가 패키지를 고른 뒤 수강신청 단계에서 안내</div>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  const exclHtml = optNos.length ? `<div class="excl">
+    <div class="et">규칙에서 제외된 슬롯 - 필요 시 담당자가 추가</div>
+    ${optNos.map(n => `<div class="excl-item">
+      <span class="pk-no">노출 ${n}</span><b>${SLOTS[cls][n].nm}</b>
+      <button class="btn-add" onclick="addSlot(${n})">＋ 제안에 추가</button>
+    </div>`).join("")}
+  </div>` : "";
+
+  const exp = expireOf();
+  const onCnt = picks.filter(p => p.on).length;
+
+  box.innerHTML = `<div class="panel">
+    <div class="panel-head">
+      <h3>제안안</h3>
+      <span class="ph-sub">규칙이 생성 - 담당자는 확인·발송만</span>
+      <div class="right"><span class="auto-tag">자동 생성</span></div>
+    </div>
+    <div class="panel-body">
+      <div class="prop-lead">
+        <div class="pl-main">
+          <div class="pl-t">${curApp.nm} · ${curApp.edu} · ${CLS[cls].nm}</div>
+          <div class="pl-d">
+            ${CLS[cls].cnt ? `분류 <b>${CLS[cls].nm}</b> ${CLS[cls].cnt}건 중 슬롯별 <b>모집중 최이른 개강</b> 1건씩 선별 → 학력 규칙으로 <b>${picks.length}개</b> 제안<br>` : ""}
+            추천 근거 - ${rule ? rule.why : "학력 규칙 미정의 · 전체 슬롯 노출"}
+            ${SLOTS[cls][picks[0]?.no]?.region ? `<br>지역 슬롯은 접수 대표지역 <b>${curApp.region}</b> 기준 자동 선택` : ""}
+          </div>
+        </div>
+      </div>
+
+      ${cards || `<div class="empty">모집중인 패키지 없음</div>`}
+      ${exclHtml}
+
+      <div class="fld-lab">담당자 코멘트 <span style="font-weight:600;color:var(--gray-light);">선택 - 비워도 발송 가능</span></div>
+      <textarea id="cmt" placeholder="예) 실습을 타 기관에서 수강하실 예정이면 두 번째 구성이 적합">${curApp.edu==="고등학교 졸업" ? "전문학사 학위와 자격증을 함께 취득하는 구성으로 제안드림 - 학위 없이는 2급 신청이 불가한 점 참고 부탁" : ""}</textarea>
+
+      <div class="expire">
+        <b>유효기간 자동</b>
+        ${exp ? `선택한 개강반의 모집 마감일 <b>20${exp.replace(/\./g,".")}</b> 기준 자동 만료 - 담당자가 날짜를 입력하지 않음` : "선택된 패키지 없음"}
+      </div>
+
+      <div class="send-row">
+        <button class="btn-send" onclick="send()">제안 발송 (${onCnt}개 구성)</button>
+        <button class="btn-ghost" onclick="cancelProp()">취소</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function cancelProp(){ curApp = null; picks = []; renderApps(); renderProp(); }
+
+function send(){
+  const ons = picks.filter(p => p.on);
+  if(!ons.length){ alert("제안할 구성을 최소 1개 선택"); return; }
+  sent = {app:curApp, picks:ons.slice(), cmt:(document.getElementById("cmt")||{}).value||"", exp:expireOf()};
+  stuPick = null;
+  const a = APPS.find(x => x.id===curApp.id);
+  if(a) a.st = "sent";
+  alert("제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이후 패키지가 변경돼도 발송본은 불변\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 학습자에게 알림톡 발송");
+  switchView("student");
+}
+
+/* 이미 발송된 제안을 다시 여는 경로.
+   발송 시점 스냅샷이라 그 사이 마감된 패키지가 섞일 수 있다 -
+   학습자 화면의 마감·문의 유도는 이 경로에서만 발생한다. */
+function viewSent(appId){
+  const app = APPS.find(a => a.id===appId);
+  const snap = [
+    {no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
+    {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},   /* 발송 후 마감된 건 */
+    {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true},
+  ].filter(p => PKGS.some(x => x.id===p.pkgId));
+  sent = {app, picks:snap, cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음", exp:"26.09.09"};
+  stuPick = null;
+  switchView("student");
+}
+
+/* ══════════════════════════════════════════════════════════
+   렌더 - 학습자 화면
+   ══════════════════════════════════════════════════════════ */
+function ddayText(exp){
+  if(!exp) return "";
+  const [y,m,d] = exp.split(".").map(Number);
+  const end = new Date(2000+y, m-1, d);
+  const now = new Date(2026, 7, 20);   /* 시연 기준일 고정 */
+  const n = Math.round((end-now)/86400000);
+  return n >= 0 ? `신청 마감 D-${n} · 20${exp} 까지` : `신청 기간 종료`;
+}
+
+function stuCards(pcMode){
+  return sent.picks.map((p, i) => {
+    const s = SLOTS[sent.app.cls][p.no];
+    const pkg = PKGS.find(x => x.id===p.pkgId);
+    const dead = pkg.status === "마감";
+    const pick = stuPick === i;
+    const subj = (SUBJ[s.key]||[]).map(g =>
+      `<div class="sl-grp">${g.t}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+    ).join("");
+    return `<div class="s-pk ${dead?"dead":""} ${pick?"pick":""}">
+      <span class="sp-badge">${dead?"이번 차수 마감":(i===0?"추천":"선택 가능")}</span>
+      <div class="sp-nm">${s.nm}</div>
+      <div class="sp-compo">${s.compo} · 총 ${s.n}과목</div>
+      <div class="sp-when">
+        개강 <b>${p.open}</b><br>
+        신청 마감 <b>20${pkg.apply[1]}</b>
+      </div>
+      <button class="subj-tog" style="margin-top:10px;width:100%;padding:9px;" onclick="stuTog(${i})">과목 ${s.n}개 ${pcMode?"":"자세히 "}보기</button>
+      <div class="subj-list" id="ssl${pcMode?"p":"m"}${i}">${subj}</div>
+      ${dead
+        ? `<button class="s-cta dead">마감 - 다음 개강 문의</button><div class="s-note">이 구성은 다음 차수 등록 후 다시 신청 가능</div>`
+        : `<button class="s-cta" onclick="stuGo(${i})">이 구성으로 수강신청 →</button><div class="s-note">수강료는 다음 화면에서 확인</div>`}
+    </div>`;
+  }).join("");
+}
+
+function stuTog(i){
+  const el = document.getElementById((device==="pc"?"sslp":"sslm")+i);
+  if(el) el.classList.toggle("open");
+}
+
+function stuGo(i){
+  stuPick = i;
+  const s = SLOTS[sent.app.cls][sent.picks[i].no];
+  alert(`수강신청으로 이동 (시연)\n· ${s.nm}\n· ${sent.picks[i].open}\n· 이 화면에서 처음으로 수강료 노출\n· 유의사항·수업계획서·쿠폰이 결제 전 같은 화면에 통합`);
+  renderStudent();
+}
+
+function renderStudent(){
+  const mo = document.getElementById("phoneBody");
+  const pc = document.getElementById("stuPcBody");
+  if(!sent){
+    const empty = `<div class="empty">발송된 제안 없음<br>담당자 화면에서 <b>원클릭 제안</b>을 실행</div>`;
+    mo.innerHTML = empty; pc.innerHTML = empty; return;
+  }
+  const app = sent.app;
+  const head = `
+    <div class="s-hero">
+      <div class="sh-t"><b>${app.nm}</b>님께 맞는<br>학습 구성 <b>${sent.picks.length}가지</b>를 준비했습니다</div>
+      <div class="sh-d">${app.edu} · ${CLS[app.cls].nm} 기준 - 원하는 구성을 골라 바로 신청 가능</div>
+      <div class="s-dday">⏱ ${ddayText(sent.exp)}</div>
+    </div>
+    ${sent.cmt ? `<div class="s-comment"><b>담당자 코멘트</b>${sent.cmt}</div>` : ""}
+    <div class="s-guide">구성마다 <b>과목 목록과 개강일</b>이 다름 - 과목을 먼저 확인하고 고르면 됨. 수강료는 신청 화면에서 안내</div>`;
+  const foot = `<div class="s-ask"><b>어떤 구성이 맞을지 모르겠다면</b>담당자에게 문의 - 평일 09:00 ~ 18:00<br>1544-0000</div>`;
+
+  mo.innerHTML = head + stuCards(false) + foot;
+  pc.innerHTML = head + `<div class="pc-grid">${stuCards(true)}</div>` + `<div style="margin-top:12px;">${foot}</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   전환
+   ══════════════════════════════════════════════════════════ */
+function switchView(v){
+  view = v;
+  document.getElementById("adminView").style.display = v==="admin" ? "block" : "none";
+  document.getElementById("studentView").style.display = v==="admin" ? "none" : "flex";
+  document.getElementById("vwAdmin").classList.toggle("active", v==="admin");
+  document.getElementById("vwStu").classList.toggle("active", v!=="admin");
+  if(v!=="admin") renderStudent();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function switchDevice(d){
+  device = d;
+  document.getElementById("phoneFrame").style.display = d==="mo" ? "flex" : "none";
+  document.getElementById("stuPc").style.display = d==="pc" ? "block" : "none";
+  document.getElementById("devMo").classList.toggle("active", d==="mo");
+  document.getElementById("devPc").classList.toggle("active", d==="pc");
+  renderStudent();
+}
+
+function lnTog(){
+  const b = document.getElementById("lnBody"), t = document.getElementById("lnTogBtn");
+  const open = b.style.display !== "none";
+  b.style.display = open ? "none" : "block";
+  t.textContent = open ? "설명 펼치기" : "설명 접기";
+}
+
+/* ══════════════════════════════════════════════════════════
+   초기화
+   ══════════════════════════════════════════════════════════ */
+renderApps();
+renderProp();
+if(new URLSearchParams(location.search).get("view") === "student"){
+  viewSent("a4");
+}
+</script>
+</body>
+</html>
