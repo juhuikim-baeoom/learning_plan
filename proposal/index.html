@@ -30,6 +30,7 @@
 
   /* 기획설명 - 시연 전용 주석. 브랜드 블루와 의도적으로 다른 앰버 톤 */
   .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:0 0 16px;}
+  .lay-note.fold .ln-head{border-bottom:none;}
   .ln-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #f2e0ac;}
   .ln-tag{background:#e0a71e;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.02em;}
   .ln-head b{font-size:13.5px;font-weight:800;color:#8a6212;}
@@ -185,13 +186,13 @@
 
 <div class="wrap">
 
-  <div class="lay-note">
+  <div class="lay-note fold" id="layNote">
     <div class="ln-head">
       <span class="ln-tag">기획설명</span>
       <b>원클릭 제안 - 담당자가 조립하지 않는 학습설계</b>
-      <button class="ln-tog" onclick="lnTog()" id="lnTogBtn">설명 접기</button>
+      <button class="ln-tog" onclick="lnTog()" id="lnTogBtn">설명 펼치기</button>
     </div>
-    <div class="ln-body" id="lnBody">
+    <div class="ln-body" id="lnBody" style="display:none">
       <div class="ln-sec shade">
         <h4>학습설계 툴과의 분업 <span class="h4-sub">같은 목적, 다른 경로</span></h4>
         <ul>
@@ -726,6 +727,7 @@ function lnTog(){
   const open = b.style.display !== "none";
   b.style.display = open ? "none" : "block";
   t.textContent = open ? "설명 펼치기" : "설명 접기";
+  document.getElementById("layNote").classList.toggle("fold", open);
 }
 
 /* ══════════════════════════════════════════════════════════
