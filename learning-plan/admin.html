@@ -224,13 +224,13 @@
 </style>
 </head>
 <body>
-<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item act">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">학생 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
+<div class="gnb"><a href="index.html" class="gnb-logo">(주)배움 학습설계 시스템</a><nav class="gnb-nav"><a href="builder.html" class="gnb-item">학습설계 툴</a><a href="admin.html" class="gnb-item act">설계보조도구</a><a href="builder.html?view=student" class="gnb-item">설계 결과 화면</a><a href="learner.html" class="gnb-item">학습자 메뉴</a></nav><span class="gnb-tag">1단계 시연</span></div>
 <div class="wrap">
 
   <div class="page-head">
     <div>
       <h1>설계보조도구 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
-      <div class="sub">기존 LMS 사이드바에는 "설계보조도구" 1개만 추가 — 하위 요소는 도구 안 상단 탭으로 배치 (사이드바 중첩 없음)</div>
+      <div class="sub">기존 LMS 사이드바에는 "설계보조도구" 1개만 추가 - 하위 요소는 도구 안 상단 탭으로 배치 (사이드바 중첩 없음)</div>
     </div>
 
   </div>
@@ -255,7 +255,7 @@
         <div class="panel-head">
           <div>
             <h2>설계 목록</h2>
-            <div class="desc">접수부터 만료까지 한 목록에서 관리 — 접수 건은 빌더 미작성 설계 건으로 통합(별도 접수 메뉴 없음). 발송본은 수정 불가, 변경은 [새 버전]으로. 학습자는 LMS 학습설계 메뉴에서 유효기간 내 최신 발송본 확인</div>
+            <div class="desc">접수부터 만료까지 한 목록에서 관리 - 접수 건은 빌더 미작성 설계 건으로 통합(별도 접수 메뉴 없음). 발송본은 수정 불가, 변경은 [새 버전]으로. 학습자는 LMS 학습설계 메뉴에서 유효기간 내 최신 발송본 확인</div>
           </div>
           <button class="btn-pri" onclick="goBuilder()">+ 새 설계 작성</button>
         </div>
@@ -267,29 +267,29 @@
           <button class="tab" onclick="listFilter(this,'expired')">만료 <span class="n">1</span></button>
         </div>
         <div class="row" data-st="req"><span class="name">정OO · 보육교사 2급 <span class="tb wait">접수</span></span><span class="meta">신청 07.06 09:12 · 보유학점 있음 · 성적증명서 1건 · 담당 미배정 · SLA 영업일 1일</span><span class="acts"><button class="btn-line" onclick="alert('담당자 지정 (시연)')">담당 지정</button><button class="btn-pri" style="padding:8px 14px" onclick="goBuilder()">설계 시작</button></span></div>
-        <div class="row" data-st="sent"><span class="name">김OO · 사회복지사 2급 <span class="tb team">v2 발송</span></span><span class="meta">발송 06.20 · 유효 07.10까지 · <b style="color:var(--green)">열람 06.21</b> · 담당 김주희</span><span class="tb pkg">유효 D-7</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">학생 화면</button><button class="btn-line" onclick="alert('변경 로그 (시연)\n06.20 김주희 — v2 발송\n06.18 김주희 — v1 복사 → v2 작업본\n03.15 박OO — v1 발송 (담당 변경 06.01)')">이력</button></span></div>
+        <div class="row" data-st="sent"><span class="name">김OO · 사회복지사 2급 <span class="tb team">v2 발송</span></span><span class="meta">발송 06.20 · 유효 07.10까지 · <b style="color:var(--green)">열람 06.21</b> · 담당 김주희</span><span class="tb pkg">유효 D-7</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">설계 결과 화면</button><button class="btn-line" onclick="alert('변경 로그 (시연)\n06.20 김주희 - v2 발송\n06.18 김주희 - v1 복사 → v2 작업본\n03.15 박OO - v1 발송 (담당 변경 06.01)')">이력</button></span></div>
         <div class="row" data-st="draft"><span class="name">이OO · 한국어교원 2급 <span class="tb state">v1 임시저장</span><span class="tb wait">9일 경과</span></span><span class="meta">최종 수정 06.24 · 담당 박OO · 발송 전 비노출</span><span class="acts"><button class="btn-line" onclick="goBuilder()">이어서 작성</button><button class="btn-line">이력</button></span></div>
-        <div class="row" data-st="sent"><span class="name">박OO · 경영학사 <span class="tb team">v3 발송</span><span class="tb wait">미열람</span></span><span class="meta">발송 06.28 · 유효 07.28까지 · 담당 김주희 · 이전 버전 2건 — 미열람 시 팔로업 콜 대상</span><span class="tb pkg">유효 D-25</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">학생 화면</button><button class="btn-line">이력</button></span></div>
+        <div class="row" data-st="sent"><span class="name">박OO · 경영학사 <span class="tb team">v3 발송</span><span class="tb wait">미열람</span></span><span class="meta">발송 06.28 · 유효 07.28까지 · 담당 김주희 · 이전 버전 2건 - 미열람 시 팔로업 콜 대상</span><span class="tb pkg">유효 D-25</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전</button><button class="btn-line" onclick="goStudent()">설계 결과 화면</button><button class="btn-line">이력</button></span></div>
         <div class="row" data-st="expired" style="opacity:.65"><span class="name">최OO · 사회복지사 2급 <span class="tb struct">v1 만료</span></span><span class="meta">발송 05.02 · 열람 05.10 · 유효기간 만료 06.01 · 담당 김주희 · 결제 비활성 (E2)</span><span class="acts"><button class="btn-line" onclick="goBuilder()">새 버전으로 재설계</button><button class="btn-line">이력</button></span></div>
-        <div class="footer-hint">임시저장 N일 경과 건은 주황 뱃지로 표시 (E8 — 기준 일수는 운영 설정에서). 담당자 변경은 이력에 자동 기록 (E10). 학생 노출은 토글이 아닌 유효기간 규칙으로 자동 제어 — 새 버전 발송 시 이전 버전 자동 대체, 만료 시 결제 비활성(E2). 열람 로그: 학습자가 LMS 학습설계 메뉴에서 해당 설계를 연 시점 자동 기록 — 발송→열람→결제 퍼널 지표</div>
+        <div class="footer-hint">임시저장 N일 경과 건은 주황 뱃지로 표시 (E8 - 기준 일수는 운영 설정에서). 담당자 변경은 이력에 자동 기록 (E10). 학습자 노출은 토글이 아닌 유효기간 규칙으로 자동 제어 - 새 버전 발송 시 이전 버전 자동 대체, 만료 시 결제 비활성(E2). 열람 로그: 학습자가 LMS 학습설계 메뉴에서 해당 설계를 연 시점 자동 기록 - 발송→열람→결제 퍼널 지표</div>
       </div>
 
-      <!-- ===== 학생 화면 문구 관리 ===== -->
+      <!-- ===== 설계 결과 화면 문구 관리 ===== -->
       <div class="panel hidden" id="viewCopy">
         <div class="panel-head">
           <div>
-            <h2>학생 화면 문구 관리</h2>
-            <div class="desc">문구를 3층으로 나눠 관리 — 학생 화면에서는 개인 맞춤 → 과정 기본 → 학점은행제 기본 순으로 조립됩니다</div>
+            <h2>설계 결과 화면 문구 관리</h2>
+            <div class="desc">문구를 3층으로 나눠 관리 - 설계 결과 화면에서는 개인 맞춤 → 과정 기본 → 학점은행제 기본 순으로 조립됩니다</div>
           </div>
         </div>
         <div class="readonly-bar">조립 순서: <b>① 개인 맞춤 (담당자 코멘트)</b> 설계 본문 하단 → <b>② 과정 기본</b> 과정 안내 → <b>③ 학점은행제 기본</b> 최하단 공통 유의사항. 발송 시 세 층 모두 스냅샷에 고정됩니다</div>
 
         <div class="copy-sec">
-          <div class="copy-head"><h3>학점은행제 기본 <span class="tb pkg">전 과정 공통</span></h3><span class="copy-sub">법·제도 관련 고정 유의사항 — 수정 시 이후 발송분부터 적용</span></div>
+          <div class="copy-head"><h3>학점은행제 기본 <span class="tb pkg">전 과정 공통</span></h3><span class="copy-sub">법·제도 관련 고정 유의사항 - 수정 시 이후 발송분부터 적용</span></div>
           <div class="copy-item"><label>가격·유효기간 안내</label><textarea>본 설계 금액은 유효기간 내 결제 시 보장되며, 만료 후에는 재설계 기준가가 적용됩니다.</textarea></div>
           <div class="copy-item"><label>연간 이수학점 유의</label><textarea>학점은행제는 연간 최대 42학점까지 이수 가능합니다. 타기관 수강분을 신고하지 않은 경우 초과 여부를 확인할 수 없으니 유의 바랍니다.</textarea></div>
           <div class="copy-item"><label>기이수 인정 고지</label><textarea>기이수 인정 내역은 제출하신 성적증명서를 기준으로 하며, 국가평생교육진흥원 심사 결과에 따라 달라질 수 있습니다.</textarea></div>
-          <div class="copy-save"><button class="btn-line" onclick="alert('변경 이력 (시연)\n06.12 김주희 — 연간 이수학점 문구 수정')">이력</button><button class="btn-pri" style="padding:9px 16px" onclick="alert('저장 (시연) — 이후 발송분부터 적용, 기존 스냅샷 불변')">저장</button></div>
+          <div class="copy-save"><button class="btn-line" onclick="alert('변경 이력 (시연)\n06.12 김주희 - 연간 이수학점 문구 수정')">이력</button><button class="btn-pri" style="padding:9px 16px" onclick="alert('저장 (시연) - 이후 발송분부터 적용, 기존 스냅샷 불변')">저장</button></div>
         </div>
 
         <div class="copy-sec">
@@ -303,15 +303,15 @@
 
 
         <div class="copy-sec">
-          <div class="copy-head"><h3>자주 쓰는 문구 (스니펫) <span class="tb mine">개인 맞춤용 부품</span></h3><span class="copy-sub">과목 세트의 문구 버전 — 승인 없음 · 수정 이력 기록 (세트와 동일 정책)</span></div>
+          <div class="copy-head"><h3>자주 쓰는 문구 (스니펫) <span class="tb mine">개인 맞춤용 부품</span></h3><span class="copy-sub">과목 세트의 문구 버전 - 승인 없음 · 수정 이력 기록 (세트와 동일 정책)</span></div>
           <div class="row"><span class="name">야간 접수 안내 <span class="tb team">팀</span></span><span class="meta" style="flex:1">야간·주말 접수분은 다음 영업일 기준으로 설계가 완료됩니다…</span><span class="meta" style="flex:0 0 auto">사용 34회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line">이력</button><button class="btn-danger">삭제</button></span></div>
           <div class="row"><span class="name">실습 일정 안내 <span class="tb team">팀</span></span><span class="meta" style="flex:1">현장실습은 기관 배정에 따라 개강일이 변동될 수 있어…</span><span class="meta" style="flex:0 0 auto">사용 21회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line">이력</button><button class="btn-danger">삭제</button></span></div>
           <div class="row"><span class="name">전적대 서류 보완 요청 <span class="tb mine">내 것</span></span><span class="meta" style="flex:1">성적증명서 원본 확인이 추가로 필요한 경우…</span><span class="meta" style="flex:0 0 auto">사용 6회</span><span class="acts"><button class="btn-line">수정</button><button class="btn-line" onclick="alert('팀 문구로 전환 (시연)')">팀으로</button><button class="btn-danger">삭제</button></span></div>
-          <div class="copy-save"><button class="btn-pri" style="padding:9px 16px" onclick="alert('스니펫 추가 (시연) — 빌더 코멘트에서 [현재 코멘트를 문구로 저장]으로도 등록 가능')">+ 문구 추가</button></div>
+          <div class="copy-save"><button class="btn-pri" style="padding:9px 16px" onclick="alert('스니펫 추가 (시연) - 빌더 코멘트에서 [현재 코멘트를 문구로 저장]으로도 등록 가능')">+ 문구 추가</button></div>
         </div>
         <div class="copy-sec" style="background:#f8f9fc;">
-          <div class="copy-head"><h3>개인 맞춤 안내 <span class="tb mine">설계별</span></h3><span class="copy-sub">읽기 전용 — 이 화면에서 관리하지 않습니다</span></div>
-          <div style="font-size:12px;color:var(--gray);line-height:1.7;">상담사가 <b>빌더의 설계 코멘트</b>에 설계별로 입력합니다. 코멘트 영역의 <b>[자주 쓰는 문구]</b>로 아래 스니펫을 불러와 삽입 후 학생에 맞게 수정하는 흐름 — 학생 화면 "설계 담당자 코멘트"에 노출, 발송 시 해당 설계 스냅샷에만 고정</div>
+          <div class="copy-head"><h3>개인 맞춤 안내 <span class="tb mine">설계별</span></h3><span class="copy-sub">읽기 전용 - 이 화면에서 관리하지 않습니다</span></div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.7;">담당자가 <b>빌더의 설계 코멘트</b>에 설계별로 입력합니다. 코멘트 영역의 <b>[자주 쓰는 문구]</b>로 아래 스니펫을 불러와 삽입 후 학습자에 맞게 수정하는 흐름 - 설계 결과 화면 "설계 담당자 코멘트"에 노출, 발송 시 해당 설계 스냅샷에만 고정</div>
           <div class="copy-save"><button class="btn-line" onclick="goBuilder()">빌더에서 확인</button></div>
         </div>
       </div>
@@ -321,7 +321,7 @@
         <div class="panel-head">
           <div>
             <h2>템플릿 관리</h2>
-            <div class="desc">과정×학력 단위의 설계 전체 틀 — 불러오면 학생 전용 사본이 생성되며 원본은 변하지 않습니다</div>
+            <div class="desc">과정×학력 단위의 설계 전체 틀 - 불러오면 학습자 전용 사본이 생성되며 원본은 변하지 않습니다</div>
           </div>
           <button class="btn-pri" onclick="tnOpen()">+ 템플릿 만들기</button>
         </div>
@@ -334,26 +334,26 @@
 
         <!-- 패키지 연동 탭 -->
         <div id="panePkg">
-          <div class="readonly-bar"><b>자동 변환 · 읽기 전용</b> — 패키지 등록 데이터(학기·차수·과목·이수구분·가격)에서 자동 변환됩니다. 수정은 패키지 등록 메뉴에서, 여기서는 조회와 사용 여부만 관리합니다.</div>
-          <div class="row"><span class="name">사회복지사 2급 실습포함 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">전문대졸 이상 · 14과목 · 개강 05.29 (차수 연동)</span><span class="acts"><button class="btn-line" onclick="alert('미리보기 (시연): 빌더 로드 화면과 동일 렌더')">미리보기</button><button class="btn-line" onclick="alert('원본 패키지 등록 화면으로 이동 (시연)')">원본 패키지</button><button class="btn-line" onclick="alert('사용 안 함 처리 (시연)\n빌더의 템플릿 목록에서 숨김 — 패키지 판매에는 영향 없음')">사용 안 함</button></span></div>
+          <div class="readonly-bar"><b>자동 변환 · 읽기 전용</b> - 패키지 등록 데이터(학기·차수·과목·이수구분·가격)에서 자동 변환됩니다. 수정은 패키지 등록 메뉴에서, 여기서는 조회와 사용 여부만 관리합니다.</div>
+          <div class="row"><span class="name">사회복지사 2급 실습포함 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">전문대졸 이상 · 14과목 · 개강 05.29 (차수 연동)</span><span class="acts"><button class="btn-line" onclick="alert('미리보기 (시연): 빌더 로드 화면과 동일 렌더')">미리보기</button><button class="btn-line" onclick="alert('원본 패키지 등록 화면으로 이동 (시연)')">원본 패키지</button><button class="btn-line" onclick="alert('사용 안 함 처리 (시연)\n빌더의 템플릿 목록에서 숨김 - 패키지 판매에는 영향 없음')">사용 안 함</button></span></div>
           <div class="row"><span class="name">사회복지사 2급 이론 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">고졸 · 20과목 · 개강 05.29</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button><button class="btn-line">사용 안 함</button></span></div>
           <div class="row"><span class="name">한국어교원 2급 스타트 <span class="tb pkg">패키지</span><span class="tb use">사용중</span></span><span class="meta">전문대졸 이상 · 18과목 · 개강 05.29</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button><button class="btn-line">사용 안 함</button></span></div>
-          <div class="row" style="opacity:.55"><span class="name">경영학사 편입 <span class="tb pkg">패키지</span></span><span class="meta">전문대졸 · 80학점 · 마감 차수 — 최신 모집분 등록 시 자동 갱신</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button></span></div>
+          <div class="row" style="opacity:.55"><span class="name">경영학사 편입 <span class="tb pkg">패키지</span></span><span class="meta">전문대졸 · 80학점 · 마감 차수 - 최신 모집분 등록 시 자동 갱신</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">원본 패키지</button></span></div>
         </div>
 
         <!-- 내 템플릿 탭 -->
         <div id="paneMine" class="hidden">
-          <div class="readonly-bar">빌더에서 <b>[내 템플릿 저장]</b>으로 생성됩니다 — 구조만 저장(상태 초기화, 권장) / 상태 포함 저장(같은 패턴 학생 전용) 구분</div>
-          <div class="row"><span class="name">보육교사 자격 보유자 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span></span><span class="meta">사복 2급 · 전문대졸 · 06.02 저장 · 최근 사용 06.28</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line" onclick="alert('복제 (시연): 사본 생성 후 수정')">복제</button><button class="btn-green" onclick="alert('팀에 공유 (시연)\n승인 절차 없음 — 즉시 팀 공유 탭에 노출, 언제든 공유 해제 가능\n공유·수정 내역은 이력에 자동 기록')">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
+          <div class="readonly-bar">빌더에서 <b>[내 템플릿 저장]</b>으로 생성됩니다 - 구조만 저장(상태 초기화, 권장) / 상태 포함 저장(같은 패턴 학습자 전용) 구분</div>
+          <div class="row"><span class="name">보육교사 자격 보유자 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span></span><span class="meta">사복 2급 · 전문대졸 · 06.02 저장 · 최근 사용 06.28</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line" onclick="alert('복제 (시연): 사본 생성 후 수정')">복제</button><button class="btn-green" onclick="alert('팀에 공유 (시연)\n승인 절차 없음 - 즉시 팀 공유 탭에 노출, 언제든 공유 해제 가능\n공유·수정 내역은 이력에 자동 기록')">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
           <div class="row"><span class="name">전적대 사복 재구성 패턴 <span class="tb mine">내 것</span><span class="tb state">상태 포함</span></span><span class="meta">사복 2급 · 전문대졸 · 06.15 저장</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">이름 변경</button><button class="btn-line">복제</button><button class="btn-green">팀에 공유</button><button class="btn-danger">삭제</button></span></div>
-          <div class="row"><span class="name">학사 3학기 압축 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span><span class="tb team">공유 중</span></span><span class="meta">경영학사 · 06.08 저장 · 팀 공유 06.30</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('공유 해제 (시연): 팀 목록에서 제거 — 이미 사용된 설계에는 영향 없음')">공유 해제</button><button class="btn-danger">삭제</button></span></div>
+          <div class="row"><span class="name">학사 3학기 압축 패턴 <span class="tb mine">내 것</span><span class="tb struct">구조만</span><span class="tb team">공유 중</span></span><span class="meta">경영학사 · 06.08 저장 · 팀 공유 06.30</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('공유 해제 (시연): 팀 목록에서 제거 - 이미 사용된 설계에는 영향 없음')">공유 해제</button><button class="btn-danger">삭제</button></span></div>
         </div>
 
         <!-- 팀 공유 탭 -->
         <div id="paneTeam" class="hidden">
-          <div class="readonly-bar">작성자가 팀에 공유한 템플릿 — 전 상담사가 빌더에서 사용 가능. 승인 절차 없음, 공유/해제·수정·삭제는 <b>작성자만</b> (다른 사람은 복제 후 사용) · 변경 이력 자동 기록</div>
-          <div class="row"><span class="name">전적대 사복 일부이수 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 박OO 06.20 · 사용 31회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('내 템플릿으로 복제 (시연): 사본을 수정해 재공유 요청 가능')">내 것으로 복제</button><span style="font-size:10px;color:var(--gray-light)">작성자 아님 — 복제만</span></span></div>
-          <div class="row"><span class="name">한국어교원 3중 요건 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 김주희 06.25 · 사용 12회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">내 것으로 복제</button><button class="btn-danger" onclick="alert('공유 해제 (시연) — 작성자 본인')">공유 해제</button></span></div>
+          <div class="readonly-bar">작성자가 팀에 공유한 템플릿 - 모든 담당자가 빌더에서 사용 가능. 승인 절차 없음, 공유/해제·수정·삭제는 <b>작성자만</b> (다른 사람은 복제 후 사용) · 변경 이력 자동 기록</div>
+          <div class="row"><span class="name">전적대 사복 일부이수 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 박OO 06.20 · 사용 31회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line" onclick="alert('내 템플릿으로 복제 (시연): 사본을 수정해 재공유 요청 가능')">내 것으로 복제</button><span style="font-size:10px;color:var(--gray-light)">작성자 아님 - 복제만</span></span></div>
+          <div class="row"><span class="name">한국어교원 3중 요건 패턴 <span class="tb team">팀 공유</span><span class="tb struct">구조만</span></span><span class="meta">공유 김주희 06.25 · 사용 12회 · 수정·해제는 작성자만</span><span class="acts"><button class="btn-line">미리보기</button><button class="btn-line">내 것으로 복제</button><button class="btn-danger" onclick="alert('공유 해제 (시연) - 작성자 본인')">공유 해제</button></span></div>
         </div>
       </div>
 
@@ -363,11 +363,11 @@
         <div class="panel-head">
           <div>
             <h2>템플릿 직접 등록</h2>
-            <div class="desc">패키지로 구성되지 않은 과정의 설계 틀을 직접 만듭니다 — 엑셀로 올리거나 화면에서 과목을 검색해 구성</div>
+            <div class="desc">패키지로 구성되지 않은 과정의 설계 틀을 직접 만듭니다 - 엑셀로 올리거나 화면에서 과목을 검색해 구성</div>
           </div>
         </div>
 
-        <div class="readonly-bar"><b>패키지로 판매 중인 과정은 여기서 만들지 마세요</b> — 패키지 등록 데이터에서 자동 변환되므로 중복 등록이 됩니다. 이 화면은 <b>패키지 미구성 과정</b>(예: 보육교사 2급)과 기존 엑셀 설계안 이관 전용입니다.</div>
+        <div class="readonly-bar"><b>패키지로 판매 중인 과정은 여기서 만들지 마세요</b> - 패키지 등록 데이터에서 자동 변환되므로 중복 등록이 됩니다. 이 화면은 <b>패키지 미구성 과정</b>(예: 보육교사 2급)과 기존 엑셀 설계안 이관 전용입니다.</div>
 
         <div class="tn-grid">
           <div class="tn-col-a">
@@ -375,7 +375,7 @@
             <!-- 1. 기본 정보 -->
             <div class="blk cur" data-step="1">
               <h3>1. 기본 정보</h3>
-              <div class="bd">템플릿을 고르는 기준이 되는 값 — 빌더의 템플릿 목록에 이 조건으로 표시됩니다</div>
+              <div class="bd">템플릿을 고르는 기준이 되는 값 - 빌더의 템플릿 목록에 이 조건으로 표시됩니다</div>
               <div class="fr"><label>템플릿명</label><input type="text" value="보육교사 2급 (패키지 미구성)"></div>
               <div class="fr"><label>과정</label>
                 <select><option>보육교사 2급</option><option>사회복지사 2급</option><option>한국어교원 2급</option><option>경영학사 편입</option></select>
@@ -385,8 +385,8 @@
                 <select><option>전문대졸 이상</option><option>고졸</option><option>대졸</option><option>제한 없음</option></select>
                 <select><option>이론</option><option>실습 포함</option></select>
               </div>
-              <div class="fr"><label>설명</label><input type="text" placeholder="상담사에게 보일 한 줄 설명 (선택)"></div>
-              <span class="note">차수·개강일은 템플릿에 넣지 않습니다 — 1학기차·2학기차 같은 <b>상대 학기</b>로만 저장하고, 실제 개강일은 빌더에서 학생별로 정합니다</span>
+              <div class="fr"><label>설명</label><input type="text" placeholder="담당자에게 보일 한 줄 설명 (선택)"></div>
+              <span class="note">차수·개강일은 템플릿에 넣지 않습니다 - 1학기차·2학기차 같은 <b>상대 학기</b>로만 저장하고, 실제 개강일은 빌더에서 학습자별로 정합니다</span>
             </div>
 
             <!-- 2. 과목 구성 -->
@@ -396,11 +396,11 @@
               <div class="src-cards">
                 <div class="src on" id="srcExcel" onclick="tnPickSrc('excel')">
                   <div class="sh">엑셀 업로드</div>
-                  <div class="ss">기존 엑셀 설계안을 표준 양식으로 일괄 등록<br>과목명은 우리 과목 목록과 자동 매칭</div>
+                  <div class="ss">기존 엑셀 설계안을 표준 양식으로 일괄 등록<br>과목명은 배론 과목 목록과 자동 매칭</div>
                 </div>
                 <div class="src" id="srcSearch" onclick="tnPickSrc('search')">
                   <div class="sh">과목 검색해 추가</div>
-                  <div class="ss">우리 과목 목록에서 하나씩 골라 구성<br>과목 수가 적거나 처음 만들 때</div>
+                  <div class="ss">배론 과목 목록에서 하나씩 골라 구성<br>과목 수가 적거나 처음 만들 때</div>
                 </div>
                 <div class="src" id="srcCopy" onclick="tnPickSrc('copy')">
                   <div class="sh">기존 것 복제</div>
@@ -410,20 +410,20 @@
 
               <div class="up" id="upBox">
                 <div class="ut">학습계획 엑셀 업로드</div>
-                <div class="ud">열: 학기(1·2·3…) · 과목명 · 학점 · 이수구분<br><b>가격·개강일 열은 없습니다</b> — 과목·차수 정보에서 자동으로 붙습니다<br>타기관에서 들을 과목은 지금 쓰시던 대로 <b>과목명 뒤에 (타사)</b> — 그대로 읽습니다</div>
+                <div class="ud">열: 학기(1·2·3…) · 과목명 · 학점 · 이수구분<br><b>가격·개강일 열은 없습니다</b> - 과목·차수 정보에서 자동으로 붙습니다<br>타기관에서 들을 과목은 지금 쓰시던 대로 <b>과목명 뒤에 (타사)</b> - 그대로 읽습니다</div>
                 <div class="ub">
                   <button onclick="openFormSpec()">양식 보기</button>
                   <button class="pri" onclick="tnUpload()">파일 업로드</button>
                 </div>
-                <div class="done" id="upDone" style="display:none;">✓ 18행 읽음 — 아래 매칭 확인 단계에서 결과를 확인하세요</div>
+                <div class="done" id="upDone" style="display:none;">✓ 18행 읽음 - 아래 매칭 확인 단계에서 결과를 확인하세요</div>
               </div>
 
               <div class="up" id="searchBox" style="display:none;border-style:solid;background:#fff;text-align:left;">
-                <div class="fr" style="margin-bottom:0"><label>과목 검색</label><input type="text" placeholder="과목명 입력 (시연)"><button class="mini" style="padding:9px 14px" onclick="alert('과목 검색 (시연)\n우리가 파는 과목 목록에서 찾습니다\n선택 시 학점·이수구분이 등록된 값으로 자동 입력됩니다')">검색</button></div>
+                <div class="fr" style="margin-bottom:0"><label>과목 검색</label><input type="text" placeholder="과목명 입력 (시연)"><button class="mini" style="padding:9px 14px" onclick="alert('과목 검색 (시연)\n배론이 파는 과목 목록에서 찾습니다\n선택 시 학점·이수구분이 등록된 값으로 자동 입력됩니다')">검색</button></div>
               </div>
 
               <div class="up" id="copyBox" style="display:none;border-style:solid;background:#fff;text-align:left;">
-                <div class="fr" style="margin-bottom:0"><label>복제 원본</label><select><option>사회복지사 2급 실습포함 (패키지)</option><option>보육교사 자격 보유자 패턴 (내 템플릿)</option><option>전적대 사복 일부이수 패턴 (팀 공유)</option></select><button class="mini" style="padding:9px 14px" onclick="alert('복제 (시연): 과목·학기 배치를 그대로 복사한 새 템플릿 초안 생성 — 원본은 변하지 않습니다')">복제</button></div>
+                <div class="fr" style="margin-bottom:0"><label>복제 원본</label><select><option>사회복지사 2급 실습포함 (패키지)</option><option>보육교사 자격 보유자 패턴 (내 템플릿)</option><option>전적대 사복 일부이수 패턴 (팀 공유)</option></select><button class="mini" style="padding:9px 14px" onclick="alert('복제 (시연): 과목·학기 배치를 그대로 복사한 새 템플릿 초안 생성 - 원본은 변하지 않습니다')">복제</button></div>
               </div>
             </div>
 
@@ -433,32 +433,32 @@
             <!-- 4. 배치 미리보기 -->
             <div class="blk" data-step="4">
               <h3>4. 학기 배치 미리보기</h3>
-              <div class="bd">엑셀의 학기 열대로 배치된 결과 — 저장 후 빌더에서 학생별로 조정합니다</div>
+              <div class="bd">엑셀의 학기 열대로 배치된 결과 - 저장 후 빌더에서 학습자별로 조정합니다</div>
               <div id="tnPrev"></div>
             </div>
           </div>
         </div>
 
-        <!-- 3. 매칭 확인 — 표가 넓어 전체 폭 사용 -->
+        <!-- 3. 매칭 확인 - 표가 넓어 전체 폭 사용 -->
             <div class="blk tn-wide" data-step="3">
               <h3>3. 과목 매칭 확인</h3>
-              <div class="bd">엑셀의 과목명을 <b>우리가 파는 과목 목록</b>과 대조한 결과입니다. <b>미판정·확인 필요가 남으면 저장할 수 없습니다</b> — 템플릿은 여러 설계에 재사용되므로, 틀린 과목이 한 번 들어가면 그 템플릿으로 만든 설계가 전부 영향을 받습니다</div>
+              <div class="bd">엑셀의 과목명을 <b>배론이 파는 과목 목록</b>과 대조한 결과입니다. <b>미판정·확인 필요가 남으면 저장할 수 없습니다</b> - 템플릿은 여러 설계에 재사용되므로, 틀린 과목이 한 번 들어가면 그 템플릿으로 만든 설계가 전부 영향을 받습니다</div>
               <div id="tnMatch"></div>
-              <div class="readonly-bar" style="margin:10px 0 0"><b>우리 과정에 없는 과목은 세 갈래로 갈립니다</b> — 판정만 끝나면 셋 다 정상 저장됩니다.<br>
-                · <b>표기만 다른 것</b> (보육개론 → 보육학개론) → [과목 지정]으로 우리 과목에 연결<br>
-                · <b>우리가 안 파는 과목</b> (타기관에서 들어야 하는 과목) → [타기관 이수] — 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
-                · <b>과목을 특정하지 않은 요건</b> (엑셀의 <code>전공1 (타사)</code>) → [요건 슬롯] — 이수구분·학점만 확정, 어떤 과목으로 채울지는 학생이 정함<br>
+              <div class="readonly-bar" style="margin:10px 0 0"><b>배론 과정에 없는 과목은 세 갈래로 갈립니다</b> - 판정만 끝나면 셋 다 정상 저장됩니다.<br>
+                · <b>표기만 다른 것</b> (보육개론 → 보육학개론) → [과목 지정]으로 배론 과목에 연결<br>
+                · <b>배론이 안 파는 과목</b> (타기관에서 들어야 하는 과목) → [타기관 이수] - 학점만 집계하고 <b>가격에는 넣지 않음</b><br>
+                · <b>과목을 특정하지 않은 요건</b> (엑셀의 <code>전공1 (타사)</code>) → [요건 슬롯] - 이수구분·학점만 확정, 어떤 과목으로 채울지는 학습자이 정함<br>
                 · <b>잘못 적힌 행</b> → [행 제외]</div>
-              <div class="readonly-bar" style="margin:8px 0 0"><b>엑셀의 <code>(타사)</code> 표기는 업로드할 때 자동으로 읽습니다</b> — 상담사들이 설계표에 이미 쓰고 있는 표기라 그대로 받습니다. <code>과목명 (타사)</code>는 타기관 이수로, <code>전공1 (타사)</code>처럼 과목명이 아니라 요건 표현이면 요건 슬롯으로 담깁니다. 손으로 다시 누를 필요 없습니다.</div>
-              <span class="note">과목을 새로 만드는 입구는 여기 두지 않습니다 — 상담사는 설계를 짜는 역할이고, 판매 과목을 늘리는 것은 기획·운영의 권한입니다. 이 화면이 받는 것은 <b>이미 팔았던 엑셀 설계안</b>이라 목록에 없는 과목은 거의 표기 차이거나 타기관 수강분입니다</span>
-              <span class="note">과목 마스터는 아직 없습니다 — 1단계 시연은 <b>기존 패키지에 등록된 과목</b>을 대조 대상으로 가정했습니다. 별도 마스터로 정규화할지는 미정</span>
-              <span class="note">1단계는 이름 일치·유사도만 봅니다 — 개설 여부·선수과목 판정은 2단계</span>
+              <div class="readonly-bar" style="margin:8px 0 0"><b>엑셀의 <code>(타사)</code> 표기는 업로드할 때 자동으로 읽습니다</b> - 담당자들이 설계표에 이미 쓰고 있는 표기라 그대로 받습니다. <code>과목명 (타사)</code>는 타기관 이수로, <code>전공1 (타사)</code>처럼 과목명이 아니라 요건 표현이면 요건 슬롯으로 담깁니다. 손으로 다시 누를 필요 없습니다.</div>
+              <span class="note">과목을 새로 만드는 입구는 여기 두지 않습니다 - 담당자는 설계를 짜는 역할이고, 판매 과목을 늘리는 것은 기획·운영의 권한입니다. 이 화면이 받는 것은 <b>이미 팔았던 엑셀 설계안</b>이라 목록에 없는 과목은 거의 표기 차이거나 타기관 수강분입니다</span>
+              <span class="note">과목 마스터는 아직 없습니다 - 1단계 시연은 <b>기존 패키지에 등록된 과목</b>을 대조 대상으로 가정했습니다. 별도 마스터로 정규화할지는 미정</span>
+              <span class="note">1단계는 이름 일치·유사도만 봅니다 - 개설 여부·선수과목 판정은 2단계</span>
             </div>
 
             <!-- 5. 저장 -->
             <div class="blk tn-wide" data-step="5">
               <h3>5. 저장</h3>
-              <div class="bd">저장하면 빌더의 템플릿 목록에 즉시 나타납니다 — 승인 절차 없음, 생성·수정 이력은 자동 기록</div>
+              <div class="bd">저장하면 빌더의 템플릿 목록에 즉시 나타납니다 - 승인 절차 없음, 생성·수정 이력은 자동 기록</div>
               <div class="fr"><label>저장 범위</label>
                 <div class="scope-pick">
                   <button class="on" id="scMine" onclick="tnScope('mine')">내 템플릿</button>
@@ -467,12 +467,12 @@
               </div>
               <div class="save-bar">
                 <span class="blocked" id="tnBlocked"></span>
-                <button class="btn-line" onclick="alert('임시 저장 (시연): 미판정 행이 남아 있어도 초안으로 보관됩니다 — 빌더 목록에는 노출되지 않습니다')">임시 저장</button>
+                <button class="btn-line" onclick="alert('임시 저장 (시연): 미판정 행이 남아 있어도 초안으로 보관됩니다 - 빌더 목록에는 노출되지 않습니다')">임시 저장</button>
                 <button class="btn-pri" id="tnSave" onclick="tnSaveGo()">템플릿 저장</button>
               </div>
             </div>
 
-        <div class="footer-hint">엑셀 업로드는 <b>이관·최초 등록용</b>입니다. 한 번 등록해 템플릿으로 남기면 다음부터는 빌더에서 불러다 쓰므로 업로드가 다시 필요하지 않습니다 — 엑셀 작업이 상시 입력 수단으로 되돌아오지 않게 하는 것이 이 화면의 목적입니다.</div>
+        <div class="footer-hint">엑셀 업로드는 <b>이관·최초 등록용</b>입니다. 한 번 등록해 템플릿으로 남기면 다음부터는 빌더에서 불러다 쓰므로 업로드가 다시 필요하지 않습니다 - 엑셀 작업이 상시 입력 수단으로 되돌아오지 않게 하는 것이 이 화면의 목적입니다.</div>
       </div>
 
       <!-- ===== 과목 세트 관리 ===== -->
@@ -480,7 +480,7 @@
         <div class="panel-head">
           <div>
             <h2>과목 세트 관리</h2>
-            <div class="desc">과목 묶음 부품 — 빌더의 학기 카드에서 [+ 세트 추가]로 삽입 후 개별 조정합니다. 템플릿과 달리 전체 틀이 아닙니다</div>
+            <div class="desc">과목 묶음 부품 - 빌더의 학기 카드에서 [+ 세트 추가]로 삽입 후 개별 조정합니다. 템플릿과 달리 전체 틀이 아닙니다</div>
           </div>
           <button class="btn-pri" onclick="document.getElementById('newSet').classList.toggle('open')">+ 세트 만들기</button>
         </div>
@@ -488,16 +488,16 @@
         <div class="new-set" id="newSet">
           <div class="fr"><label>세트명</label><input type="text" placeholder="예: 교양 인기 세트"></div>
           <div class="fr"><label>과목</label><input type="text" placeholder="과목 검색 후 추가 (시연)"><button class="btn-line" onclick="alert('과목 검색·추가 (시연): LMS 과목 마스터에서 검색')">추가</button></div>
-          <div class="fr"><label>저장 범위</label><div class="scope-pick"><button class="on">내 세트</button><button onclick="alert('팀 세트 (시연)\n승인 절차 없음 — 저장 즉시 팀 목록 반영\n생성·수정 내역은 이력에 자동 기록')">팀 세트</button></div></div>
+          <div class="fr"><label>저장 범위</label><div class="scope-pick"><button class="on">내 세트</button><button onclick="alert('팀 세트 (시연)\n승인 절차 없음 - 저장 즉시 팀 목록 반영\n생성·수정 내역은 이력에 자동 기록')">팀 세트</button></div></div>
           <div class="fr" style="margin-bottom:0"><span style="flex:1"></span><button class="btn-line" onclick="document.getElementById('newSet').classList.remove('open')">취소</button><button class="btn-pri" style="padding:9px 18px" onclick="alert('세트 저장 (시연)');document.getElementById('newSet').classList.remove('open')">저장</button></div>
         </div>
 
-        <div class="row"><span class="name">교양 인기 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">심리학개론 3</span><span class="schip">글쓰기 3</span><span class="schip">생활속의통계 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 48회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
-        <div class="row"><span class="name">사복 선택과목 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">정신건강론 3</span><span class="schip">자원봉사론 3</span><span class="schip">사회문제론 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 27회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
-        <div class="row"><span class="name">경영 전공심화 세트 <span class="tb mine">내 세트</span></span><span class="set-chips"><span class="schip">리더십 3</span><span class="schip">협상론 3</span><span class="schip">기업윤리 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 5회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 — 과목 추가: 생활속의통계\n06.10 박OO — 세트명 변경\n05.30 김주희 — 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-line" onclick="alert('팀 세트로 전환 (시연)')">팀 세트로</button><button class="btn-danger">삭제</button></span></div>
+        <div class="row"><span class="name">교양 인기 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">심리학개론 3</span><span class="schip">글쓰기 3</span><span class="schip">생활속의통계 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 48회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 - 과목 추가: 생활속의통계\n06.10 박OO - 세트명 변경\n05.30 김주희 - 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
+        <div class="row"><span class="name">사복 선택과목 세트 <span class="tb team">팀 세트</span></span><span class="set-chips"><span class="schip">정신건강론 3</span><span class="schip">자원봉사론 3</span><span class="schip">사회문제론 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 27회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 - 과목 추가: 생활속의통계\n06.10 박OO - 세트명 변경\n05.30 김주희 - 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-danger">삭제</button></span></div>
+        <div class="row"><span class="name">경영 전공심화 세트 <span class="tb mine">내 세트</span></span><span class="set-chips"><span class="schip">리더십 3</span><span class="schip">협상론 3</span><span class="schip">기업윤리 3</span></span><span class="meta" style="flex:0 0 auto">9학점 · 사용 5회</span><span class="acts"><button class="btn-line" onclick="alert('수정 이력 (시연)\n06.28 김주희 - 과목 추가: 생활속의통계\n06.10 박OO - 세트명 변경\n05.30 김주희 - 생성')">이력</button><button class="btn-line">수정</button><button class="btn-line">복제</button><button class="btn-line" onclick="alert('팀 세트로 전환 (시연)')">팀 세트로</button><button class="btn-danger">삭제</button></span></div>
 
-        <div class="footer-hint">세트를 수정·삭제해도 이미 학기에 삽입된 설계에는 영향이 없습니다 (삽입 시점에 과목이 개별 복사됨). 수정·삭제는 <b>작성자 본인만</b> — 다른 사람은 복제 후 사용. 세트에는 학기·가격 정보가 없으며, 삽입된 학기의 규칙(24학점 한도 등)을 그대로 따릅니다.</div>
-        <span class="note">확정: 템플릿·세트 모두 승인 절차 없음 — 작성자의 공유 on/off + 생성·수정 이력 자동 기록. 수정·삭제·공유 해제는 작성자만</span>
+        <div class="footer-hint">세트를 수정·삭제해도 이미 학기에 삽입된 설계에는 영향이 없습니다 (삽입 시점에 과목이 개별 복사됨). 수정·삭제는 <b>작성자 본인만</b> - 다른 사람은 복제 후 사용. 세트에는 학기·가격 정보가 없으며, 삽입된 학기의 규칙(24학점 한도 등)을 그대로 따릅니다.</div>
+        <span class="note">확정: 템플릿·세트 모두 승인 절차 없음 - 작성자의 공유 on/off + 생성·수정 이력 자동 기록. 수정·삭제·공유 해제는 작성자만</span>
       </div>
 
     </div>
@@ -508,7 +508,7 @@
 <div class="fs-modal" id="fsModal" onclick="if(event.target===this)closeFormSpec()">
   <div class="fs-box">
     <h4>학습계획 엑셀 양식</h4>
-    <div class="md">아래 표 형태로 작성해서 업로드하세요 — 지금 쓰시는 설계표와 같은 형태입니다</div>
+    <div class="md">아래 표 형태로 작성해서 업로드하세요 - 지금 쓰시는 설계표와 같은 형태입니다</div>
 
     <div class="xl-wrap">
       <table class="xl">
@@ -523,16 +523,16 @@
     </div>
 
     <div class="xl-cols">
-      <div><span class="req">필수</span><b>학기</b> — 상대 학기 <code>1</code>·<code>2</code>·<code>3</code>… <b>실제 개강일이 아닙니다.</b> 개강일은 빌더에서 학생별로 정합니다</div>
-      <div><span class="req">필수</span><b>과목명</b> — 우리 과목명과 최대한 똑같이. 다르면 업로드 후 수기로 지정해야 합니다</div>
-      <div><span class="req">필수</span><b>학점</b> — 숫자만 (1~6)</div>
-      <div><span class="req">필수</span><b>이수구분</b> — 자격증 과정: 필수 · 선택 / 학위 과정: 전필 · 전선 · 교양 · 일선</div>
+      <div><span class="req">필수</span><b>학기</b> - 상대 학기 <code>1</code>·<code>2</code>·<code>3</code>… <b>실제 개강일이 아닙니다.</b> 개강일은 빌더에서 학습자별로 정합니다</div>
+      <div><span class="req">필수</span><b>과목명</b> - 배론 과목명과 최대한 똑같이. 다르면 업로드 후 수기로 지정해야 합니다</div>
+      <div><span class="req">필수</span><b>학점</b> - 숫자만 (1~6)</div>
+      <div><span class="req">필수</span><b>이수구분</b> - 자격증 과정: 필수 · 선택 / 학위 과정: 전필 · 전선 · 교양 · 일선</div>
     </div>
 
     <div class="xl-warn">
-      · <b>타기관에서 들을 과목은 과목명 뒤에 <code>(타사)</code></b> — 지금 설계표에 쓰시는 그대로 적으시면 업로드할 때 자동으로 읽습니다 (4행)<br>
-      · <b>과목을 안 정한 경우도 그대로</b> — <code>전공1 (타사)</code>처럼 적으면 이수구분·학점만 잡히는 요건 슬롯이 됩니다 (5행)<br>
-      · <b>가격·차수·개강일 열은 없습니다</b> — 과목·차수 정보에서 자동으로 붙습니다
+      · <b>타기관에서 들을 과목은 과목명 뒤에 <code>(타사)</code></b> - 지금 설계표에 쓰시는 그대로 적으시면 업로드할 때 자동으로 읽습니다 (4행)<br>
+      · <b>과목을 안 정한 경우도 그대로</b> - <code>전공1 (타사)</code>처럼 적으면 이수구분·학점만 잡히는 요건 슬롯이 됩니다 (5행)<br>
+      · <b>가격·차수·개강일 열은 없습니다</b> - 과목·차수 정보에서 자동으로 붙습니다
     </div>
 
     <div class="fs-acts">
@@ -545,7 +545,7 @@
 <script>
   function openFormSpec(){ document.getElementById("fsModal").classList.add("open"); }
   function closeFormSpec(){ document.getElementById("fsModal").classList.remove("open"); }
-  // 페이지 연결 — 같은 레포에 배포된 실제 파일명으로 수정해서 사용
+  // 페이지 연결 - 같은 레포에 배포된 실제 파일명으로 수정해서 사용
   const LINK_BUILDER="builder.html";
   function goBuilder(){ location.href=LINK_BUILDER; }
   function goStudent(){ location.href=LINK_BUILDER+"?view=student"; }
@@ -567,13 +567,13 @@
   }
 
   /* ===== 템플릿 직접 등록 (시연) =====
-     m: auto=우리 과목 자동 매칭 / near=유사 후보(확인 필요) / fixed=수기로 우리 과목 지정
-        ext=타기관 이수(우리가 안 파는 과목 — 학점만, 가격 제외) · slot=true면 과목 미지정 요건 슬롯
+     m: auto=배론 과목 자동 매칭 / near=유사 후보(확인 필요) / fixed=수기로 배론 과목 지정
+        ext=타기관 이수(배론이 안 파는 과목 - 학점만, 가격 제외) · slot=true면 과목 미지정 요건 슬롯
         none=미판정(저장 차단) / drop=제외
-     엑셀 raw 값에 붙은 '(타사)' 접미사는 상담사들이 이미 쓰고 있는 관행 표기 —
+     엑셀 raw 값에 붙은 '(타사)' 접미사는 담당자들이 이미 쓰고 있는 관행 표기 -
      업로드 시 tnClassify()가 읽어서 타기관으로 자동 판정한다. seed는 접미사가 없을 때의 대조 결과. */
   // 템플릿명(보육교사 2급)에 맞춘 실제 배움 보육교사 개설과목.
-  // (타사) 붙은 건 배움이 팔지 않는 과목 — 놀이지도·아동간호학은 보육교사 교과목이지만 배움 개설분에 없다
+  // (타사) 붙은 건 배움이 팔지 않는 과목 - 놀이지도·아동간호학은 보육교사 교과목이지만 배움 개설분에 없다
   const TN_ROWS=[
     {s:1,raw:"보육개론",cr:3,a:"필수",seed:"near",to:"보육학개론"},
     {s:1,raw:"보육과정",cr:3,a:"필수",seed:"auto",to:"보육과정"},
@@ -594,7 +594,7 @@
     {s:3,raw:"전공1 (타사)",cr:3,a:"선택",seed:"none",to:""},
     {s:3,raw:"아동간호학",cr:3,a:"선택",seed:"none",to:""}
   ];
-  // 관행 표기 '(타사)' 인식 — 접미사를 떼고, 남은 이름이 과목명이 아니라 요건 표현이면 슬롯으로 본다
+  // 관행 표기 '(타사)' 인식 - 접미사를 떼고, 남은 이름이 과목명이 아니라 요건 표현이면 슬롯으로 본다
   const TN_EXT_SUFFIX=/\s*\((타사|타기관)\)\s*$/;
   const TN_SLOT_NAME=/^(전공|전필|전선|교양|일선|필수|선택)\s*\d*$/;
   function tnClassify(r){
@@ -635,7 +635,7 @@
     document.getElementById("upDone").style.display="block";
     tnRender();
     const ex=TN_ROWS.filter(r=>r.m==="ext"), sl=ex.filter(r=>r.slot);
-    alert("업로드 완료 (시연) — "+TN_ROWS.length+"행\n· 우리 과목 "+TN_ROWS.filter(r=>r.m==="auto").length+
+    alert("업로드 완료 (시연) - "+TN_ROWS.length+"행\n· 배론 과목 "+TN_ROWS.filter(r=>r.m==="auto").length+
       " / 확인 필요 "+TN_ROWS.filter(r=>r.m==="near").length+
       " / 타기관 "+ex.length+" (자동 인식) / 미판정 "+TN_ROWS.filter(r=>r.m==="none").length+
       "\n· 과목명 끝의 '(타사)' 표기를 읽어 타기관 이수로 자동 판정했습니다"+
@@ -644,13 +644,13 @@
   }
   function tnAccept(i){ TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender(); }
   function tnPick(i){
-    alert("과목 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 우리 과목을 직접 지정합니다\n→ 아동생활지도 (선택 3학점) 선택한 것으로 처리");
+    alert("과목 검색 (시연)\n'"+TN_ROWS[i].raw+"' 에 해당하는 배론 과목을 직접 지정합니다\n→ 아동생활지도 (선택 3학점) 선택한 것으로 처리");
     TN_ROWS[i].to="아동생활지도"; TN_ROWS[i].m="fixed"; TN_ROWS[i].slot=false; tnRender();
   }
   function tnExt(i){
     const r=TN_ROWS[i], base=r.raw.replace(TN_EXT_SUFFIX,"").trim(), slot=TN_SLOT_NAME.test(base);
-    alert("타기관 이수로 표시 (시연)\n'"+r.raw+"' 은 우리가 팔지 않는 과목입니다\n· 학습계획·학점 집계에는 그대로 남습니다\n· 가격 계산에서는 빠집니다 (우리 매출 아님)\n· 학생 화면에는 '타기관 수강' 으로 안내됩니다"+
-      (slot?"\n· 과목명이 아니라 요건 표현이라 '요건 슬롯'으로 담습니다 — 어떤 과목으로 채울지는 학생이 정합니다":""));
+    alert("타기관 이수로 표시 (시연)\n'"+r.raw+"' 은 배론이 팔지 않는 과목입니다\n· 학습계획·학점 집계에는 그대로 남습니다\n· 가격 계산에서는 빠집니다 (배론 매출 아님)\n· 설계 결과 화면에는 '타기관 수강' 으로 안내됩니다"+
+      (slot?"\n· 과목명이 아니라 요건 표현이라 '요건 슬롯'으로 담습니다 - 어떤 과목으로 채울지는 학습자이 정합니다":""));
     r.m="ext"; r.slot=slot; r.to=slot?"":base; tnRender();
   }
   function tnSlot(i){
@@ -660,7 +660,7 @@
   }
   function tnDrop(i){ TN_ROWS[i].m="drop"; tnRender(); }
   function tnUndo(i){ TN_ROWS[i].m="none"; TN_ROWS[i].slot=false; TN_ROWS[i].to=""; tnRender(); }
-  // 추천 일괄 적용 — 확인 필요 건이 많을 때 한 번에. 확인 자체는 명시적으로 일어난다
+  // 추천 일괄 적용 - 확인 필요 건이 많을 때 한 번에. 확인 자체는 명시적으로 일어난다
   function tnAcceptAll(){
     const near=TN_ROWS.filter(r=>r.m==="near");
     if(!near.length) return;
@@ -678,9 +678,9 @@
     const live=TN_ROWS.filter(r=>r.m!=="drop");
     const ext=live.filter(r=>r.m==="ext").length;
     alert("템플릿 저장 (시연)\n· 저장 범위: "+(tnScopeV==="mine"?"내 템플릿":"팀 공유")+
-      "\n· 우리 과목 "+live.filter(r=>r.m==="auto"||r.m==="fixed"||r.m==="near").length+"과목 (가격 계산 대상)"+
-      (ext?"\n· 타기관 이수 "+ext+"과목 — 학점만 집계, 가격 제외":"")+
-      "\n· 차수·개강일 없음 — 상대 학기로만 저장\n· 생성 이력 자동 기록");
+      "\n· 배론 과목 "+live.filter(r=>r.m==="auto"||r.m==="fixed"||r.m==="near").length+"과목 (가격 계산 대상)"+
+      (ext?"\n· 타기관 이수 "+ext+"과목 - 학점만 집계, 가격 제외":"")+
+      "\n· 차수·개강일 없음 - 상대 학기로만 저장\n· 생성 이력 자동 기록");
   }
 
   function tnRender(){
@@ -697,7 +697,7 @@
     if(!tnLoaded){
       mt.innerHTML='<div class="tbl-empty">아직 올린 과목이 없습니다<br>위에서 엑셀을 업로드하거나 과목을 검색해 추가하세요</div>';
     }else{
-      const badge={auto:'<span class="mb a">우리 과목</span>',fixed:'<span class="mb f">지정 완료</span>',
+      const badge={auto:'<span class="mb a">배론 과목</span>',fixed:'<span class="mb f">지정 완료</span>',
                    near:'<span class="mb n">확인 필요</span>',ext:'<span class="mb e">타기관</span>',
                    none:'<span class="mb x">미판정</span>',
                    drop:'<span class="mb d">제외</span>'};
@@ -706,26 +706,26 @@
         let act="";
         if(r.m==="near") act='<button class="mini" onclick="tnAccept('+i+')">추천 적용</button><button class="mini" onclick="tnPick('+i+')">다른 과목</button>';
         else if(r.m==="none") act='<button class="mini" onclick="tnPick('+i+')">과목 지정</button><button class="mini" onclick="tnExt('+i+')">타기관 이수</button><button class="mini" onclick="tnSlot('+i+')">요건 슬롯</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
-        else if(r.m==="ext") act='<button class="mini" onclick="tnPick('+i+')">우리 과목으로</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
+        else if(r.m==="ext") act='<button class="mini" onclick="tnPick('+i+')">배론 과목으로</button><button class="mini" onclick="tnDrop('+i+')">행 제외</button>';
         else if(r.m==="drop") act='<button class="mini" onclick="tnUndo('+i+')">되돌리기</button>';
         else act='<button class="mini" onclick="tnPick('+i+')">변경</button>';
-        const to=r.slot?'<span class="slotv">'+r.a+' '+r.cr+'학점 — 과목 미지정</span>'
+        const to=r.slot?'<span class="slotv">'+r.a+' '+r.cr+'학점 - 과목 미지정</span>'
                        :(r.to||'<span style="color:var(--red)">판정 필요</span>');
         const price=(r.m==="ext")?'제외':'포함';
         return '<tr class="'+cls+'"><td>'+r.s+'학기차</td><td class="raw">'+r.raw+'</td><td class="ar">→</td>'+
                '<td class="to">'+to+'</td><td>'+r.cr+'</td><td>'+r.a+'</td><td>'+badge[r.m]+'</td>'+
-               '<td style="font-size:10.5px;color:var(--gray-light)">'+(r.m==="drop"?'—':price)+'</td><td>'+act+'</td></tr>';
+               '<td style="font-size:10.5px;color:var(--gray-light)">'+(r.m==="drop"?'-':price)+'</td><td>'+act+'</td></tr>';
       }).join("");
       mt.innerHTML=
         '<div class="sum">'+
           '<div class="s"><div class="v">'+TN_ROWS.length+'</div><div class="k">읽은 행</div></div>'+
-          '<div class="s ok"><div class="v">'+(cAuto+cFix)+'</div><div class="k">우리 과목</div></div>'+
+          '<div class="s ok"><div class="v">'+(cAuto+cFix)+'</div><div class="k">배론 과목</div></div>'+
           '<div class="s warn"><div class="v">'+cNear+'</div><div class="k">확인 필요</div></div>'+
           '<div class="s"><div class="v" style="color:var(--violet)">'+cExt+'</div><div class="k">타기관'+(cSlot?' (슬롯 '+cSlot+')':'')+'</div></div>'+
           '<div class="s bad"><div class="v">'+cNone+'</div><div class="k">미판정</div></div>'+
           '<div class="s"><div class="v">'+cDrop+'</div><div class="k">제외</div></div>'+
         '</div>'+
-        (cNear?'<div class="tn-bulk"><span>확인 필요 <b>'+cNear+'건</b> — 이름이 정확히 일치하지 않아 비슷한 과목을 추천만 해둔 상태입니다. 맞는지 확인해야 저장할 수 있습니다</span>'+
+        (cNear?'<div class="tn-bulk"><span>확인 필요 <b>'+cNear+'건</b> - 이름이 정확히 일치하지 않아 비슷한 과목을 추천만 해둔 상태입니다. 맞는지 확인해야 저장할 수 있습니다</span>'+
                '<button onclick="tnAcceptAll()">추천 전부 적용</button></div>':'')+
         '<div class="mt-wrap"><table class="mt"><thead><tr><th>학기</th><th>엑셀 과목명</th><th></th><th>연결된 과목</th><th>학점</th><th>이수구분</th><th>상태</th><th>가격</th><th></th></tr></thead>'+
         '<tbody>'+rows+'</tbody></table></div>';
@@ -751,16 +751,16 @@
         return '<div class="semp"><div class="sh"><span>'+s+'학기차</span><span class="c">'+rs.length+'과목 · '+cr+'학점</span></div>'+
                '<div class="chips">'+chips+'</div></div>';
       }).join("")+
-      '<div class="footer-hint" style="margin-top:2px">우리 과정 '+ours.length+'과목 · '+ours.reduce(function(t,r){return t+r.cr;},0)+'학점 <b>(가격 계산 대상)</b>'+
-      (outs.length?'<br>타기관 이수 '+outs.length+'과목 · '+outs.reduce(function(t,r){return t+r.cr;},0)+'학점 — 학점만 집계, 가격 제외'+
-        (outs.filter(r=>r.slot).length?' (요건 슬롯 '+outs.filter(r=>r.slot).length+'건 포함 — 과목은 학생이 정함)':''):'')+
-      '<br>합계 '+ok.length+'과목 · '+ok.reduce(function(t,r){return t+r.cr;},0)+'학점 — 상대 학기 기준. 실제 개강일은 빌더에서 차수를 고를 때 정해집니다.</div>';
+      '<div class="footer-hint" style="margin-top:2px">배론 과정 '+ours.length+'과목 · '+ours.reduce(function(t,r){return t+r.cr;},0)+'학점 <b>(가격 계산 대상)</b>'+
+      (outs.length?'<br>타기관 이수 '+outs.length+'과목 · '+outs.reduce(function(t,r){return t+r.cr;},0)+'학점 - 학점만 집계, 가격 제외'+
+        (outs.filter(r=>r.slot).length?' (요건 슬롯 '+outs.filter(r=>r.slot).length+'건 포함 - 과목은 학습자이 정함)':''):'')+
+      '<br>합계 '+ok.length+'과목 · '+ok.reduce(function(t,r){return t+r.cr;},0)+'학점 - 상대 학기 기준. 실제 개강일은 빌더에서 차수를 고를 때 정해집니다.</div>';
     }
 
     const sv=document.getElementById("tnSave"), bl=document.getElementById("tnBlocked");
-    if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 — 위 [과목 구성 방식]에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
-    else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 — 과목 지정 · 타기관 이수 · 요건 슬롯 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
-    else if(cNear>0){ sv.disabled=true; bl.textContent="확인 필요 "+cNear+"건 — 추천 과목이 맞는지 확인해야 저장할 수 있습니다 (템플릿은 여러 설계에 재사용됩니다)"; bl.style.color="var(--amber)"; }
+    if(!tnLoaded){ sv.disabled=true; bl.textContent="과목이 없습니다 - 위 [과목 구성 방식]에서 먼저 구성하세요"; bl.style.color="var(--red)"; }
+    else if(cNone>0){ sv.disabled=true; bl.textContent="미판정 "+cNone+"건 - 과목 지정 · 타기관 이수 · 요건 슬롯 · 행 제외 중 하나로 판정해야 저장할 수 있습니다"; bl.style.color="var(--red)"; }
+    else if(cNear>0){ sv.disabled=true; bl.textContent="확인 필요 "+cNear+"건 - 추천 과목이 맞는지 확인해야 저장할 수 있습니다 (템플릿은 여러 설계에 재사용됩니다)"; bl.style.color="var(--amber)"; }
     else { sv.disabled=false; bl.textContent=""; }
   }
 
