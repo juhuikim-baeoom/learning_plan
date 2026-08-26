@@ -932,22 +932,6 @@ function pickCourse(id){
   syncRound(); renderRounds(); renderRoundPicker(); renderPkg();
   syncDept(); renderTable();
 }
-const DEG_PACKAGES = [
-  // 4년제 학사 (ba-biz)
-  {id:"d1", course:"ba-biz", reco:true, name:"경영학사 편입 완성 패키지", comp:"27과목 · 80학점", desc:"전문대졸 편입 기준 잔여 80학점 전체 구성 (3~4학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
-   benefits:["학사 학위 잔여학점 완성형","학기당 24학점 한도 내 자동 분배"],
-   creditNote:"전적대 인정 60학점 가정 시 졸업 요건 충족",
-   credits:{total:{t:140,r:60,p:80}, major:{t:60,r:18,p:42}, gen:{t:30,r:12,p:18}}},
-  {id:"d2", course:"ba-biz", tag:"인기", name:"경영학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"},
-  {id:"d3", course:"ba-biz", tag:"전공집중", name:"경영학사 전공 집중 패키지", comp:"14과목 · 42학점 (전공)", desc:"전공 학점만 우선 완성", price:954800, orig:2100000, per:22700, pl:"학점당", disc:"55%"},
-  // 2년제 전문학사 (as-biz)
-  {id:"a1", course:"as-biz", reco:true, name:"경영 전문학사 완성 패키지", comp:"27과목 · 80학점", desc:"고졸 기준 전문학사 졸업 요건 80학점 전체 구성 (2~3학기)", price:1841400, orig:4050000, per:23000, pl:"학점당", disc:"55%",
-   benefits:["전문학사 학위 완성형","학사 편입 시 그대로 인정","학기당 24학점 한도 내 자동 분배"],
-   creditNote:"보유 학점·자격증이 있으면 학습설계로 차감됩니다",
-   credits:{total:{t:80,r:0,p:80}, major:{t:45,r:0,p:45}, gen:{t:15,r:0,p:15}}},
-  {id:"a2", course:"as-biz", tag:"인기", name:"경영 전문학사 한학기 패키지", comp:"8과목 · 24학점", desc:"부담 없이 한 학기 시작", price:545600, orig:1200000, per:22700, pl:"학점당", disc:"55%"}
-];
-
 // 개강 차수 - career.baeoom.com/lectureN 실제 값 (2026-08-19 재수집, 10월 2일 개강반 포함 4개 차수)
 const ROUNDS = [
   {id:"r1", term:"2026년 2학기", d:"9월 4일 개강", date:"2026-09-04", period:"2026.09.04 ~ 2026.12.17", pshort:"09.04 ~ 12.17", credit:"2026년 12월", degree:"2027년 2월", st:"ok"},
@@ -955,27 +939,103 @@ const ROUNDS = [
   {id:"r3", term:"2026년 2학기", d:"10월 2일 개강", date:"2026-10-02", period:"2026.10.02 ~ 2027.01.14", pshort:"10.02 ~ 01.14", credit:"2027년 1월", degree:"2027년 8월", st:"ok"},
   {id:"r4", term:"2027년 1학기", d:"12월 31일 개강", date:"2026-12-31", period:"2026.12.31 ~ 2027.04.14", pshort:"12.31 ~ 04.14", credit:"2027년 4월", degree:"2027년 8월", st:"ok"}
 ];
-// 정가(orig)는 9월 4일 개강반 단과 정가 합계 (이론 150,000 / 실습 500,000) 기준
-const PACKAGES = [
-  {id:"p1", course:"sw", reco:true, hot:true, name:"사회복지사 2급 실습포함 패키지", comp:"이론 13과목 + 실습 1과목", desc:"자격 취득 전 과목 구성 - 가장 빠른 완성형", price:954800, orig:2450000, per:68200, disc:"61%",
-   benefits:["사회복지사 2급 취득 핵심 구성","사회복지현장실습 포함","가장 빠른 완성형 패키지"],
-   preview:"사회복지학개론 · 인간행동과사회환경 · 사회복지실천론 외 10과목 + 사회복지현장실습"},
-  {id:"p2", course:"sw", tag:"인기", name:"사회복지사 2급 이론 패키지", comp:"이론 8과목", desc:"부담 없이 한 학기 시작", price:313600, orig:1200000, per:39200, disc:"74%"},
-  // 교차 상품 - 결과물이 둘 이상이므로 소유 과정도 둘. 어느 쪽으로 들어와도 발견되어야 한다
-  {id:"p3", course:"sw", courses:["sw","hf"], yields:["사회복지사 2급","건강가정사"], tag:"동시취득", name:"사회복지사 2급 건강가정사 동시취득 패키지", comp:"이론 16과목", desc:"중복 과목 1회 수강으로 2개 자격", price:654800, orig:2400000, per:40900, disc:"73%"},
-  {id:"p4", course:"sw", courses:["sw","as-sw"], yields:["사회복지사 2급","사회복지 전문학사"], tag:"학위연계", name:"사회복지사 2급 전문학사 패키지", comp:"이론 24과목 + 실습 1과목", desc:"자격 + 전문학사 학위 동시 설계", price:1048000, orig:4100000, per:41900, disc:"74%"},
-  {id:"p5", course:"sw", tag:"선택형", name:"사회복지사 2급 한학기 패키지", comp:"이론 8과목 선택형", desc:"한 학기 분량만 우선 등록", price:313600, orig:1200000, per:39200, disc:"74%"}
+/* ── 패키지 = 관리자 '패키지관리'의 모집중 상품 그대로 (2026-08-26 수집, 29종 / 12개 분류) ──
+   관리자 목록에서 가져온 실제 값은 [분류 · 패키지명 · 과목수 · 판매가] 넷뿐이다.
+   목록에 없는 것 - 구성 과목 · 정가 · 할인율 - 은 이 화면의 실제 과목 데이터에서
+   분류 태그로 과목 수만큼 채워 만든 예시이며, 구성과목 레이어에도 그렇게 적는다.
+   개설 차수도 목록에 있었지만(9/4 · 9/17 · 10/2 · 11/13 · 1/7 · 3/5 · 6/18) 이 화면의
+   차수 4종과 라벨 체계가 달라 매핑이 자명하지 않아 이번엔 반영하지 않는다.
+   청소년지도사 3급은 분류만 있고 모집중 상품이 없어 좌측바에 '준비 중'으로 남는다.
+   5번째 칸 = 분류 밖 과정까지 걸치는 교차 상품 (courses / yields 직접 지정) */
+const ADMIN_PKGS=[
+  // [분류, 패키지명, 과목수, 판매가, 교차]  - 분류별로 과목 수가 큰 것이 앞(대표 상품)
+  ["pc-sw","이론+실습 17과목 패키지(전국반)",17,1128000],
+  ["pc-sw","이론+실습 17과목 패키지(수도권반)",17,1028000],
+  ["pc-sw","이론 20과목 전문학사 패키지",20,848000,{courses:["sw","as-sw"],yields:["사회복지사 2급","사회복지 전문학사"]}],
+  ["pc-sw","이론 18과목 건강가정사 패키지",18,788000,{courses:["sw","hf"],yields:["사회복지사 2급","건강가정사"]}],
+  ["pc-sw","이론 16과목 패키지",16,728000],
+  ["pc-sw","이론 8과목 패키지",8,380000],
+  ["pc-cc","이론+대면 14과목 패키지 [용산]",14,536000],
+  ["pc-cc","이론+대면 14과목 패키지 [인천]",14,536000],
+  ["pc-cc","이론+대면 14과목 패키지 [부산]",14,536000],
+  ["pc-cc","이론 8과목 패키지",8,320000],
+  ["pc-cc","대면 7과목 패키지 [용산]",7,385000],
+  ["pc-cc","대면 7과목 패키지 [인천]",7,385000],
+  ["pc-cc","대면 7과목 패키지 [부산]",7,385000],
+  ["pc-di","8과목 패키지",8,252000],
+  ["pc-yt2","이론+실습 9과목 패키지",9,836000],
+  ["pc-le","이론+실습 10과목 풀패키지(전국반)",10,642000],
+  ["pc-le","이론+실습 10과목 풀패키지(수도권반)",10,642000],
+  ["pc-le","이론 9과목 패키지",9,342000],
+  ["pc-psy","타전공 16과목 패키지",16,456000],
+  ["pc-psy","한학기 8과목 패키지",8,252000],
+  ["pc-biz","전필 8과목 패키지",8,252000],
+  ["pc-cs","컴퓨터공학 14과목 패키지",14,413000],
+  ["pc-cs","컴퓨터공학 8과목 패키지",8,252000],
+  ["pc-kor","이론+실습 16과목 풀패키지",16,927500],
+  ["pc-kor","이론 15과목 패키지",15,427500],
+  ["pc-kor","이론 8과목 패키지",8,252000],
+  ["pc-cpa","CPA 응시자격 충족 8과목 패키지",8,252000],
+  ["pc-ict","정보통신공학 14과목 패키지",14,413000],
+  ["pc-beauty","타전공 전문학사 두 학기 12과목 패키지",12,456000]
 ];
-const ALL_PKGS=[...PACKAGES,...DEG_PACKAGES];
+/* 패키지명에서 이수구분 구성을 읽는다 - 관리자 목록이 이름으로만 알려 주는 정보 */
+function pkgMix(name,n){
+  if(/이론\+실습/.test(name)) return {이론:n-1, 실습:1};
+  if(/이론\+대면/.test(name)) return {이론:Math.ceil(n/2), 대면:Math.floor(n/2)};
+  if(/^대면/.test(name)) return {대면:n};
+  return {이론:n};
+}
+function mixLabel(mix){ return Object.entries(mix).map(([g,k])=>`${g} ${k}과목`).join(" + "); }
+function pkgDesc(name,mix){
+  if(/풀패키지|이론\+실습/.test(name)) return "실습까지 한 번에 - 자격 취득 전 과목 구성";
+  if(/^대면/.test(name)) return "대면 과목만 - 수업 지역을 고르고 신청";
+  if(/이론\+대면/.test(name)) return "이론과 대면을 한 번에 - 지역 지정 구성";
+  if(/타전공/.test(name)) return "타전공자 기준 구성 - 전공 학점부터";
+  if(/한학기/.test(name)) return "부담 없이 한 학기 분량만";
+  if(/전필/.test(name)) return "전공필수부터 우선 구성";
+  if(/전문학사|건강가정사/.test(name)) return "한 번 수강으로 결과물 둘";
+  return "필요한 과목을 묶어 과목당 단가를 낮춘 구성";
+}
+function pkgTag(name){
+  const m=name.match(/\[([^\]]+)\]/); if(m) return m[1];
+  const r=name.match(/\((전국반|수도권반)\)/); if(r) return r[1];
+  if(/풀패키지/.test(name)) return "풀구성";
+  if(/타전공/.test(name)) return "타전공";
+  if(/한학기/.test(name)) return "한학기";
+  if(/전필/.test(name)) return "전공필수";
+  if(/전문학사/.test(name)) return "학위연계";
+  if(/건강가정사/.test(name)) return "동시취득";
+  return "이론형";
+}
 // 패키지 : 과정 = N:M. 결과물이 둘 이상인 교차 상품(동시취득·학위연계)은 소유 과정도 둘 이상이며,
 // 상단 카테고리가 자격/학위로 갈려 있어도 양쪽 모두에서 발견되어야 한다.
 function pkgCourses(p){ return p.courses || [p.course]; }
 /* 상품을 고를 범위. C안 패키지 탭에서는 좌측바가 '패키지 분류'라서 그 분류에 걸린 과정 전부가
    범위가 된다 (예: 경영학 = 경영학사 + 경영 전문학사). 그 밖에서는 지금까지처럼 과정 하나 */
-function curPkgs(){ const sc=pkgScope(); return ALL_PKGS.filter(p=>pkgCourses(p).some(c=>sc.includes(c))); }
+/* 분류에 걸린 상품 - 관리자 분류(pcat)가 1차 기준이다. 대응하는 과정이 아직 없는 분류(CPA)라도
+   관리자에 모집중 상품이 있으면 그대로 걸려야 한다. 과정 기준 매칭을 함께 두는 것은 분류 밖
+   과정과 걸친 교차 상품이 양쪽 분류에서 모두 발견되게 하기 위한 것 */
+function pkgInCat(p,c){ return p.pcat===c.id || pkgCourses(p).some(x=>c.courses.includes(x)); }
+/* 범위 밖으로 결과물이 나가는가 - 교차 상품(동시취득·학위연계)만 yields를 갖는다.
+   courses는 '발견되어야 할 과정' 목록이라 범위보다 넓을 수 있으므로(분류 = 과정 여럿)
+   구역을 가르는 기준은 courses 포함 관계가 아니라 결과물이 범위를 넘는지로 잡는다 */
+function pkgCrossOut(p,sc){
+  const cs=pkgCourses(p);
+  return (p.yields||[]).some((y,i)=>!sc.includes(cs[i]));
+}
+function curPkgs(){
+  const c=inPkgCatMode()&&curPkgCat();
+  if(c) return ALL_PKGS.filter(p=>pkgInCat(p,c));
+  const sc=pkgScope(); return ALL_PKGS.filter(p=>pkgCourses(p).some(x=>sc.includes(x)));
+}
 // 이 범위 단독 상품 / 범위 밖 과정과 걸친 교차 상품 - 표시 구역을 나눈다
-function ownPkgs(){ const sc=pkgScope(); return curPkgs().filter(p=>pkgCourses(p).every(c=>sc.includes(c))); }
-function crossPkgs(){ const sc=pkgScope(); return curPkgs().filter(p=>pkgCourses(p).some(c=>!sc.includes(c))); }
+function pkgOwned(p){
+  const c=inPkgCatMode()&&curPkgCat();
+  return (!c || p.pcat===c.id) && !pkgCrossOut(p,pkgScope());
+}
+function ownPkgs(){ return curPkgs().filter(pkgOwned); }
+function crossPkgs(){ return curPkgs().filter(p=>!pkgOwned(p)); }
 // 교차 상품이 이 과정 말고 어떤 결과물을 함께 주는지 (yields[i]는 courses[i]의 결과물)
 function alsoYields(p){
   const cs=pkgCourses(p);
@@ -1259,6 +1319,43 @@ const PKG_CATS=[
 ];
 let pkgCatSel="pc-sw";
 function curPkgCat(){ return PKG_CATS.find(x=>x.id===pkgCatSel); }
+
+/* 관리자 목록(ADMIN_PKGS) → 화면이 쓰는 상품으로. 여기서 채우는 값은 목록에 없던 것뿐이다.
+   구성 과목은 이 화면의 실제 과목(SUBJECTS)에서 분류 태그로 과목 수만큼 뽑고,
+   모자라면 교양으로 채운다. 정가·할인율은 그 과목들의 단과 정가 합계에서 나온다 -
+   임의로 지어낸 숫자가 아니라 화면 안 다른 값과 같은 출처를 쓴다는 뜻 */
+function composePkg(tag, mix, used){
+  const items=[];
+  Object.entries(mix).forEach(([g,k])=>{
+    const own=SUBJECTS.filter(s=>s.g===g && (s.hash||"").includes(tag) && !used.has(s.id));
+    const gen=SUBJECTS.filter(s=>s.g===g && (s.hash||"").includes("교양") && !used.has(s.id));
+    const any=SUBJECTS.filter(s=>s.g===g && !used.has(s.id));
+    [...own,...gen,...any].slice(0,k).forEach(s=>{ used.add(s.id); items.push(s); });
+  });
+  return items;
+}
+const PKG_SUBJ={};
+const ALL_PKGS=ADMIN_PKGS.map((r,i)=>{
+  const [pcat,rawName,n,price,cross]=r;
+  const cat=PKG_CATS.find(x=>x.id===pcat);
+  const mix=pkgMix(rawName,n), id="k"+i;
+  // 분류가 이미 이름 앞에 없으면 붙인다 - 좌측바를 안 보고도 무엇의 패키지인지 읽혀야 한다
+  const name=rawName.includes(cat.n) ? rawName : `${cat.n} ${rawName}`;
+  const items=composePkg(cat.tag, mix, new Set());
+  const orig=items.reduce((a,s)=>a+s.orig,0) || n*150000;
+  PKG_SUBJ[id]={
+    items: items.map(s=>({n:s.name, c:3, p:s.orig, prac:s.prac})),
+    extra: `※ 구성 과목은 <b>이 분류의 개설 과목에서 과목 수만큼 채운 예시</b>입니다 - 실제 편성은 관리자 패키지 구성과목 기준`
+  };
+  return {
+    id, pcat, courses:(cross&&cross.courses) || cat.courses, yields:cross&&cross.yields,
+    name, comp:mixLabel(mix), desc:pkgDesc(rawName,mix), tag:pkgTag(rawName),
+    price, orig, per:Math.round(price/n/100)*100, disc:Math.round((1-price/orig)*100)+"%",
+    benefits:[`${cat.n} ${mixLabel(mix)}`, `과목당 ${(Math.round(price/n/100)*100).toLocaleString("ko-KR")}원`,
+              mix.실습?"실습 포함 완성형":mix.대면?"대면 과목 포함":"이론 과목 구성"],
+    preview: items.slice(0,3).map(s=>s.name).join(" · ") + (items.length>3?` 외 ${items.length-3}과목`:"")
+  };
+});
 // C안 패키지 탭에서만 좌측바가 분류다. 그 밖에는 지금까지처럼 고른 과정 하나가 범위
 function inPkgCatMode(){ return layout==="comp" && mode==="pkg"; }
 function pkgScope(){ const c=inPkgCatMode()&&curPkgCat(); return c ? c.courses : [courseSel]; }
@@ -1279,7 +1376,7 @@ function pkgNavHTML(){
     </div>`;
 }
 function pkgNavItem(c){
-  const n=ALL_PKGS.filter(p=>pkgCourses(p).some(x=>c.courses.includes(x))).length;
+  const n=ALL_PKGS.filter(p=>pkgInCat(p,c)).length;
   return `<button class="sn-item ${pkgCatSel===c.id?"act":""} ${n?"":"dim"}" onclick="pickPkgCat('${c.id}')">${c.n}${
     n ? `<em>${n}종</em>` : `<i>준비 중</i>`}</button>`;
 }
@@ -1750,6 +1847,8 @@ function renderPkg(){
   }
   const h=pkgs[0], rest=pkgs.slice(1);
   let midBlock="";
+  /* 학점 채움 막대 - 관리자 패키지 목록에 학점 구성이 없어서 지금은 타는 상품이 없다.
+     지어낸 숫자로 켜 두지 않고, 학점 구성이 들어오면 credits를 채워 되살린다 */
   if(h.credits){
     const bar=(l,o)=>{const rp=o.r/o.t*100, pp=o.p/o.t*100;
       return `<div class="cs-row"><span class="cs-l">${l}</span><div class="cs-bar"><i class="rec" style="width:${rp}%"></i><i class="plan" style="width:${pp}%"></i></div><span class="cs-v">${o.r}+${o.p} / ${o.t}학점</span></div>`;};
@@ -1809,20 +1908,6 @@ function renderPkg(){
       ※ 패키지 과정은 과목당 수강료가 상이할 수 있으며, [구성과목보기]에서 수강료 확인이 가능합니다.
     </div>`;
 }
-const THEORY=["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지실천기술론","사회복지정책론","사회복지행정론","사회복지법제와실천","사회복지조사론","지역사회복지론","가족복지론","노인복지론","아동복지론","청소년복지론"];
-const th=n=>({n,c:3,p:150000});
-const PKG_SUBJ={
-  p1:{items:[...THEORY.map(th),{n:"사회복지현장실습",c:3,p:500000,prac:true}]},
-  p2:{items:THEORY.slice(0,8).map(th),extra:"※ 이론 과목 우선 구성 - 실습은 이후 학기 별도 신청"},
-  p3:{items:[...THEORY.map(th),th("건강가정론"),th("가족상담및가족치료"),th("가족생활교육")],extra:"※ 중복 과목 1회 수강으로 사회복지사 2급 + 건강가정사 동시 충족"},
-  p4:{items:[...THEORY.map(th),{n:"사회복지현장실습",c:3,p:500000,prac:true}],extra:"… 외 교양 10과목 포함 (전문학사 학점 구성)"},
-  p5:{items:THEORY.slice(0,8).map(th),extra:"※ 선택형 - 개설 과목 중 8과목 자유 선택"},
-  d1:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 14 · 교양 4 · 자유 1) - 학기당 24학점 한도 내 자동 분배"},
-  d2:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("조직심리학"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 - 이후 학기 이어 등록"},
-  d3:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("마케팅관리론"),th("인적자원관리"),th("재무관리"),th("국제경영"),th("생산관리")],extra:"… 외 6과목 - 전공 42학점 구성"},
-  a1:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("인적자원관리"),th("재무관리"),th("심리학개론")],extra:"… 외 19과목 (전공 15 · 교양 5 · 일반선택 4) - 전문학사 80학점 구성"},
-  a2:{items:[th("경영학개론"),th("회계원리"),th("마케팅원론"),th("경제학개론"),th("경영통계학"),th("조직심리학"),th("인적자원관리"),th("재무관리")],extra:"※ 1학기 권장 구성 - 이후 학기 이어 등록"}
-};
 function findPkg(id){ return ALL_PKGS.find(x=>x.id===id); }
 function openCompose(pid){
   const p=findPkg(pid), d=PKG_SUBJ[pid];
