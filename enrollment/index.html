@@ -504,6 +504,8 @@
   /* 기획설명 - 시연 전용 (선택한 시안의 의도·전제를 화면에서 바로 읽히게) */
   .lay-note{border:1px solid #ecd28a;border-radius:8px;background:#fffdf4;margin:-6px 0 18px;}
   .ln-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #f2e0ac;}
+  /* 접힘 상태에서는 헤더 아래 선이 패널 바깥 테두리와 겹쳐 이중선이 된다 */
+  .lay-note.closed .ln-head{border-bottom:none;}
   .ln-tag{background:#e0a71e;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.02em;}
   .ln-head b{font-size:13.5px;font-weight:800;color:#8a6212;}
   .ln-hyp{font-size:12px;font-weight:600;color:#a08a54;}
@@ -570,7 +572,6 @@
   .cw-rounds{padding-bottom:14px;border-bottom:1px solid var(--line);}
   /* 아직 상품이 없는 패키지 분류 - 숨기지 않고 남긴 채 표시만 낮춘다 */
   .sn-item.dim{color:var(--gray-light);}
-  .sn-item.dim i{font-style:normal;font-size:9.5px;font-weight:700;color:var(--gray-light);border:1px solid var(--line-dark);border-radius:8px;padding:0 5px;margin-left:5px;white-space:nowrap;}
   .sn-item.dim.act{color:var(--main);}
 
   /* 하단 고정 합산 바 */
@@ -632,14 +633,14 @@
   </div>
 
   <!-- 기획설명 - 선택한 시안의 의도·전제 (시연 전용) -->
-  <div class="lay-note">
+  <div class="lay-note closed" id="lnPanel">
     <div class="ln-head">
       <span class="ln-tag">기획설명</span>
       <b id="lnTitle"></b>
       <span class="ln-hyp" id="lnHyp"></span>
-      <button class="ln-tog" id="lnTog" onclick="toggleNote()">접기</button>
+      <button class="ln-tog" id="lnTog" onclick="toggleNote()">펼치기</button>
     </div>
-    <div id="lnWrap">
+    <div id="lnWrap" style="display:none">
       <div class="ln-sec shade">
         <h4 id="lnCommonH">세 시안 공통 전제</h4>
         <ul id="lnCommon"></ul>
@@ -945,7 +946,7 @@ const ROUNDS = [
    분류 태그로 과목 수만큼 채워 만든 예시이며, 구성과목 레이어에도 그렇게 적는다.
    개설 차수도 목록에 있었지만(9/4 · 9/17 · 10/2 · 11/13 · 1/7 · 3/5 · 6/18) 이 화면의
    차수 4종과 라벨 체계가 달라 매핑이 자명하지 않아 이번엔 반영하지 않는다.
-   청소년지도사 3급은 분류만 있고 모집중 상품이 없어 좌측바에 '준비 중'으로 남는다.
+   청소년지도사 3급은 분류만 있고 모집중 상품이 없다 - 좌측바에서 지우지는 않고, 눌렀을 때 비어 있음을 알린다.
    5번째 칸 = 분류 밖 과정까지 걸치는 교차 상품 (courses / yields 직접 지정) */
 const ADMIN_PKGS=[
   // [분류, 패키지명, 과목수, 판매가, 교차]  - 분류별로 과목 수가 큰 것이 앞(대표 상품)
@@ -1375,10 +1376,12 @@ function pkgNavHTML(){
       ${PKG_CATS.slice(6).map(pkgNavItem).join("")}
     </div>`;
 }
+/* 종수·'준비 중' 같은 재고 표기는 붙이지 않는다 - 고를 때 필요한 정보가 아니고,
+   숫자가 붙으면 분류끼리 많고 적음을 먼저 비교하게 되어 목록이 시끄러워진다.
+   상품이 없는 분류는 흐리게(dim)만 두고, 비어 있다는 사실은 눌러서 알게 한다 */
 function pkgNavItem(c){
   const n=ALL_PKGS.filter(p=>pkgInCat(p,c)).length;
-  return `<button class="sn-item ${pkgCatSel===c.id?"act":""} ${n?"":"dim"}" onclick="pickPkgCat('${c.id}')">${c.n}${
-    n ? `<em>${n}종</em>` : `<i>준비 중</i>`}</button>`;
+  return `<button class="sn-item ${pkgCatSel===c.id?"act":""} ${n?"":"dim"}" onclick="pickPkgCat('${c.id}')">${c.n}</button>`;
 }
 function sideNavHTML(){
   return `<div class="sn-title">과정</div>` + SIDE_GROUPS.map(g=>`
@@ -1535,7 +1538,7 @@ const NOTES={
       `그 아래 <b>과정(좌측바)과 개강일(본문 상단)이 같은 라인에서 출발</b> - 둘 다 수강방식의 자식인 형제 축. B에서는 개강일이 과정의 손자였음`,
       `<b>축이 부모가 되면 좌측바 목록 자체가 바뀜</b> - 단과는 <b>과정 26개</b>, 패키지는 <b>관리자 '패키지관리 › 분류' 13종</b> 그대로. 패키지는 원래 과정과 다른 축으로 묶여 있음(청소년지도사가 2급·3급으로 갈리고, CPA처럼 과정 목록에 없는 분류도 있음)`,
       `<b>단과가 기본 탭</b> - 대다수가 들어오는 쪽을 먼저 편다. 이 순서라면 패키지는 '먼저 답해야 할 질문'이 아니라 '더 싸게 사는 길'로 읽힘`,
-      `상품이 아직 없는 분류도 숨기지 않고 <b>'준비 중'</b>으로 남김 - A·B와 같은 원칙(사라지면 원래 없었는지 없어졌는지 알 수 없음)`,
+      `상품이 아직 없는 분류도 <b>숨기지 않고 남김</b> - A·B와 같은 원칙(사라지면 원래 없었는지 없어졌는지 알 수 없음). 다만 <b>종수·재고 표기는 붙이지 않음</b> - 고를 때 필요한 정보가 아니고, 숫자가 붙으면 분류끼리 많고 적음을 먼저 비교하게 됨`,
       `스티키는 B와 같은 이유로 보류 - 우선 페이지 전체가 함께 스크롤`,
       `한계 - <b>같은 화면인데 좌측바가 통째로 갈아끼워짐</b>. 탭 하나로 목록이 바뀌는 것을 이동으로 느낄지 전환으로 느낄지는 확인 필요. B와의 진짜 비교점은 이 지점`
     ],
@@ -1565,7 +1568,8 @@ const SKIN_NOTES={
       `트레이드오프 - <b>패키지 발견에는 유리</b>, 카드가 자리를 많이 먹어 <b>단과 171과목 훑기에는 불리</b>`
     ]}
 };
-let noteOpen=true;
+// 설명은 필요할 때 펼쳐 보는 쪽 - 열자마자 설명이 시안 화면을 아래로 밀지 않게 접고 시작한다
+let noteOpen=false;
 /* 현행은 스킨이 고정이므로 '지금 실제로 적용된 스킨'을 기준으로 적는다 (syncSkin과 같은 규칙) */
 function renderSkinNote(){
   const on = layout==="cur" ? "old" : skin;
@@ -1588,6 +1592,7 @@ function toggleNote(){
   noteOpen=!noteOpen;
   $("lnWrap").style.display=noteOpen?"block":"none";
   $("lnTog").textContent=noteOpen?"접기":"펼치기";
+  $("lnPanel").classList.toggle("closed",!noteOpen);
 }
 
 /* ── 현행 재현 ──
@@ -1741,7 +1746,7 @@ const CMP_ROWS=[
   {ax:"고르는 순서", cur:"개강 차수 → 과정 → 과목", stack:"과정 → 수강방식 → 개강일", side:"과정 → 수강방식 → 개강일 (성격별로 분배)", comp:"<b>수강방식 → 과정 · 개강일</b> (뒤 둘은 형제)"},
   {ax:"과정 선택", cur:"탭 8개 + <b>호버 드롭다운</b> 하위 24개. 고른 하위 항목이 상단에 남지 않음", stack:"카테고리 3개 + 과정 칩 (학위는 2행)", side:"좌측바 4개 그룹 26개 과정 전부 상시 노출", comp:"<b>탭에 따라 목록이 통째로 바뀜</b> - 단과는 과정 26개, 패키지는 관리자 '패키지관리 › 분류' 13종"},
   {ax:"분류 기준", cur:"수준(자격증·학사·전문학사)과 개별 과정(KICPA·한국어교원·미용)이 <b>같은 줄에 혼재</b> · 한국어교원·미용은 두 곳에 중복", stack:"목적 3분류로 통일 (자격증 취득 · 학위 취득 · 교양/단과)", side:"좌동", comp:"좌동"},
-  {ax:"패키지", cur:"<b>이 화면에 없음</b> - 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 열고, 개강일·장바구니가 끊김", stack:"같은 화면 안 <b>패키지/단과 탭</b>", side:"좌동", comp:"같은 탭이지만 <b>화면 최상위 · 전폭</b>. 고르면 좌측바가 <b>패키지 분류로 갈림</b> - 상품 없는 분류는 '준비 중'"},
+  {ax:"패키지", cur:"<b>이 화면에 없음</b> - 하위 항목의 '패키지' 배지가 별도 랜딩(/landing/*.asp)을 새창으로 열고, 개강일·장바구니가 끊김", stack:"같은 화면 안 <b>패키지/단과 탭</b>", side:"좌동", comp:"같은 탭이지만 <b>화면 최상위 · 전폭</b>. 고르면 좌측바가 <b>패키지 분류로 갈림</b> - 상품 없는 분류도 목록에 남김"},
   {ax:"개설 차수", cur:"과정과 무관하게 전 차수 고정 노출. 미개설·마감 여부 표기 없음", stack:"<b>과정 × 수강방식</b>의 종속값 · 미개설은 비활성 + 사유", side:"좌동", comp:"좌동. 위치만 <b>좌측바와 같은 라인</b>으로 올라옴"},
   {ax:"마감 과목", cur:"'대기접수' 버튼만 · 다음 차수 안내 없음", stack:"<b>다음 차수 전환</b> 유도", side:"좌동", comp:"좌동"},
   {ax:"잔여석", cur:"'마감임박' 문구만", stack:"10석 미만에서만 <b>잔여 N석</b>", side:"좌동", comp:"좌동"},
