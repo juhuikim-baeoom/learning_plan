@@ -82,6 +82,8 @@
   .st-pill.part{background:var(--amber-soft);color:var(--amber);}
   .apps .sub-t{display:block;font-size:10px;color:var(--gray-light);font-weight:600;margin-top:3px;white-space:nowrap;}
   .apps .mail{color:var(--gray);}
+  .apps .mgr{color:var(--gray);font-weight:700;white-space:nowrap;}
+  .apps .mgr.me{color:var(--ink);}
   .apps .none{color:var(--gray-light);font-weight:700;}
   .apps-scroll{overflow-x:auto;}
   .apps{min-width:1000px;}
@@ -213,7 +215,7 @@
   <div class="lay-note fold" id="layNote">
     <div class="ln-head">
       <span class="ln-tag">기획설명</span>
-      <b>원클릭 제안 - 담당자가 조립하지 않는 학습설계</b>
+      <b>원클릭 제안 - 패키지 기반 제안형 학습설계</b>
       <button class="ln-tog" onclick="lnTog()" id="lnTogBtn">설명 펼치기</button>
     </div>
     <div class="ln-body" id="lnBody" style="display:none">
@@ -274,7 +276,7 @@
   <div class="page-head">
     <div>
       <h1>원클릭 제안 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
-      <div class="sub">패키지 기반 제안형 학습설계 - 학습자 관리 목록에서 제안 · 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
+      <div class="sub">학습자 관리 목록에서 제안 · 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
     </div>
     <div class="toggles">
       <div class="vw-toggle">
@@ -494,6 +496,12 @@ function stateCell(a){
   return `<span class="st-pill wait">미발송</span>`;
 }
 
+/* 대표지역은 지역 슬롯(수도권반/전국반)이 있는 분류에서만 제안을 가른다 -
+   그 밖의 분류에서는 값이 있어도 아무것도 결정하지 않으므로 목록에 적지 않는다 */
+function hasRegionSlot(cls){
+  return Object.values(SLOTS[cls]||{}).some(s => s.region);
+}
+
 /* 담당 범위 - 내 담당이 기본값 */
 function scopeApps(){ return APPS.filter(a => scopeOwn==="mine" ? a.mgr===ME : true); }
 function switchOwner(o){
@@ -514,11 +522,12 @@ function renderApps(){
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
       : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
     return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
-      <td class="nm">${a.nm}${a.mgr!==ME?`<span class="sub-t">담당 ${a.mgr}</span>`:""}</td>
+      <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
+      <td class="nm">${a.nm}</td>
       <td class="tel">${a.tel}</td>
       <td class="mail">${a.email}</td>
       <td>${a.edu}</td>
-      <td>${CLS[a.cls].nm}<span class="sub-t">대표지역 ${a.region}</span></td>
+      <td>${CLS[a.cls].nm}${hasRegionSlot(a.cls) ? `<span class="sub-t">대표지역 ${a.region}</span>` : ""}</td>
       <td class="c">${btn}</td>
       <td>${stateCell(a)}</td>
       <td class="c">${viewCell(a)}</td>
@@ -526,7 +535,7 @@ function renderApps(){
     </tr>`;
   }).join("");
   document.getElementById("appTable").innerHTML =
-    `<tr><th>이름</th><th>연락처</th><th>이메일</th><th>최종학력</th><th>목표과정</th>
+    `<tr><th>담당</th><th>이름</th><th>연락처</th><th>이메일</th><th>최종학력</th><th>목표과정</th>
       <th class="c">제안하기</th><th>상태</th><th class="c">열람 여부</th><th class="c">결제 여부</th></tr>${rows}`;
 }
 
@@ -610,7 +619,7 @@ function renderProp(){
           <div class="pl-d">
             ${CLS[cls].cnt ? `분류 <b>${CLS[cls].nm}</b> ${CLS[cls].cnt}건 중 슬롯별 <b>모집중 최이른 개강</b> 1건씩 선별 → 학력 규칙으로 <b>${picks.length}개</b> 제안<br>` : ""}
             추천 근거 - ${rule ? rule.why : "학력 규칙 미정의 · 전체 슬롯 노출"}
-            ${SLOTS[cls][picks[0]?.no]?.region ? `<br>지역 슬롯은 접수 대표지역 <b>${curApp.region}</b> 기준 자동 선택` : ""}
+            ${picks.some(p => SLOTS[cls][p.no] && SLOTS[cls][p.no].region) ? `<br>지역 슬롯은 접수 대표지역 <b>${curApp.region}</b> 기준 자동 선택` : ""}
           </div>
         </div>
       </div>
