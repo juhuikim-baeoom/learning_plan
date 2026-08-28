@@ -518,7 +518,7 @@ function payCell(a){
 function stateCell(a){
   if(a.st==="sent")    return `<span class="st-pill sent">${a.sentDt} 발송</span>`;
   if(a.st==="expired") return `<span class="st-pill expired">제안만료</span>`;
-  return `<span class="st-pill wait">미발송</span>`;
+  return `<span class="st-pill wait">미제안</span>`;
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
