@@ -69,6 +69,8 @@
   .apps tr.sel td{background:var(--soft);}
   .apps .nm{font-weight:800;white-space:nowrap;}
   .apps .uid{font-weight:700;color:var(--gray-light);margin-left:3px;}
+  .apps .prev{display:inline-block;font-size:9.5px;font-weight:700;color:var(--gray-light);margin-left:5px;}
+  .apps tr.prev-row td{background:#fcfcfd;}
   .apps .seq{display:inline-block;font-size:9.5px;font-weight:800;color:var(--violet);background:var(--violet-soft);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:1px;}
   .tel-ic{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:6px;font-size:11px;line-height:1;padding:3px 5px;margin-left:6px;cursor:pointer;font-family:inherit;vertical-align:middle;}
   .tel-ic:hover{border-color:var(--mid);color:var(--main);}
@@ -117,6 +119,9 @@
   .mo-x:hover{border-color:var(--mid);color:var(--main);}
   .ro-bar{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:12px;line-height:1.6;}
   .ro-bar b{color:var(--ink);}
+  .lab-out{display:inline-block;font-size:9.5px;font-weight:800;color:var(--main);background:var(--soft);border-radius:6px;padding:2px 6px;}
+  .lab-in{display:inline-block;font-size:9.5px;font-weight:800;color:var(--gray);background:#f0f1f4;border-radius:6px;padding:2px 6px;}
+  textarea.memo{background:#fbfcfe;}
   .diff-bar{background:#fff8e2;border:1px solid #f0dba8;border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:#8a6212;margin-bottom:12px;line-height:1.7;}
   .diff-bar b{color:#6d4d08;}
   .seq-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
@@ -252,6 +257,8 @@
           <li>그래서 목록에 <b>신청구분·실명인증은 두지 않는다</b> - 아직 신청 자체가 없으므로 채워질 값이 아님</li>
           <li>진입점은 <b>제안 목록 관리</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
+          <li>목록 행은 <b>제안 건 단위</b> - 재제안하면 이전 건을 덮지 않고 새 줄이 쌓인다. 같은 학습자가 여러 줄이 되고 회차마다 열람·결제가 따로 남는다 (지난 건은 흐리게 · 이름 옆 <b>N차</b>)</li>
+          <li>문구는 두 갈래 - <b>담당자 코멘트</b>는 학습자 화면에 그대로 나가고, <b>내부 메모</b>는 담당자만 본다. 재제안 사유·통화 내용은 내부 메모에 남긴다</li>
         </ul>
       </div>
       <div class="ln-sec">
@@ -416,12 +423,14 @@ const APPS = [
      picks:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
             {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
             {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
-     cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"}]},
+     cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음",
+     memo:"상담 시 실습 지역 전국반 희망 확인"}]},
   {id:"a5", dt:"26.08.12", nm:"정OO", tel:"010-5678-9012", uid:"jung1120",  edu:"고등학교 졸업", cls:"sw", addr:"서울 노원구",         mgr:ME,
    /* 2차까지 간 건 - 1차가 미열람이라 개강 일정만 갱신해 재발송 */
-   props:[{sentDt:"26.08.12", view:"미열람", pay:"미결제", picks:null, cmt:""},
+   props:[{sentDt:"26.08.12", view:"미열람", pay:"미결제", picks:null, cmt:"", memo:""},
           {sentDt:"26.08.18", view:"미열람", pay:"미결제", picks:null,
-           cmt:"앞서 보내 드린 구성과 동일하며, 개강 일정만 최신 차수로 갱신했습니다."}]},
+           cmt:"앞서 보내 드린 구성과 동일하며, 개강 일정만 최신 차수로 갱신했습니다.",
+           memo:"1차 미열람 · 유선 3회 부재 → 개강 일정만 갱신해 재발송"}]},
   {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", uid:"hanul77",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구",         mgr:ME,
    props:[{sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", picks:null, cmt:""}]},
   {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", uid:"oh5star",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구",         mgr:ME, props:[]},
@@ -551,34 +560,41 @@ ${a.nm}(${a.uid}) ${a.tel}
 · 전체 번호는 연결 시점에만 사용`);
 }
 
-function viewCell(a){
-  const r = lastRound(a);
-  if(!r)              return dash;
-  if(r.view==="미열람") return `<span class="st-pill no">미열람</span>`;
-  return `<span class="st-pill ok">${r.view}</span>`;
+function viewCell(x){
+  if(!x.r)                return dash;
+  if(x.r.view==="미열람")  return `<span class="st-pill no">미열람</span>`;
+  return `<span class="st-pill ok">${x.r.view}</span>`;
 }
-function payCell(a){
-  const r = lastRound(a);
-  if(!r)              return dash;
-  if(r.pay==="미결제") return `<span class="st-pill no">미결제</span>`;
-  return `<span class="st-pill ok">${r.pay}</span>`;
+function payCell(x){
+  if(!x.r)                return dash;
+  if(x.r.pay==="미결제")   return `<span class="st-pill no">미결제</span>`;
+  return `<span class="st-pill ok">${x.r.pay}</span>`;
 }
-/* 회차가 쌓여도 행은 사람 하나 - 최신 회차를 보여 주고 회차 수만 배지로 */
-function seqBadge(a){
-  const n = rounds(a).length;
-  return n > 1 ? `<span class="seq">${n}차</span>` : "";
+/* 회차 배지 - 두 번 이상 보낸 사람의 건에만 */
+function seqBadge(x){
+  return (x.seq!=null && rounds(x.a).length > 1) ? `<span class="seq">${x.seq+1}차</span>` : "";
 }
-function stateCell(a){
-  const st = stOf(a), r = lastRound(a);
-  if(st==="sent")    return `<span class="st-pill sent">${r.sentDt} 발송</span>${seqBadge(a)}`;
-  if(st==="expired") return `<span class="st-pill expired">제안만료</span>${seqBadge(a)}`;
-  return `<span class="st-pill wait">미제안</span>`;
+function stateCell(x){
+  if(x.seq==null) return `<span class="st-pill wait">미제안</span>`;
+  if(x.latest && x.a.expired) return `<span class="st-pill expired">제안만료</span>`;
+  return `<span class="st-pill sent">${x.r.sentDt} 발송</span>${x.latest ? "" : `<span class="prev">지난 발송</span>`}`;
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
 function scopeApps(){
-  return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true))
-             .filter(a => !onlyNew || stOf(a)==="new");
+  return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true));
+}
+
+/* 목록 행 = 제안 건. 재제안하면 이전 건은 그대로 두고 새 행이 쌓인다.
+   한 번도 보내지 않은 사람은 회차 없는 행 하나 (미제안) */
+function listRows(){
+  const rows = [];
+  scopeApps().forEach(a => {
+    const rs = rounds(a);
+    if(!rs.length){ rows.push({a, seq:null, r:null, latest:true}); return; }
+    for(let i = rs.length-1; i >= 0; i--) rows.push({a, seq:i, r:rs[i], latest:i===rs.length-1});
+  });
+  return rows.filter(x => !onlyNew || x.seq===null);
 }
 function movePage(d){ page += d; renderApps(); }
 
@@ -590,31 +606,33 @@ function switchOwner(o){
 }
 
 function renderApps(){
-  const list = scopeApps();
+  const list = listRows();
   const pages = Math.max(1, Math.ceil(list.length / perPage));
   if(page > pages) page = pages;
   document.getElementById("lsTotal").textContent = list.length;
   document.getElementById("lsPage").textContent = `${page}/${pages}`;
   document.getElementById("pgPrev").disabled = page<=1;
   document.getElementById("pgNext").disabled = page>=pages;
-  const rows = list.slice((page-1)*perPage, page*perPage).map(a => {
-    const on = curApp && curApp.id===a.id;
-    const st = stOf(a);
-    const btn = st==="new"
+  const rows = list.slice((page-1)*perPage, page*perPage).map(x => {
+    const a = x.a;
+    const on = curApp && curApp.id===a.id && (propRO ? curSeq===x.seq : x.latest);
+    /* 지난 회차 행은 그 회차 발송본만 열고, 새 제안은 최신 행에서 */
+    const btn = x.seq==null
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
-      : st==="expired"
+      : (x.latest && a.expired)
         ? `<button class="btn-one" onclick="newRound('${a.id}')">재제안</button>`
-        : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
-    return `<tr class="${on?"sel":""}"${st==="expired"?' style="opacity:.62"':""}>
+        : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}',${x.seq})">제안 보기</button>`;
+    const dim = (x.seq!=null && !x.latest) || (x.latest && a.expired);
+    return `<tr class="${on?"sel":""}${x.seq!=null && !x.latest ? " prev-row":""}"${dim?' style="opacity:.62"':""}>
       <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
-      <td class="nm">${a.nm}<span class="uid">(${a.uid})</span></td>
+      <td class="nm">${a.nm}<span class="uid">(${a.uid})</span>${seqBadge(x)}</td>
       <td class="tel">${a.tel.slice(-4)}<button class="tel-ic" onclick="call('${a.id}')" title="전화 연결">☎</button></td>
       <td>${a.edu}</td>
       <td>${CLS[a.cls].nm}</td>
       <td class="c">${btn}</td>
-      <td>${stateCell(a)}</td>
-      <td class="c">${viewCell(a)}</td>
-      <td class="c">${payCell(a)}</td>
+      <td>${stateCell(x)}</td>
+      <td class="c">${viewCell(x)}</td>
+      <td class="c">${payCell(x)}</td>
     </tr>`;
   }).join("");
   document.getElementById("appTable").innerHTML =
@@ -711,8 +729,11 @@ function renderProp(){
       ${cards || `<div class="empty">모집중인 패키지 없음</div>`}
       ${exclHtml}
 
-      <div class="fld-lab">담당자 코멘트 <span style="font-weight:600;color:var(--gray-light);">${propRO ? "학습자 화면에 노출된 문구 - 발송본에 고정" : "학습자 화면에 그대로 노출 · 선택 - 비워도 발송 가능"}</span></div>
+      <div class="fld-lab">담당자 코멘트 <span class="lab-out">학습자 화면에 노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "발송본에 고정" : "선택 - 비워도 발송 가능"}</span></div>
       <textarea id="cmt" ${propRO?"readonly":""} placeholder="예) 실습을 타 기관에서 수강하실 예정이면 두 번째 구성이 적합">${propRO ? roCmt : (curApp.edu==="고등학교 졸업" ? "전문학사 학위와 자격증을 함께 취득하는 구성으로 제안드림 - 학위 없이는 2급 신청이 불가한 점 참고 부탁" : "")}</textarea>
+
+      <div class="fld-lab">내부 메모 <span class="lab-in">학습자 비노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "이 회차를 보낸 이유 - 담당자만 봄" : "왜 다시 보내는지 · 통화 내용 등 - 담당자만 봄"}</span></div>
+      <textarea id="memo" class="memo" ${propRO?"readonly":""} placeholder="예) 1차 미열람 · 유선 3회 부재 → 개강 일정만 갱신해 재발송">${propRO ? (rounds(curApp)[curSeq].memo||"") : ""}</textarea>
 
       <div class="expire">
         <b>유효기간 자동</b>
@@ -737,10 +758,11 @@ function send(){
   const ons = picks.filter(p => p.on);
   if(!ons.length){ alert("제안할 구성을 최소 1개 선택"); return; }
   const cmt = (document.getElementById("cmt")||{}).value||"";
+  const memo = (document.getElementById("memo")||{}).value||"";
   sent = {app:curApp, picks:ons.slice(), cmt, exp:expireOf()};
   stuPick = null;
-  /* 이전 회차는 지우지 않고 쌓는다 - 열람·결제는 새 회차 기준으로 다시 시작 */
-  curApp.props = rounds(curApp).concat([{sentDt:"26.08.20", view:"미열람", pay:"미결제", picks:ons.slice(), cmt}]);
+  /* 이전 건은 지우지 않고 새 건으로 쌓는다 - 열람·결제는 새 회차 기준으로 다시 시작 */
+  curApp.props = rounds(curApp).concat([{sentDt:"26.08.20", view:"미열람", pay:"미결제", picks:ons.slice(), cmt, memo}]);
   curApp.expired = false;
   const seq = rounds(curApp).length;
   closeProp();
