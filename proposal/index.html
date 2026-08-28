@@ -81,12 +81,11 @@
   .st-pill.wait{background:#f0f1f4;color:var(--gray-light);}
   .st-pill.part{background:var(--amber-soft);color:var(--amber);}
   .apps .sub-t{display:block;font-size:10px;color:var(--gray-light);font-weight:600;margin-top:3px;white-space:nowrap;}
-  .apps .mail{color:var(--gray);}
   .apps .mgr{color:var(--gray);font-weight:700;white-space:nowrap;}
   .apps .mgr.me{color:var(--ink);}
   .apps .none{color:var(--gray-light);font-weight:700;}
   .apps-scroll{overflow-x:auto;}
-  .apps{min-width:1000px;}
+  .apps{min-width:940px;}
   .apps td.c,.apps th.c{text-align:center;}
   .owner-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:20px;padding:5px 12px;}
   .owner-tag b{color:var(--ink);}
@@ -108,6 +107,7 @@
   .prop-lead .pl-t{font-size:13px;font-weight:800;color:var(--navy);}
   .prop-lead .pl-d{font-size:11.5px;color:#3d6b83;margin-top:4px;line-height:1.6;}
   .prop-lead .pl-d b{font-weight:800;color:var(--navy);}
+  .pl-id{font-size:11.5px;font-weight:700;color:#3d6b83;}
   .pl-rg{display:inline-block;font-size:10px;font-weight:800;background:#fff;border:1px solid var(--mid);color:var(--navy);border-radius:7px;padding:2px 7px;margin-left:4px;}
   .auto-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:9px;padding:3px 9px;white-space:nowrap;}
 
@@ -226,7 +226,7 @@
           <li><b>학습설계 툴</b>(설계) - 기이수 인정부터 학기 배치까지 담당자가 <b>쌓아 올리는</b> 화면. 보유학점·자격증 케이스용</li>
           <li><b>원클릭 제안</b>(제안) - 규칙이 만든 결과를 담당자가 <b>승인만 하는</b> 화면. 보유학점 없는 일반 케이스용</li>
           <li>접수 건의 대다수가 후자이므로, 두 화면을 나누면 담당자 시간이 맞춤 설계에만 쓰임</li>
-          <li>진입점은 <b>학습자 관리 목록</b> - 본인 담당 학습자를 이름·연락처·이메일·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움</li>
+          <li>진입점은 <b>학습자 관리 목록</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
         </ul>
       </div>
@@ -372,30 +372,30 @@ const RULE = {
   optional: {sw:[5], ko:[]},
 };
 
-/* ── 담당 학습자 (LMS 신청 폼 최소 4필드 + 관리 컬럼) ───
+/* ── 담당 학습자 (LMS 학습설계 목록의 회원ID·성명·전화번호·전공 + 관리 컬럼) ───
    st  - new 접수 / sent 제안 발송 / expired 제안 만료(모집 마감)
    view - "-" 발송 전 / "n" 미열람 / 날짜 문자열이면 열람 시각
    pay  - off 비활성 / none 미결제 / part 부분결제 / paid 결제완료 */
 const ME = "김주희";
 const APPS = [
-  {id:"a1", dt:"26.08.20", nm:"김OO", tel:"010-1234-5678", email:"kim***@naver.com",   edu:"전문대학 졸업", cls:"sw", addr:"경기 성남시 분당구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a2", dt:"26.08.20", nm:"이OO", tel:"010-2345-6789", email:"lee***@daum.net",    edu:"고등학교 졸업", cls:"sw", addr:"충북 청주시 흥덕구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a3", dt:"26.08.19", nm:"박OO", tel:"010-3456-7890", email:"park**@gmail.com",   edu:"대학교 졸업",   cls:"ko", addr:"부산 해운대구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a4", dt:"26.08.19", nm:"최OO", tel:"010-4567-8901", email:"choi**@naver.com",   edu:"전문대학 졸업", cls:"sw", addr:"전남 순천시", st:"sent", sentDt:"26.08.19", view:"26.08.19", pay:"미결제", mgr:ME,
+  {id:"a1", dt:"26.08.20", nm:"김OO", tel:"010-1234-5678", uid:"kimjh82",   edu:"전문대학 졸업", cls:"sw", addr:"경기 성남시 분당구", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a2", dt:"26.08.20", nm:"이OO", tel:"010-2345-6789", uid:"lee0417",    edu:"고등학교 졸업", cls:"sw", addr:"충북 청주시 흥덕구", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a3", dt:"26.08.19", nm:"박OO", tel:"010-3456-7890", uid:"parksy93",   edu:"대학교 졸업",   cls:"ko", addr:"부산 해운대구", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a4", dt:"26.08.19", nm:"최OO", tel:"010-4567-8901", uid:"choims21",   edu:"전문대학 졸업", cls:"sw", addr:"전남 순천시", st:"sent", sentDt:"26.08.19", view:"26.08.19", pay:"미결제", mgr:ME,
    /* 발송본 스냅샷 - 발송 후 5번 슬롯이 마감된 케이스 (학습자 화면의 마감·문의 유도 시연 경로) */
    snap:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
          {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
          {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
    cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"},
-  {id:"a5", dt:"26.08.18", nm:"정OO", tel:"010-5678-9012", email:"jung**@hanmail.net", edu:"고등학교 졸업", cls:"sw", addr:"서울 노원구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:ME},
-  {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", email:"han***@gmail.com",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구", st:"sent", sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", mgr:ME},
-  {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", email:"oh****@naver.com",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a8", dt:"26.08.05", nm:"윤OO", tel:"010-8901-2345", email:"yoon**@daum.net",    edu:"고등학교 졸업", cls:"sw", addr:"강원 원주시", st:"expired", sentDt:"26.08.05", view:"26.08.06", pay:"미결제", mgr:ME},
+  {id:"a5", dt:"26.08.18", nm:"정OO", tel:"010-5678-9012", uid:"jung1120", edu:"고등학교 졸업", cls:"sw", addr:"서울 노원구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:ME},
+  {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", uid:"hanul77",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구", st:"sent", sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", mgr:ME},
+  {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", uid:"oh5star",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a8", dt:"26.08.05", nm:"윤OO", tel:"010-8901-2345", uid:"yoonhy21",    edu:"고등학교 졸업", cls:"sw", addr:"강원 원주시", st:"expired", sentDt:"26.08.05", view:"26.08.06", pay:"미결제", mgr:ME},
   /* 팀 전체에서만 보이는 타담당 건 */
-  {id:"b1", dt:"26.08.20", nm:"강OO", tel:"010-9012-3456", email:"kang*@gmail.com",    edu:"대학교 졸업",   cls:"sw", addr:"서울 강서구", st:"new",  view:"-",        pay:"-",      mgr:"박OO"},
-  {id:"b2", dt:"26.08.19", nm:"조OO", tel:"010-0123-4567", email:"cho**@naver.com",    edu:"전문대학 졸업", cls:"ko", addr:"경남 창원시 성산구", st:"sent", sentDt:"26.08.19", view:"26.08.20", pay:"26.08.20", mgr:"박OO"},
-  {id:"b3", dt:"26.08.18", nm:"장OO", tel:"010-1122-3344", email:"jang*@daum.net",     edu:"고등학교 졸업", cls:"sw", addr:"전북 전주시 완산구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:"이OO"},
-  {id:"b4", dt:"26.08.12", nm:"서OO", tel:"010-5566-7788", email:"seo**@gmail.com",    edu:"전문대학 졸업", cls:"sw", addr:"경기 고양시 일산동구", st:"new",  view:"-",        pay:"-",      mgr:"이OO"},
+  {id:"b1", dt:"26.08.20", nm:"강OO", tel:"010-9012-3456", uid:"kangdw09",    edu:"대학교 졸업",   cls:"sw", addr:"서울 강서구", st:"new",  view:"-",        pay:"-",      mgr:"박OO"},
+  {id:"b2", dt:"26.08.19", nm:"조OO", tel:"010-0123-4567", uid:"cho9207",    edu:"전문대학 졸업", cls:"ko", addr:"경남 창원시 성산구", st:"sent", sentDt:"26.08.19", view:"26.08.20", pay:"26.08.20", mgr:"박OO"},
+  {id:"b3", dt:"26.08.18", nm:"장OO", tel:"010-1122-3344", uid:"jangmi33",     edu:"고등학교 졸업", cls:"sw", addr:"전북 전주시 완산구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:"이OO"},
+  {id:"b4", dt:"26.08.12", nm:"서OO", tel:"010-5566-7788", uid:"seojin08",    edu:"전문대학 졸업", cls:"sw", addr:"경기 고양시 일산동구", st:"new",  view:"-",        pay:"-",      mgr:"이OO"},
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -523,9 +523,8 @@ function renderApps(){
       : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
     return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
       <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
-      <td class="nm">${a.nm}</td>
+      <td class="nm">${a.nm}<span class="sub-t">${a.uid}</span></td>
       <td class="tel">${a.tel}</td>
-      <td class="mail">${a.email}</td>
       <td>${a.edu}</td>
       <td>${CLS[a.cls].nm}</td>
       <td class="c">${btn}</td>
@@ -535,7 +534,7 @@ function renderApps(){
     </tr>`;
   }).join("");
   document.getElementById("appTable").innerHTML =
-    `<tr><th>담당</th><th>이름</th><th>연락처</th><th>이메일</th><th>최종학력</th><th>목표과정</th>
+    `<tr><th>담당</th><th>이름(ID)</th><th>연락처</th><th>최종학력</th><th>목표과정</th>
       <th class="c">제안하기</th><th>상태</th><th class="c">열람 여부</th><th class="c">결제 여부</th></tr>${rows}`;
 }
 
@@ -614,7 +613,7 @@ function renderProp(){
       ${propRO ? `<div class="ro-bar"><b>${curApp.sentDt} 발송</b>한 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 이 화면에서는 수정할 수 없습니다. 구성을 바꾸려면 새 제안을 발송합니다.</div>` : ""}
       <div class="prop-lead">
         <div class="pl-main">
-          <div class="pl-t">${curApp.nm} · ${curApp.edu} · ${CLS[cls].nm}</div>
+          <div class="pl-t">${curApp.nm} <span class="pl-id">${curApp.uid}</span> · ${curApp.edu} · ${CLS[cls].nm}</div>
           <div class="pl-d">주소지 <b>${curApp.addr}</b> <span class="pl-rg">${regionOf(curApp.addr)}</span></div>
         </div>
       </div>
