@@ -69,6 +69,7 @@
   .apps tr.sel td{background:var(--soft);}
   .apps .nm{font-weight:800;white-space:nowrap;}
   .apps .uid{font-weight:700;color:var(--gray-light);margin-left:3px;}
+  .apps .seq{display:inline-block;font-size:9.5px;font-weight:800;color:var(--violet);background:var(--violet-soft);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:1px;}
   .tel-ic{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:6px;font-size:11px;line-height:1;padding:3px 5px;margin-left:6px;cursor:pointer;font-family:inherit;vertical-align:middle;}
   .tel-ic:hover{border-color:var(--mid);color:var(--main);}
   .apps .tel{color:var(--gray);font-variant-numeric:tabular-nums;}
@@ -90,9 +91,9 @@
   .apps-scroll{overflow-x:auto;}
   .apps{min-width:900px;}
   /* 내용에 따라 열 너비가 흔들리지 않도록 고정 (table-layout:fixed) */
-  .apps col.c-mgr{width:8%;}  .apps col.c-nm{width:17%;} .apps col.c-tel{width:9%;}
-  .apps col.c-edu{width:11%;} .apps col.c-goal{width:14%;} .apps col.c-prop{width:10%;}
-  .apps col.c-st{width:12%;}  .apps col.c-view{width:9%;} .apps col.c-pay{width:10%;}
+  .apps col.c-mgr{width:7%;}  .apps col.c-nm{width:18%;} .apps col.c-tel{width:9%;}
+  .apps col.c-edu{width:10%;} .apps col.c-goal{width:13%;} .apps col.c-prop{width:10%;}
+  .apps col.c-st{width:15%;}  .apps col.c-view{width:9%;} .apps col.c-pay{width:9%;}
   .apps td, .apps th{overflow:hidden;text-overflow:ellipsis;}
   .apps td.c,.apps th.c{text-align:center;}
   .chk{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;}
@@ -116,6 +117,13 @@
   .mo-x:hover{border-color:var(--mid);color:var(--main);}
   .ro-bar{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:12px;line-height:1.6;}
   .ro-bar b{color:var(--ink);}
+  .diff-bar{background:#fff8e2;border:1px solid #f0dba8;border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:#8a6212;margin-bottom:12px;line-height:1.7;}
+  .diff-bar b{color:#6d4d08;}
+  .seq-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .seq-tab{border:1px solid var(--line);background:#fff;border-radius:20px;font-family:inherit;font-size:11px;font-weight:700;color:var(--gray);padding:5px 12px;cursor:pointer;}
+  .seq-tab:hover{border-color:var(--mid);color:var(--main);}
+  .seq-tab.on{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .seq-tab.now{background:var(--soft);border-color:var(--mid);color:var(--navy);cursor:default;}
 
   /* 제안안 */
   .prop-lead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--mid);border-radius:11px;padding:12px 14px;margin-bottom:14px;}
@@ -399,25 +407,47 @@ const RULE = {
    pay  - off 비활성 / none 미결제 / part 부분결제 / paid 결제완료 */
 const ME = "김주희";
 const APPS = [
-  {id:"a1", dt:"26.08.20", nm:"김OO", tel:"010-1234-5678", uid:"kimjh82",   edu:"전문대학 졸업", cls:"sw", addr:"경기 성남시 분당구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a2", dt:"26.08.20", nm:"이OO", tel:"010-2345-6789", uid:"lee0417",    edu:"고등학교 졸업", cls:"sw", addr:"충북 청주시 흥덕구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a3", dt:"26.08.19", nm:"박OO", tel:"010-3456-7890", uid:"parksy93",   edu:"대학교 졸업",   cls:"ko", addr:"부산 해운대구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a4", dt:"26.08.19", nm:"최OO", tel:"010-4567-8901", uid:"choims21",   edu:"전문대학 졸업", cls:"sw", addr:"전남 순천시", st:"sent", sentDt:"26.08.19", view:"26.08.19", pay:"미결제", mgr:ME,
-   /* 발송본 스냅샷 - 발송 후 5번 슬롯이 마감된 케이스 (학습자 화면의 마감·문의 유도 시연 경로) */
-   snap:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
-         {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
-         {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
-   cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"},
-  {id:"a5", dt:"26.08.18", nm:"정OO", tel:"010-5678-9012", uid:"jung1120", edu:"고등학교 졸업", cls:"sw", addr:"서울 노원구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:ME},
-  {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", uid:"hanul77",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구", st:"sent", sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", mgr:ME},
-  {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", uid:"oh5star",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구", st:"new",  view:"-",        pay:"-",      mgr:ME},
-  {id:"a8", dt:"26.08.05", nm:"윤OO", tel:"010-8901-2345", uid:"yoonhy21",    edu:"고등학교 졸업", cls:"sw", addr:"강원 원주시", st:"expired", sentDt:"26.08.05", view:"26.08.06", pay:"미결제", mgr:ME},
+  {id:"a1", dt:"26.08.20", nm:"김OO", tel:"010-1234-5678", uid:"kimjh82",   edu:"전문대학 졸업", cls:"sw", addr:"경기 성남시 분당구",   mgr:ME, props:[]},
+  {id:"a2", dt:"26.08.20", nm:"이OO", tel:"010-2345-6789", uid:"lee0417",   edu:"고등학교 졸업", cls:"sw", addr:"충북 청주시 흥덕구",   mgr:ME, props:[]},
+  {id:"a3", dt:"26.08.19", nm:"박OO", tel:"010-3456-7890", uid:"parksy93",  edu:"대학교 졸업",   cls:"ko", addr:"부산 해운대구",       mgr:ME, props:[]},
+  {id:"a4", dt:"26.08.19", nm:"최OO", tel:"010-4567-8901", uid:"choims21",  edu:"전문대학 졸업", cls:"sw", addr:"전남 순천시",         mgr:ME,
+   props:[{sentDt:"26.08.19", view:"26.08.19", pay:"미결제",
+     /* 발송 후 5번 슬롯이 마감된 케이스 - 학습자 화면의 마감·문의 유도 시연 경로 */
+     picks:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
+            {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
+            {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
+     cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"}]},
+  {id:"a5", dt:"26.08.12", nm:"정OO", tel:"010-5678-9012", uid:"jung1120",  edu:"고등학교 졸업", cls:"sw", addr:"서울 노원구",         mgr:ME,
+   /* 2차까지 간 건 - 1차가 미열람이라 개강 일정만 갱신해 재발송 */
+   props:[{sentDt:"26.08.12", view:"미열람", pay:"미결제", picks:null, cmt:""},
+          {sentDt:"26.08.18", view:"미열람", pay:"미결제", picks:null,
+           cmt:"1차 안내 후 연락이 닿지 않아 개강 일정만 갱신해 다시 보냄"}]},
+  {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", uid:"hanul77",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구",         mgr:ME,
+   props:[{sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", picks:null, cmt:""}]},
+  {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", uid:"oh5star",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구",         mgr:ME, props:[]},
+  {id:"a8", dt:"26.08.05", nm:"윤OO", tel:"010-8901-2345", uid:"yoonhy21",  edu:"고등학교 졸업", cls:"sw", addr:"강원 원주시",         mgr:ME,
+   /* 최신 회차의 모집이 마감된 건 - 재제안 대상 */
+   expired:true,
+   props:[{sentDt:"26.08.05", view:"26.08.06", pay:"미결제", picks:null, cmt:""}]},
   /* 팀 전체에서만 보이는 타담당 건 */
-  {id:"b1", dt:"26.08.20", nm:"강OO", tel:"010-9012-3456", uid:"kangdw09",    edu:"대학교 졸업",   cls:"sw", addr:"서울 강서구", st:"new",  view:"-",        pay:"-",      mgr:"박OO"},
-  {id:"b2", dt:"26.08.19", nm:"조OO", tel:"010-0123-4567", uid:"cho9207",    edu:"전문대학 졸업", cls:"ko", addr:"경남 창원시 성산구", st:"sent", sentDt:"26.08.19", view:"26.08.20", pay:"26.08.20", mgr:"박OO"},
-  {id:"b3", dt:"26.08.18", nm:"장OO", tel:"010-1122-3344", uid:"jangmi33",     edu:"고등학교 졸업", cls:"sw", addr:"전북 전주시 완산구", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:"이OO"},
-  {id:"b4", dt:"26.08.12", nm:"서OO", tel:"010-5566-7788", uid:"seojin08",    edu:"전문대학 졸업", cls:"sw", addr:"경기 고양시 일산동구", st:"new",  view:"-",        pay:"-",      mgr:"이OO"},
+  {id:"b1", dt:"26.08.20", nm:"강OO", tel:"010-9012-3456", uid:"kangdw09",  edu:"대학교 졸업",   cls:"sw", addr:"서울 강서구",         mgr:"박OO", props:[]},
+  {id:"b2", dt:"26.08.19", nm:"조OO", tel:"010-0123-4567", uid:"cho9207",   edu:"전문대학 졸업", cls:"ko", addr:"경남 창원시 성산구", mgr:"박OO",
+   props:[{sentDt:"26.08.19", view:"26.08.20", pay:"26.08.20", picks:null, cmt:""}]},
+  {id:"b3", dt:"26.08.18", nm:"장OO", tel:"010-1122-3344", uid:"jangmi33",  edu:"고등학교 졸업", cls:"sw", addr:"전북 전주시 완산구", mgr:"이OO",
+   props:[{sentDt:"26.08.18", view:"미열람", pay:"미결제", picks:null, cmt:""}]},
+  {id:"b4", dt:"26.08.12", nm:"서OO", tel:"010-5566-7788", uid:"seojin08",  edu:"전문대학 졸업", cls:"sw", addr:"경기 고양시 일산동구", mgr:"이OO", props:[]},
 ];
+
+/* 발송 회차 - 목록은 사람 한 줄, 회차는 상태 칸 배지와 팝업 탭으로 본다.
+   picks가 null인 시연 건은 그 시점 규칙 결과로 갈음한다 (스냅샷 미보관) */
+function rounds(a){ return a.props || []; }
+function lastRound(a){ const r = rounds(a); return r.length ? r[r.length-1] : null; }
+function stOf(a){ return !rounds(a).length ? "new" : (a.expired ? "expired" : "sent"); }
+function roundPicks(a, i){
+  const r = rounds(a)[i];
+  return ((r && r.picks && r.picks.length) ? r.picks : autoPicks(a))
+    .filter(p => PKGS.some(x => x.id===p.pkgId));
+}
 
 /* ══════════════════════════════════════════════════════════
    상태
@@ -428,6 +458,7 @@ let scopeOwn = "mine";  // 목록 범위 - mine 내 담당(기본) / team 팀 �
 let onlyNew = false;    // 미제안(아직 제안을 보내지 않은) 건만
 let perPage = 100, page = 1;   // 목록 페이지 - 현행 목록과 같은 "총 N개 · 한 화면에" 방식
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
+let curSeq = null;      // 읽기 전용으로 열어 둔 회차 (0-base), 새 초안이면 null
 let roCmt = "";         // 발송본 코멘트
 let view = "admin";
 let device = "mo";
@@ -476,6 +507,7 @@ function oneClick(appId){
   if(!app) return;
   curApp = app;
   propRO = false;
+  curSeq = null;
   roCmt = "";
   picks = autoPicks(app);
   renderApps();
@@ -520,25 +552,33 @@ ${a.nm}(${a.uid}) ${a.tel}
 }
 
 function viewCell(a){
-  if(a.view==="-")    return dash;
-  if(a.view==="미열람") return `<span class="st-pill no">미열람</span>`;
-  return `<span class="st-pill ok">${a.view}</span>`;
+  const r = lastRound(a);
+  if(!r)              return dash;
+  if(r.view==="미열람") return `<span class="st-pill no">미열람</span>`;
+  return `<span class="st-pill ok">${r.view}</span>`;
 }
 function payCell(a){
-  if(a.pay==="-")     return dash;
-  if(a.pay==="미결제") return `<span class="st-pill no">미결제</span>`;
-  return `<span class="st-pill ok">${a.pay}</span>`;
+  const r = lastRound(a);
+  if(!r)              return dash;
+  if(r.pay==="미결제") return `<span class="st-pill no">미결제</span>`;
+  return `<span class="st-pill ok">${r.pay}</span>`;
+}
+/* 회차가 쌓여도 행은 사람 하나 - 최신 회차를 보여 주고 회차 수만 배지로 */
+function seqBadge(a){
+  const n = rounds(a).length;
+  return n > 1 ? `<span class="seq">${n}차</span>` : "";
 }
 function stateCell(a){
-  if(a.st==="sent")    return `<span class="st-pill sent">${a.sentDt} 발송</span>`;
-  if(a.st==="expired") return `<span class="st-pill expired">제안만료</span>`;
+  const st = stOf(a), r = lastRound(a);
+  if(st==="sent")    return `<span class="st-pill sent">${r.sentDt} 발송</span>${seqBadge(a)}`;
+  if(st==="expired") return `<span class="st-pill expired">제안만료</span>${seqBadge(a)}`;
   return `<span class="st-pill wait">미제안</span>`;
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
 function scopeApps(){
   return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true))
-             .filter(a => !onlyNew || a.st==="new");
+             .filter(a => !onlyNew || stOf(a)==="new");
 }
 function movePage(d){ page += d; renderApps(); }
 
@@ -559,10 +599,13 @@ function renderApps(){
   document.getElementById("pgNext").disabled = page>=pages;
   const rows = list.slice((page-1)*perPage, page*perPage).map(a => {
     const on = curApp && curApp.id===a.id;
-    const btn = (a.st==="new")
+    const st = stOf(a);
+    const btn = st==="new"
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
-      : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
-    return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
+      : st==="expired"
+        ? `<button class="btn-one" onclick="newRound('${a.id}')">재제안</button>`
+        : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
+    return `<tr class="${on?"sel":""}"${st==="expired"?' style="opacity:.62"':""}>
       <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
       <td class="nm">${a.nm}<span class="uid">(${a.uid})</span></td>
       <td class="tel">${a.tel.slice(-4)}<button class="tel-ic" onclick="call('${a.id}')" title="전화 연결">☎</button></td>
@@ -646,14 +689,18 @@ function renderProp(){
   box.innerHTML = `<div class="panel">
     <div class="panel-head">
       <h3>제안안</h3>
-      <span class="ph-sub">${propRO ? "발송본 스냅샷 - 수정 불가" : "규칙이 생성 - 담당자는 확인·발송만"}</span>
+      <span class="ph-sub">${propRO ? `발송본 스냅샷 - 수정 불가` : (rounds(curApp).length ? "재제안 - 오늘 기준으로 규칙 재실행" : "규칙이 생성 - 담당자는 확인·발송만")}</span>
       <div class="right">
-        <span class="${propRO?"st-pill sent":"auto-tag"}">${propRO?"발송본":"자동 생성"}</span>
+        <span class="${propRO?"st-pill sent":"auto-tag"}">${propRO?`${curSeq+1}차 발송본`:(rounds(curApp).length?`${rounds(curApp).length+1}차 초안`:"자동 생성")}</span>
         <button class="mo-x" onclick="closeProp()" title="닫기">✕</button>
       </div>
     </div>
     <div class="panel-body">
-      ${propRO ? `<div class="ro-bar"><b>${curApp.sentDt} 발송</b>한 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 이 화면에서는 수정할 수 없습니다. 구성을 바꾸려면 새 제안을 발송합니다.</div>` : ""}
+      ${rounds(curApp).length ? `<div class="seq-tabs">${rounds(curApp).map((r,i) =>
+          `<button class="seq-tab ${propRO && i===curSeq ? "on":""}" onclick="viewSent('${curApp.id}',${i})">${i+1}차 ${r.sentDt}</button>`).join("")}
+        ${propRO ? "" : `<span class="seq-tab now">${rounds(curApp).length+1}차 작성 중</span>`}</div>` : ""}
+      ${propRO ? `<div class="ro-bar"><b>${rounds(curApp)[curSeq].sentDt} 발송</b>한 ${curSeq+1}차 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 수정할 수 없습니다. 구성을 바꾸려면 <b>새 제안</b>을 발송합니다.</div>` : ""}
+      ${!propRO && rounds(curApp).length ? `<div class="diff-bar">${diffLine(curApp)}</div>` : ""}
       <div class="prop-lead">
         <div class="pl-main">
           <div class="pl-t">${curApp.nm}<span class="pl-id">(${curApp.uid})</span> · ${curApp.edu} · ${CLS[cls].nm}</div>
@@ -674,9 +721,10 @@ function renderProp(){
 
       <div class="send-row">
         ${propRO
-          ? `<button class="btn-send" onclick="goStudentFromRO()">학습자 화면으로 보기</button>
+          ? `<button class="btn-send" onclick="newRound('${curApp.id}')">새 제안 만들기</button>
+             <button class="btn-ghost" onclick="goStudentFromRO()">학습자 화면으로 보기</button>
              <button class="btn-ghost" onclick="closeProp()">닫기</button>`
-          : `<button class="btn-send" onclick="send()">제안 발송 (${onCnt}개 구성)</button>
+          : `<button class="btn-send" onclick="send()">${rounds(curApp).length ? (rounds(curApp).length+1)+"차 " : ""}제안 발송 (${onCnt}개 구성)</button>
              <button class="btn-ghost" onclick="cancelProp()">취소</button>`}
       </div>
     </div>
@@ -688,31 +736,67 @@ function cancelProp(){ curApp = null; picks = []; closeProp(); renderApps(); ren
 function send(){
   const ons = picks.filter(p => p.on);
   if(!ons.length){ alert("제안할 구성을 최소 1개 선택"); return; }
-  sent = {app:curApp, picks:ons.slice(), cmt:(document.getElementById("cmt")||{}).value||"", exp:expireOf()};
+  const cmt = (document.getElementById("cmt")||{}).value||"";
+  sent = {app:curApp, picks:ons.slice(), cmt, exp:expireOf()};
   stuPick = null;
-  const a = APPS.find(x => x.id===curApp.id);
-  if(a){ a.st = "sent"; a.sentDt = "26.08.20"; a.view = "미열람"; a.pay = "미결제"; a.cmt = sent.cmt; a.snap = ons.slice(); }
+  /* 이전 회차는 지우지 않고 쌓는다 - 열람·결제는 새 회차 기준으로 다시 시작 */
+  curApp.props = rounds(curApp).concat([{sentDt:"26.08.20", view:"미열람", pay:"미결제", picks:ons.slice(), cmt}]);
+  curApp.expired = false;
+  const seq = rounds(curApp).length;
   closeProp();
   renderApps();
-  alert("제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이후 패키지가 변경돼도 발송본은 불변\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 학습자에게 알림톡 발송");
+  alert(`${seq>1?seq+"차 ":""}제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이전 회차는 이력으로 남고 학습자에게는 최신 발송본만 노출\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 학습자에게 알림톡 발송`);
   switchView("student");
 }
 
 /* 이미 발송된 제안을 다시 여는 경로 - 팝업에 읽기 전용으로 띄운다.
    발송 시점 스냅샷이라 그 사이 마감된 패키지가 섞일 수 있다 -
    학습자 화면의 마감·문의 유도는 이 경로에서만 발생한다. */
-function viewSent(appId){
+function viewSent(appId, seq){
   const app = APPS.find(a => a.id===appId);
-  if(!app) return;
+  if(!app || !rounds(app).length) return;
   curApp = app;
   propRO = true;
-  roCmt = app.cmt || "";
-  const snap = (app.snap && app.snap.length ? app.snap : autoPicks(app))
-    .filter(p => PKGS.some(x => x.id===p.pkgId));
-  picks = snap;
+  curSeq = (seq==null) ? rounds(app).length-1 : seq;
+  roCmt = rounds(app)[curSeq].cmt || "";
+  picks = roundPicks(app, curSeq);
   renderApps();
   renderProp();
   openProp();
+}
+
+/* 재제안 - 발송본을 복사하지 않고 오늘 기준으로 규칙을 다시 돌린다.
+   복사하면 그 사이 마감된 차수를 다시 보내게 되므로. */
+function newRound(appId){
+  const app = APPS.find(a => a.id===appId);
+  if(!app) return;
+  curApp = app;
+  propRO = false;
+  curSeq = null;
+  roCmt = "";
+  picks = autoPicks(app);
+  renderApps();
+  renderProp();
+  openProp();
+}
+
+/* 직전 발송본과 무엇이 달라졌는지 - 재제안에서 담당자가 확인할 건 이것뿐이다 */
+function slotShort(cls, no){ return SLOTS[cls][no].nm.replace(CLS[cls].nm+" ",""); }
+function openShort(o){ const i=o.indexOf(" "); return i<0 ? o : o.slice(i+1); }
+function diffLine(app){
+  const prev = lastRound(app);
+  if(!prev) return "";
+  const prevPicks = roundPicks(app, rounds(app).length-1);
+  const prevNos = prevPicks.map(p => p.no), nowNos = picks.map(p => p.no);
+  const bits = []
+    .concat(prevNos.filter(n => !nowNos.includes(n)).map(n => `${slotShort(app.cls,n)} 빠짐 (모집중 차수 없음)`))
+    .concat(nowNos.filter(n => !prevNos.includes(n)).map(n => `${slotShort(app.cls,n)} 추가`))
+    .concat(nowNos.filter(n => prevNos.includes(n)).map(n => {
+      const a0 = prevPicks.find(p => p.no===n), b0 = picks.find(p => p.no===n);
+      return a0.open===b0.open ? null : `${slotShort(app.cls,n)} 개강반 ${openShort(a0.open)} → ${openShort(b0.open)}`;
+    }).filter(Boolean));
+  return `<b>${rounds(app).length+1}차 제안</b> · 이전 발송 ${prev.sentDt}` +
+         (bits.length ? `<br>${bits.join(" · ")}` : `<br>이전 발송본과 구성·개강반이 같음`);
 }
 
 /* 발송본 팝업에서 학습자가 받은 화면 그대로 확인 */
