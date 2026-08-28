@@ -62,7 +62,7 @@
   .panel-body{padding:14px 16px 16px;}
 
   /* 접수 목록 */
-  .apps{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .apps{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;}
   .apps th{background:var(--bg-soft);color:var(--gray);font-size:11px;font-weight:800;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
   .apps td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle;}
   .apps tr:last-child td{border-bottom:none;}
@@ -89,12 +89,22 @@
   .apps .none{color:var(--gray-light);font-weight:700;}
   .apps-scroll{overflow-x:auto;}
   .apps{min-width:900px;}
+  /* 내용에 따라 열 너비가 흔들리지 않도록 고정 (table-layout:fixed) */
+  .apps col.c-mgr{width:8%;}  .apps col.c-nm{width:17%;} .apps col.c-tel{width:9%;}
+  .apps col.c-edu{width:11%;} .apps col.c-goal{width:14%;} .apps col.c-prop{width:10%;}
+  .apps col.c-st{width:12%;}  .apps col.c-view{width:9%;} .apps col.c-pay{width:10%;}
+  .apps td, .apps th{overflow:hidden;text-overflow:ellipsis;}
   .apps td.c,.apps th.c{text-align:center;}
   .chk{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;}
   .chk input{width:14px;height:14px;accent-color:var(--main);cursor:pointer;}
   .chk:hover{color:var(--main);}
-  .owner-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:20px;padding:5px 12px;}
-  .owner-tag b{color:var(--ink);}
+  .list-sum{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--gray);}
+  .list-sum b{color:var(--ink);}
+  .list-sum .sep{color:var(--gray-light);}
+  .list-sum select{border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);padding:3px 5px;}
+  .pg{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:7px;font-family:inherit;font-size:12px;line-height:1;padding:4px 7px;cursor:pointer;}
+  .pg:hover:not(:disabled){border-color:var(--mid);color:var(--main);}
+  .pg:disabled{color:#cfd5e0;cursor:default;}
 
   /* 제안안 팝업 */
   .ov{position:fixed;inset:0;background:rgba(18,34,58,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:26px 14px;overflow-y:auto;}
@@ -303,12 +313,17 @@
         <h3>학습자 관리</h3>
         <span class="ph-sub">본인 담당 학습자 - 학습설계를 신청하지 않은 건에 제안을 보내고, 상태 · 열람 · 결제까지 한 줄에서 확인</span>
         <div class="right">
-          <label class="chk"><input type="checkbox" id="fNew" onchange="onlyNew=this.checked; renderApps();"> 미제안만</label>
+          <label class="chk"><input type="checkbox" id="fNew" onchange="onlyNew=this.checked; page=1; renderApps();"> 미제안만</label>
           <div class="vw-toggle">
             <button id="owMine" class="active" onclick="switchOwner('mine')">내 담당</button>
             <button id="owTeam" onclick="switchOwner('team')">팀 전체</button>
           </div>
-          <span class="owner-tag" id="owMeta"></span>
+          <span class="list-sum">총 <b id="lsTotal">0</b>개 <b id="lsPage">1/1</b> 페이지 <span class="sep">◈</span> 한 화면에
+            <select id="lsPer" onchange="perPage=+this.value; page=1; renderApps();">
+              <option value="20">20</option><option value="50">50</option><option value="100" selected>100</option>
+            </select>
+            <button class="pg" id="pgPrev" onclick="movePage(-1)">‹</button><button class="pg" id="pgNext" onclick="movePage(1)">›</button>
+          </span>
         </div>
       </div>
       <div class="panel-body" style="padding:0;">
@@ -413,6 +428,7 @@ let curApp = null;      // 선택된 접수 건
 let picks = [];         // 제안안 카드 [{no, pkgId, open, on}]
 let scopeOwn = "mine";  // 목록 범위 - mine 내 담당(기본) / team 팀 전체
 let onlyNew = false;    // 미제안(아직 제안을 보내지 않은) 건만
+let perPage = 100, page = 1;   // 목록 페이지 - 현행 목록과 같은 "총 N개 · 한 화면에" 방식
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
 let roCmt = "";         // 발송본 코멘트
 let view = "admin";
@@ -526,8 +542,10 @@ function scopeApps(){
   return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true))
              .filter(a => !onlyNew || a.st==="new");
 }
+function movePage(d){ page += d; renderApps(); }
+
 function switchOwner(o){
-  scopeOwn = o;
+  scopeOwn = o; page = 1;
   document.getElementById("owMine").classList.toggle("active", o==="mine");
   document.getElementById("owTeam").classList.toggle("active", o==="team");
   renderApps();
@@ -535,11 +553,13 @@ function switchOwner(o){
 
 function renderApps(){
   const list = scopeApps();
-  const scopeTxt = scopeOwn==="mine"
-    ? `담당 <b>${ME}</b> · ${list.length}명`
-    : `팀 전체 · ${list.length}명 <b>(타담당 ${list.filter(a=>a.mgr!==ME).length}명 포함)</b>`;
-  document.getElementById("owMeta").innerHTML = onlyNew ? `${scopeTxt} <b>· 미제안</b>` : scopeTxt;
-  const rows = list.map(a => {
+  const pages = Math.max(1, Math.ceil(list.length / perPage));
+  if(page > pages) page = pages;
+  document.getElementById("lsTotal").textContent = list.length;
+  document.getElementById("lsPage").textContent = `${page}/${pages}`;
+  document.getElementById("pgPrev").disabled = page<=1;
+  document.getElementById("pgNext").disabled = page>=pages;
+  const rows = list.slice((page-1)*perPage, page*perPage).map(a => {
     const on = curApp && curApp.id===a.id;
     const btn = (a.st==="new")
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
@@ -557,7 +577,9 @@ function renderApps(){
     </tr>`;
   }).join("");
   document.getElementById("appTable").innerHTML =
-    `<tr><th>담당</th><th>이름(ID)</th><th>연락처</th><th>최종학력</th><th>목표과정</th>
+    `<colgroup><col class="c-mgr"><col class="c-nm"><col class="c-tel"><col class="c-edu"><col class="c-goal">
+      <col class="c-prop"><col class="c-st"><col class="c-view"><col class="c-pay"></colgroup>
+     <tr><th>담당</th><th>이름(ID)</th><th>연락처</th><th>최종학력</th><th>목표과정</th>
       <th class="c">제안하기</th><th>상태</th><th class="c">열람 여부</th><th class="c">결제 여부</th></tr>${rows}`;
 }
 
