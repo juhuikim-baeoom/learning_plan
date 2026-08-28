@@ -290,7 +290,13 @@
       <div class="panel-head">
         <h3>학습자 관리</h3>
         <span class="ph-sub">본인 담당 학습자 - 제안하기 · 상태 · 열람 · 결제를 한 줄에서 확인</span>
-        <div class="right"><span class="owner-tag">담당 <b>김주희</b> · 8명</span></div>
+        <div class="right">
+          <div class="vw-toggle">
+            <button id="owMine" class="active" onclick="switchOwner('mine')">내 담당</button>
+            <button id="owTeam" onclick="switchOwner('team')">팀 전체</button>
+          </div>
+          <span class="owner-tag" id="owMeta"></span>
+        </div>
       </div>
       <div class="panel-body" style="padding:0;">
         <div class="apps-scroll"><table class="apps" id="appTable"></table></div>
@@ -439,20 +445,26 @@ const RULE = {
    st  - new 접수 / sent 제안 발송 / expired 제안 만료(모집 마감)
    view - "-" 발송 전 / "n" 미열람 / 날짜 문자열이면 열람 시각
    pay  - off 비활성 / none 미결제 / part 부분결제 / paid 결제완료 */
+const ME = "김주희";
 const APPS = [
-  {id:"a1", dt:"08.20", nm:"김OO", tel:"010-1234-5678", email:"kim***@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off"},
-  {id:"a2", dt:"08.20", nm:"이OO", tel:"010-2345-6789", email:"lee***@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"new",  view:"-",     pay:"off"},
-  {id:"a3", dt:"08.19", nm:"박OO", tel:"010-3456-7890", email:"park**@gmail.com",   edu:"대학교 졸업",   cls:"ko", region:"전국",   st:"new",  view:"-",     pay:"off"},
-  {id:"a4", dt:"08.19", nm:"최OO", tel:"010-4567-8901", email:"choi**@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"08.19", view:"08.19", pay:"none",
+  {id:"a1", dt:"08.20", nm:"김OO", tel:"010-1234-5678", email:"kim***@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:ME},
+  {id:"a2", dt:"08.20", nm:"이OO", tel:"010-2345-6789", email:"lee***@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"new",  view:"-",     pay:"off",  mgr:ME},
+  {id:"a3", dt:"08.19", nm:"박OO", tel:"010-3456-7890", email:"park**@gmail.com",   edu:"대학교 졸업",   cls:"ko", region:"전국",   st:"new",  view:"-",     pay:"off",  mgr:ME},
+  {id:"a4", dt:"08.19", nm:"최OO", tel:"010-4567-8901", email:"choi**@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"08.19", view:"08.19", pay:"none", mgr:ME,
    /* 발송본 스냅샷 - 발송 후 5번 슬롯이 마감된 케이스 (학습자 화면의 마감·문의 유도 시연 경로) */
    snap:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
          {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
          {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
    cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"},
-  {id:"a5", dt:"08.18", nm:"정OO", tel:"010-5678-9012", email:"jung**@hanmail.net", edu:"고등학교 졸업", cls:"sw", region:"수도권", st:"sent", sentDt:"08.18", view:"n",     pay:"none"},
-  {id:"a6", dt:"08.14", nm:"한OO", tel:"010-6789-0123", email:"han***@gmail.com",   edu:"대학교 졸업",   cls:"sw", region:"전국",   st:"sent", sentDt:"08.14", view:"08.15", pay:"paid"},
-  {id:"a7", dt:"08.13", nm:"오OO", tel:"010-7890-1234", email:"oh****@naver.com",   edu:"전문대학 졸업", cls:"ko", region:"수도권", st:"new",  view:"-",     pay:"off"},
-  {id:"a8", dt:"08.05", nm:"윤OO", tel:"010-8901-2345", email:"yoon**@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"expired", sentDt:"08.05", view:"08.06", pay:"off"},
+  {id:"a5", dt:"08.18", nm:"정OO", tel:"010-5678-9012", email:"jung**@hanmail.net", edu:"고등학교 졸업", cls:"sw", region:"수도권", st:"sent", sentDt:"08.18", view:"n",     pay:"none", mgr:ME},
+  {id:"a6", dt:"08.14", nm:"한OO", tel:"010-6789-0123", email:"han***@gmail.com",   edu:"대학교 졸업",   cls:"sw", region:"전국",   st:"sent", sentDt:"08.14", view:"08.15", pay:"paid", mgr:ME},
+  {id:"a7", dt:"08.13", nm:"오OO", tel:"010-7890-1234", email:"oh****@naver.com",   edu:"전문대학 졸업", cls:"ko", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:ME},
+  {id:"a8", dt:"08.05", nm:"윤OO", tel:"010-8901-2345", email:"yoon**@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"expired", sentDt:"08.05", view:"08.06", pay:"off", mgr:ME},
+  /* 팀 전체에서만 보이는 타담당 건 */
+  {id:"b1", dt:"08.20", nm:"강OO", tel:"010-9012-3456", email:"kang*@gmail.com",    edu:"대학교 졸업",   cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:"박OO"},
+  {id:"b2", dt:"08.19", nm:"조OO", tel:"010-0123-4567", email:"cho**@naver.com",    edu:"전문대학 졸업", cls:"ko", region:"전국",   st:"sent", sentDt:"08.19", view:"08.20", pay:"paid", mgr:"박OO"},
+  {id:"b3", dt:"08.18", nm:"장OO", tel:"010-1122-3344", email:"jang*@daum.net",     edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"08.18", view:"n",     pay:"none", mgr:"이OO"},
+  {id:"b4", dt:"08.12", nm:"서OO", tel:"010-5566-7788", email:"seo**@gmail.com",    edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:"이OO"},
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -460,6 +472,7 @@ const APPS = [
    ══════════════════════════════════════════════════════════ */
 let curApp = null;      // 선택된 접수 건
 let picks = [];         // 제안안 카드 [{no, pkgId, open, on}]
+let scopeOwn = "mine";  // 목록 범위 - mine 내 담당(기본) / team 팀 전체
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
 let roCmt = "";         // 발송본 코멘트
 let view = "admin";
@@ -553,14 +566,27 @@ function stateCell(a){
   return `<span class="st-pill new">접수</span><span class="sub-t">${a.dt} 신청</span>`;
 }
 
+/* 담당 범위 - 내 담당이 기본값 */
+function scopeApps(){ return APPS.filter(a => scopeOwn==="mine" ? a.mgr===ME : true); }
+function switchOwner(o){
+  scopeOwn = o;
+  document.getElementById("owMine").classList.toggle("active", o==="mine");
+  document.getElementById("owTeam").classList.toggle("active", o==="team");
+  renderApps();
+}
+
 function renderApps(){
-  const rows = APPS.map(a => {
+  const list = scopeApps();
+  document.getElementById("owMeta").innerHTML = scopeOwn==="mine"
+    ? `담당 <b>${ME}</b> · ${list.length}명`
+    : `팀 전체 · ${list.length}명 <b>(타담당 ${list.filter(a=>a.mgr!==ME).length}명 포함)</b>`;
+  const rows = list.map(a => {
     const on = curApp && curApp.id===a.id;
     const btn = (a.st==="new")
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
       : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안안 보기</button>`;
     return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
-      <td class="nm">${a.nm}</td>
+      <td class="nm">${a.nm}<span class="sub-t">${a.mgr===ME ? "내 담당" : "담당 "+a.mgr}</span></td>
       <td class="tel">${a.tel}</td>
       <td class="mail">${a.email}</td>
       <td>${a.edu}</td>
