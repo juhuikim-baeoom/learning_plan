@@ -67,7 +67,10 @@
   .apps td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle;}
   .apps tr:last-child td{border-bottom:none;}
   .apps tr.sel td{background:var(--soft);}
-  .apps .nm{font-weight:800;}
+  .apps .nm{font-weight:800;white-space:nowrap;}
+  .apps .uid{font-weight:700;color:var(--gray-light);margin-left:3px;}
+  .tel-ic{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:6px;font-size:11px;line-height:1;padding:3px 5px;margin-left:6px;cursor:pointer;font-family:inherit;vertical-align:middle;}
+  .tel-ic:hover{border-color:var(--mid);color:var(--main);}
   .apps .tel{color:var(--gray);font-variant-numeric:tabular-nums;}
   .btn-one{border:none;background:var(--main);color:#fff;font-family:inherit;font-size:12px;font-weight:800;border-radius:9px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
   .btn-one:hover{filter:brightness(.94);}
@@ -85,7 +88,7 @@
   .apps .mgr.me{color:var(--ink);}
   .apps .none{color:var(--gray-light);font-weight:700;}
   .apps-scroll{overflow-x:auto;}
-  .apps{min-width:940px;}
+  .apps{min-width:900px;}
   .apps td.c,.apps th.c{text-align:center;}
   .owner-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:20px;padding:5px 12px;}
   .owner-tag b{color:var(--ink);}
@@ -107,7 +110,7 @@
   .prop-lead .pl-t{font-size:13px;font-weight:800;color:var(--navy);}
   .prop-lead .pl-d{font-size:11.5px;color:#3d6b83;margin-top:4px;line-height:1.6;}
   .prop-lead .pl-d b{font-weight:800;color:var(--navy);}
-  .pl-id{font-size:11.5px;font-weight:700;color:#3d6b83;}
+  .pl-id{font-size:12px;font-weight:700;color:#5b8ba5;margin-left:1px;}
   .pl-rg{display:inline-block;font-size:10px;font-weight:800;background:#fff;border:1px solid var(--mid);color:var(--navy);border-radius:7px;padding:2px 7px;margin-left:4px;}
   .auto-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:9px;padding:3px 9px;white-space:nowrap;}
 
@@ -486,6 +489,16 @@ function togSubj(i){ document.getElementById("sl"+i).classList.toggle("open"); }
    ══════════════════════════════════════════════════════════ */
 /* 열람·결제는 값이 셋뿐이다 - 아직 해당 없음(-) · 안 함 · 한 날짜 */
 const dash = `<span class="none">-</span>`;
+/* 연락처는 뒤 4자리만 노출하고 연결은 아이콘으로 - 현행 목록과 같은 방식 */
+function call(id){
+  const a = APPS.find(x => x.id===id);
+  alert(`전화 연결 (시연)
+${a.nm}(${a.uid}) ${a.tel}
+
+· 목록에는 뒤 4자리만 노출
+· 전체 번호는 연결 시점에만 사용`);
+}
+
 function viewCell(a){
   if(a.view==="-")    return dash;
   if(a.view==="미열람") return `<span class="st-pill no">미열람</span>`;
@@ -523,8 +536,8 @@ function renderApps(){
       : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
     return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
       <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
-      <td class="nm">${a.nm}<span class="sub-t">${a.uid}</span></td>
-      <td class="tel">${a.tel}</td>
+      <td class="nm">${a.nm}<span class="uid">(${a.uid})</span></td>
+      <td class="tel">${a.tel.slice(-4)}<button class="tel-ic" onclick="call('${a.id}')" title="전화 연결">☎</button></td>
       <td>${a.edu}</td>
       <td>${CLS[a.cls].nm}</td>
       <td class="c">${btn}</td>
@@ -613,7 +626,7 @@ function renderProp(){
       ${propRO ? `<div class="ro-bar"><b>${curApp.sentDt} 발송</b>한 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 이 화면에서는 수정할 수 없습니다. 구성을 바꾸려면 새 제안을 발송합니다.</div>` : ""}
       <div class="prop-lead">
         <div class="pl-main">
-          <div class="pl-t">${curApp.nm} <span class="pl-id">${curApp.uid}</span> · ${curApp.edu} · ${CLS[cls].nm}</div>
+          <div class="pl-t">${curApp.nm}<span class="pl-id">(${curApp.uid})</span> · ${curApp.edu} · ${CLS[cls].nm}</div>
           <div class="pl-d">주소지 <b>${curApp.addr}</b> <span class="pl-rg">${regionOf(curApp.addr)}</span></div>
         </div>
       </div>
