@@ -421,7 +421,7 @@ const APPS = [
    /* 2차까지 간 건 - 1차가 미열람이라 개강 일정만 갱신해 재발송 */
    props:[{sentDt:"26.08.12", view:"미열람", pay:"미결제", picks:null, cmt:""},
           {sentDt:"26.08.18", view:"미열람", pay:"미결제", picks:null,
-           cmt:"1차 안내 후 연락이 닿지 않아 개강 일정만 갱신해 다시 보냄"}]},
+           cmt:"앞서 보내 드린 구성과 동일하며, 개강 일정만 최신 차수로 갱신했습니다."}]},
   {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", uid:"hanul77",   edu:"대학교 졸업",   cls:"sw", addr:"대구 수성구",         mgr:ME,
    props:[{sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", picks:null, cmt:""}]},
   {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", uid:"oh5star",   edu:"전문대학 졸업", cls:"ko", addr:"인천 연수구",         mgr:ME, props:[]},
@@ -711,7 +711,7 @@ function renderProp(){
       ${cards || `<div class="empty">모집중인 패키지 없음</div>`}
       ${exclHtml}
 
-      <div class="fld-lab">담당자 코멘트 <span style="font-weight:600;color:var(--gray-light);">${propRO ? "발송본에 고정" : "선택 - 비워도 발송 가능"}</span></div>
+      <div class="fld-lab">담당자 코멘트 <span style="font-weight:600;color:var(--gray-light);">${propRO ? "학습자 화면에 노출된 문구 - 발송본에 고정" : "학습자 화면에 그대로 노출 · 선택 - 비워도 발송 가능"}</span></div>
       <textarea id="cmt" ${propRO?"readonly":""} placeholder="예) 실습을 타 기관에서 수강하실 예정이면 두 번째 구성이 적합">${propRO ? roCmt : (curApp.edu==="고등학교 졸업" ? "전문학사 학위와 자격증을 함께 취득하는 구성으로 제안드림 - 학위 없이는 2급 신청이 불가한 점 참고 부탁" : "")}</textarea>
 
       <div class="expire">
