@@ -232,7 +232,7 @@
   <div class="lay-note fold" id="layNote">
     <div class="ln-head">
       <span class="ln-tag">기획설명</span>
-      <b>원클릭 제안 - 패키지 기반 제안형 학습설계</b>
+      <b>원클릭 제안 - 패키지 기반 제안형</b>
       <button class="ln-tog" onclick="lnTog()" id="lnTogBtn">설명 펼치기</button>
     </div>
     <div class="ln-body" id="lnBody" style="display:none">
@@ -243,7 +243,7 @@
           <li><b>원클릭 제안</b>(제안) - 규칙이 만든 결과를 담당자가 <b>승인만 하는</b> 화면. 보유학점 없는 일반 케이스용</li>
           <li><b>대상은 학습설계를 신청하지 않은 학습자</b> - 학습설계 신청은 학습자가 직접 하는 일이고, 신청이 들어온 건은 학습설계 툴에서 맞춤 설계로 간다. 이 화면은 <b>신청하지 않는 사람에게 먼저 제안을 보내는</b> 쪽이다</li>
           <li>그래서 목록에 <b>신청구분·실명인증은 두지 않는다</b> - 아직 신청 자체가 없으므로 채워질 값이 아님</li>
-          <li>진입점은 <b>학습자 관리 목록</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
+          <li>진입점은 <b>제안 목록 관리</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
         </ul>
       </div>
@@ -295,7 +295,7 @@
   <div class="page-head">
     <div>
       <h1>원클릭 제안 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
-      <div class="sub">학습자 관리 목록에서 제안 · 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
+      <div class="sub">제안 목록 관리에서 제안 · 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
     </div>
     <div class="toggles">
       <div class="vw-toggle">
@@ -310,7 +310,7 @@
 
     <div class="panel">
       <div class="panel-head">
-        <h3>학습자 관리</h3>
+        <h3>제안 목록 관리</h3>
         <div class="right">
           <label class="chk"><input type="checkbox" id="fNew" onchange="onlyNew=this.checked; page=1; renderApps();"> 미제안만</label>
           <div class="vw-toggle">
