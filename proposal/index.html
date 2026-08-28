@@ -82,6 +82,7 @@
   .st-pill.part{background:var(--amber-soft);color:var(--amber);}
   .apps .sub-t{display:block;font-size:10px;color:var(--gray-light);font-weight:600;margin-top:3px;white-space:nowrap;}
   .apps .mail{color:var(--gray);}
+  .apps .none{color:var(--gray-light);font-weight:700;}
   .apps-scroll{overflow-x:auto;}
   .apps{min-width:1000px;}
   .apps td.c,.apps th.c{text-align:center;}
@@ -265,7 +266,7 @@
         </ul>
       </div>
       <div class="ln-foot">
-        <b>미확정</b> - 학력 매핑 값(상담팀 확인 대기, 상수 <code>RULE</code> 하나만 교체). 패키지타입 필터의 의미. 희망과정 선택지에 없는 전공(심리학 등) 안내 방식.
+        <b>미확정</b> - 학력 매핑 값(상담팀 확인 대기, 상수 <code>RULE</code> 하나만 교체). 패키지타입 필터의 의미. 희망과정 선택지에 없는 전공(심리학 등) 안내 방식. 한국어교원의 <b>목록 과목수(16·15)와 상세 구성 과목수(14·13) 불일치</b> - 수집 시점 차이인지 세는 방식 차이인지 확인 대기.
       </div>
     </div>
   </div>
@@ -331,6 +332,7 @@
   <div class="modal"><div id="propBox"></div></div>
 </div>
 
+<script src="../assets/packages.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════
    원클릭 제안 - 시연용 인메모리 데이터
@@ -338,90 +340,15 @@
    ══════════════════════════════════════════════════════════ */
 
 /* ── 과정 분류 (LMS 분류 필터) ───────────────────────── */
-const CLS = {
-  sw: {nm:"사회복지사 2급", cnt:451},
-  ko: {nm:"한국어교원 2급", cnt:0},
-};
+const CLS = PKG_CLS;
 
-/* ── 상품 슬롯 = LMS 번호 컬럼(노출 순서) ─────────────
-   구성이 같고 차수만 다른 레코드가 반복되므로,
+/* ── 상품 슬롯 · 패키지 레코드 · 구성과목 ─────────────
+   전부 assets/packages.js(패키지 시드) 한 벌에서 파생한다.
+   슬롯 = LMS 번호 컬럼(노출 순서) - 구성이 같고 차수만 다른 레코드가 반복되므로
    번호가 사실상 상품 축이 된다. */
-const SLOTS = {
-  sw: {
-    1:{nm:"사회복지사2급 취득 완성 패키지(수도권)", compo:"이론 16과목 + 실습 1과목", n:17, region:"수도권", key:"full"},
-    2:{nm:"사회복지사2급 취득 완성 패키지(전국반)", compo:"이론 16과목 + 실습 1과목", n:17, region:"전국",   key:"full"},
-    3:{nm:"사회복지사 이론 16과목 패키지",          compo:"이론 16과목",              n:16, key:"th16"},
-    4:{nm:"사회복지사 이론 20과목 전문학사 패키지",  compo:"이론 16과목 + 교양 4과목",  n:20, key:"deg20"},
-    5:{nm:"사회복지사 X 건강가정사 18과목 패키지",   compo:"이론 18과목",              n:18, key:"hgj18"},
-    6:{nm:"사회복지사 이론 8과목 패키지",            compo:"이론 8과목",                n:8,  key:"th8"},
-  },
-  ko: {
-    1:{nm:"한국어교원 (이론 13과목 + 실습 1과목)", compo:"이론 13과목 + 실습 1과목", n:14, key:"kofull"},
-    2:{nm:"한국어교원 (이론 13과목)",              compo:"이론 13과목",              n:13, key:"koth"},
-  },
-};
-
-/* ── 패키지 레코드 = 분류 × 슬롯 × 차수 ──────────────
-   id·차수·개강반·모집기간·진행상태 모두 LMS 실값 */
-const PKGS = [
-  /* 사회복지사 26-2-8차 - 모집중 */
-  {id:4631, cls:"sw", no:1, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4632, cls:"sw", no:2, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4630, cls:"sw", no:3, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4634, cls:"sw", no:4, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4635, cls:"sw", no:5, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4633, cls:"sw", no:6, batch:"26-2-8차", apply:["26.07.23","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  /* 사회복지사 26-2-7차 - 5번만 마감 (LMS 실값) */
-  {id:4628, cls:"sw", no:1, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4627, cls:"sw", no:2, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4629, cls:"sw", no:3, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4625, cls:"sw", no:4, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4624, cls:"sw", no:5, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"마감",   opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  {id:4626, cls:"sw", no:6, batch:"26-2-7차", apply:["26.07.23","26.09.09"], status:"모집중", opens:["2026년 2학기 9/10개강반","2027년 1학기 12/31개강반","2027년 2학기 5/28개강반"]},
-  /* 사회복지사 26-2-5차 - 전량 마감 */
-  {id:4601, cls:"sw", no:1, batch:"26-2-5차", apply:["26.06.18","26.08.13"], status:"마감", opens:["2026년 2학기 8/14개강반","2027년 1학기 12/18개강반","2027년 2학기 5/28개강반"]},
-  {id:4602, cls:"sw", no:3, batch:"26-2-5차", apply:["26.06.18","26.08.13"], status:"마감", opens:["2026년 2학기 8/14개강반","2027년 1학기 12/18개강반","2027년 2학기 5/28개강반"]},
-  /* 한국어교원 */
-  {id:4653, cls:"ko", no:1, batch:"26-2-8차", apply:["26.08.19","26.09.16"], status:"모집중", opens:["2026년 2학기 9/17개강반","2027년 1학기 1/22개강반"]},
-  {id:4644, cls:"ko", no:2, batch:"26-2-8차", apply:["26.08.10","26.09.16"], status:"마감",   opens:["2026년 2학기 9/17개강반","2027년 1학기 1/22개강반"]},
-];
-
-/* ── 개강반별 과목 구성 ──────────────────────────────
-   LMS 상세는 개강반 단위로 과목이 나뉜다 (한 학기분).
-   여기서는 슬롯 key별로 학기 묶음을 둔다. */
-const SUBJ = {
-  full:[
-    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
-    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
-    {t:"3학기 · 선택 4과목 + 현장실습", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론","사회복지현장실습"]},
-  ],
-  th16:[
-    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
-    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
-    {t:"3학기 · 선택 4과목", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론"]},
-  ],
-  deg20:[
-    {t:"1학기 · 필수 이론 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천"]},
-    {t:"2학기 · 필수 이론 3과목 + 선택 3과목", s:["사회복지실천기술론","사회복지행정론","지역사회복지론","노인복지론","아동복지론","가족복지론"]},
-    {t:"3학기 · 선택 4과목 + 교양 4과목", s:["정신건강론","프로그램개발과평가","사회복지윤리와철학","자원봉사론","대학영어","현대사회와윤리","인간관계론","심리학개론"]},
-  ],
-  hgj18:[
-    {t:"1학기 · 공통 6과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","가족복지론","가족상담및가족치료","건강가정론"]},
-    {t:"2학기 · 공통 6과목", s:["사회복지실천기술론","사회복지정책론","사회복지조사론","가족생활교육","아동복지론","노인복지론"]},
-    {t:"3학기 · 공통 6과목", s:["사회복지법제와실천","사회복지행정론","지역사회복지론","가족정책론","가정생활복지론","프로그램개발과평가"]},
-  ],
-  th8:[
-    {t:"1학기 · 이론 8과목", s:["사회복지학개론","인간행동과사회환경","사회복지실천론","사회복지정책론","사회복지조사론","사회복지법제와실천","사회복지실천기술론","사회복지행정론"]},
-  ],
-  kofull:[
-    {t:"1학기 · 이론 7과목", s:["외국어로서의한국어교육개론","외국어로서의한국어어휘교육론","외국어로서의한국어표현교육론","외국어로서의한국어학개론","한국의미론","외국어로서의한국어이해교육론","외국어로서의한국어문법교육론"]},
-    {t:"2학기 · 이론 6과목 + 실습", s:["대조언어학","언어학개론","외국어로서의언어교수이론","외국어로서의한국어발음교육론","한국문화교육론","외국어로서의한국어평가론","외국어로서의한국어교육실습"]},
-  ],
-  koth:[
-    {t:"1학기 · 이론 7과목", s:["외국어로서의한국어교육개론","외국어로서의한국어어휘교육론","외국어로서의한국어표현교육론","외국어로서의한국어학개론","한국의미론","외국어로서의한국어이해교육론","외국어로서의한국어문법교육론"]},
-    {t:"2학기 · 이론 6과목", s:["대조언어학","언어학개론","외국어로서의언어교수이론","외국어로서의한국어발음교육론","한국문화교육론","외국어로서의한국어평가론"]},
-  ],
-};
+const SLOTS = pkgSlots();   // {cls: {번호: {nm, compo, n, key, region, nDetail}}}
+const PKGS  = pkgRounds();  // [{id, cls, no, batch, apply, status, opens}]
+const SUBJ  = PKG_COMPO;     // {구성과목 키: [{t, s:[과목명]}]}
 
 /* ── 학력 → 추천 슬롯 매핑 ───────────────────────────
    ★ 근거 문서 없음 - 상담팀 확인 대기. 이 상수만 교체하면 규칙이 바뀐다. */
@@ -447,24 +374,24 @@ const RULE = {
    pay  - off 비활성 / none 미결제 / part 부분결제 / paid 결제완료 */
 const ME = "김주희";
 const APPS = [
-  {id:"a1", dt:"08.20", nm:"김OO", tel:"010-1234-5678", email:"kim***@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:ME},
-  {id:"a2", dt:"08.20", nm:"이OO", tel:"010-2345-6789", email:"lee***@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"new",  view:"-",     pay:"off",  mgr:ME},
-  {id:"a3", dt:"08.19", nm:"박OO", tel:"010-3456-7890", email:"park**@gmail.com",   edu:"대학교 졸업",   cls:"ko", region:"전국",   st:"new",  view:"-",     pay:"off",  mgr:ME},
-  {id:"a4", dt:"08.19", nm:"최OO", tel:"010-4567-8901", email:"choi**@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"08.19", view:"08.19", pay:"none", mgr:ME,
+  {id:"a1", dt:"26.08.20", nm:"김OO", tel:"010-1234-5678", email:"kim***@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a2", dt:"26.08.20", nm:"이OO", tel:"010-2345-6789", email:"lee***@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a3", dt:"26.08.19", nm:"박OO", tel:"010-3456-7890", email:"park**@gmail.com",   edu:"대학교 졸업",   cls:"ko", region:"전국",   st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a4", dt:"26.08.19", nm:"최OO", tel:"010-4567-8901", email:"choi**@naver.com",   edu:"전문대학 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"26.08.19", view:"26.08.19", pay:"미결제", mgr:ME,
    /* 발송본 스냅샷 - 발송 후 5번 슬롯이 마감된 케이스 (학습자 화면의 마감·문의 유도 시연 경로) */
    snap:[{no:2, pkgId:4627, open:"2026년 2학기 9/10개강반", on:true},
          {no:5, pkgId:4624, open:"2026년 2학기 9/10개강반", on:true},
          {no:6, pkgId:4626, open:"2026년 2학기 9/10개강반", on:true}],
    cmt:"보유하신 학점이 없어 표준 구성으로 제안드림 - 건강가정사 병행안도 함께 담음"},
-  {id:"a5", dt:"08.18", nm:"정OO", tel:"010-5678-9012", email:"jung**@hanmail.net", edu:"고등학교 졸업", cls:"sw", region:"수도권", st:"sent", sentDt:"08.18", view:"n",     pay:"none", mgr:ME},
-  {id:"a6", dt:"08.14", nm:"한OO", tel:"010-6789-0123", email:"han***@gmail.com",   edu:"대학교 졸업",   cls:"sw", region:"전국",   st:"sent", sentDt:"08.14", view:"08.15", pay:"paid", mgr:ME},
-  {id:"a7", dt:"08.13", nm:"오OO", tel:"010-7890-1234", email:"oh****@naver.com",   edu:"전문대학 졸업", cls:"ko", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:ME},
-  {id:"a8", dt:"08.05", nm:"윤OO", tel:"010-8901-2345", email:"yoon**@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"expired", sentDt:"08.05", view:"08.06", pay:"off", mgr:ME},
+  {id:"a5", dt:"26.08.18", nm:"정OO", tel:"010-5678-9012", email:"jung**@hanmail.net", edu:"고등학교 졸업", cls:"sw", region:"수도권", st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:ME},
+  {id:"a6", dt:"26.08.14", nm:"한OO", tel:"010-6789-0123", email:"han***@gmail.com",   edu:"대학교 졸업",   cls:"sw", region:"전국",   st:"sent", sentDt:"26.08.14", view:"26.08.15", pay:"26.08.16", mgr:ME},
+  {id:"a7", dt:"26.08.13", nm:"오OO", tel:"010-7890-1234", email:"oh****@naver.com",   edu:"전문대학 졸업", cls:"ko", region:"수도권", st:"new",  view:"-",        pay:"-",      mgr:ME},
+  {id:"a8", dt:"26.08.05", nm:"윤OO", tel:"010-8901-2345", email:"yoon**@daum.net",    edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"expired", sentDt:"26.08.05", view:"26.08.06", pay:"미결제", mgr:ME},
   /* 팀 전체에서만 보이는 타담당 건 */
-  {id:"b1", dt:"08.20", nm:"강OO", tel:"010-9012-3456", email:"kang*@gmail.com",    edu:"대학교 졸업",   cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:"박OO"},
-  {id:"b2", dt:"08.19", nm:"조OO", tel:"010-0123-4567", email:"cho**@naver.com",    edu:"전문대학 졸업", cls:"ko", region:"전국",   st:"sent", sentDt:"08.19", view:"08.20", pay:"paid", mgr:"박OO"},
-  {id:"b3", dt:"08.18", nm:"장OO", tel:"010-1122-3344", email:"jang*@daum.net",     edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"08.18", view:"n",     pay:"none", mgr:"이OO"},
-  {id:"b4", dt:"08.12", nm:"서OO", tel:"010-5566-7788", email:"seo**@gmail.com",    edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",     pay:"off",  mgr:"이OO"},
+  {id:"b1", dt:"26.08.20", nm:"강OO", tel:"010-9012-3456", email:"kang*@gmail.com",    edu:"대학교 졸업",   cls:"sw", region:"수도권", st:"new",  view:"-",        pay:"-",      mgr:"박OO"},
+  {id:"b2", dt:"26.08.19", nm:"조OO", tel:"010-0123-4567", email:"cho**@naver.com",    edu:"전문대학 졸업", cls:"ko", region:"전국",   st:"sent", sentDt:"26.08.19", view:"26.08.20", pay:"26.08.20", mgr:"박OO"},
+  {id:"b3", dt:"26.08.18", nm:"장OO", tel:"010-1122-3344", email:"jang*@daum.net",     edu:"고등학교 졸업", cls:"sw", region:"전국",   st:"sent", sentDt:"26.08.18", view:"미열람",   pay:"미결제", mgr:"이OO"},
+  {id:"b4", dt:"26.08.12", nm:"서OO", tel:"010-5566-7788", email:"seo**@gmail.com",    edu:"전문대학 졸업", cls:"sw", region:"수도권", st:"new",  view:"-",        pay:"-",      mgr:"이OO"},
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -549,21 +476,22 @@ function togSubj(i){ document.getElementById("sl"+i).classList.toggle("open"); }
 /* ══════════════════════════════════════════════════════════
    렌더 - 담당자 화면
    ══════════════════════════════════════════════════════════ */
+/* 열람·결제는 값이 셋뿐이다 - 아직 해당 없음(-) · 안 함 · 한 날짜 */
+const dash = `<span class="none">-</span>`;
 function viewCell(a){
-  if(a.view==="-") return `<span class="st-pill wait">발송 전</span>`;
-  if(a.view==="n") return `<span class="st-pill no">미열람</span><span class="sub-t">팔로업 대상</span>`;
-  return `<span class="st-pill ok">열람</span><span class="sub-t">${a.view}</span>`;
+  if(a.view==="-")    return dash;
+  if(a.view==="미열람") return `<span class="st-pill no">미열람</span>`;
+  return `<span class="st-pill ok">${a.view}</span>`;
 }
 function payCell(a){
-  if(a.pay==="paid") return `<span class="st-pill ok">결제완료</span>`;
-  if(a.pay==="part") return `<span class="st-pill part">부분결제</span>`;
-  if(a.pay==="none") return `<span class="st-pill no">미결제</span>`;
-  return `<span class="st-pill wait">비활성</span>`;
+  if(a.pay==="-")     return dash;
+  if(a.pay==="미결제") return `<span class="st-pill no">미결제</span>`;
+  return `<span class="st-pill ok">${a.pay}</span>`;
 }
 function stateCell(a){
-  if(a.st==="sent")    return `<span class="st-pill sent">제안 발송</span><span class="sub-t">${a.sentDt} 발송</span>`;
-  if(a.st==="expired") return `<span class="st-pill expired">제안 만료</span><span class="sub-t">모집 마감 · 재제안 대상</span>`;
-  return `<span class="st-pill new">접수</span><span class="sub-t">${a.dt} 신청</span>`;
+  if(a.st==="sent")    return `<span class="st-pill sent">${a.sentDt} 발송</span>`;
+  if(a.st==="expired") return `<span class="st-pill expired">제안만료</span>`;
+  return `<span class="st-pill wait">미발송</span>`;
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
@@ -584,14 +512,14 @@ function renderApps(){
     const on = curApp && curApp.id===a.id;
     const btn = (a.st==="new")
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
-      : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안안 보기</button>`;
+      : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}')">제안 보기</button>`;
     return `<tr class="${on?"sel":""}"${a.st==="expired"?' style="opacity:.62"':""}>
-      <td class="nm">${a.nm}<span class="sub-t">${a.mgr===ME ? "내 담당" : "담당 "+a.mgr}</span></td>
+      <td class="nm">${a.nm}${a.mgr!==ME?`<span class="sub-t">담당 ${a.mgr}</span>`:""}</td>
       <td class="tel">${a.tel}</td>
       <td class="mail">${a.email}</td>
       <td>${a.edu}</td>
       <td>${CLS[a.cls].nm}<span class="sub-t">대표지역 ${a.region}</span></td>
-      <td class="c">${btn}<span class="sub-t">${a.st==="new" ? "미발송" : a.sentDt+" 발송"}</span></td>
+      <td class="c">${btn}</td>
       <td>${stateCell(a)}</td>
       <td class="c">${viewCell(a)}</td>
       <td class="c">${payCell(a)}</td>
@@ -647,6 +575,7 @@ function renderProp(){
           <button class="subj-tog" onclick="togSubj(${i})">과목 ${s.n}개 보기</button>
         </div>
         <div class="subj-list" id="sl${i}">${subj}
+          ${s.nDetail && s.nDetail!==s.n ? `<div class="no-price" style="color:var(--amber);">관리자 목록 ${s.n}과목 · 상세 구성 확인 ${s.nDetail}과목 - 수집 시점 차이, 확인 대기</div>` : ""}
           <div class="no-price">수강료는 이 화면에 표시하지 않음 - 학습자가 패키지를 고른 뒤 수강신청 단계에서 안내</div>
         </div>
       </div>
@@ -716,7 +645,7 @@ function send(){
   sent = {app:curApp, picks:ons.slice(), cmt:(document.getElementById("cmt")||{}).value||"", exp:expireOf()};
   stuPick = null;
   const a = APPS.find(x => x.id===curApp.id);
-  if(a){ a.st = "sent"; a.sentDt = "08.20"; a.view = "n"; a.pay = "none"; a.cmt = sent.cmt; a.snap = ons.slice(); }
+  if(a){ a.st = "sent"; a.sentDt = "26.08.20"; a.view = "미열람"; a.pay = "미결제"; a.cmt = sent.cmt; a.snap = ons.slice(); }
   closeProp();
   renderApps();
   alert("제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이후 패키지가 변경돼도 발송본은 불변\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 학습자에게 알림톡 발송");
