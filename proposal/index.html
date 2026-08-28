@@ -197,7 +197,6 @@
   .s-hero .sh-t b{color:var(--main);}
   .s-hero .sh-d{font-size:11.5px;color:var(--gray);margin-top:7px;line-height:1.65;}
   .s-dday{display:inline-flex;align-items:center;gap:6px;background:var(--amber-soft);color:var(--amber);font-size:11px;font-weight:800;border-radius:8px;padding:5px 10px;margin-top:10px;}
-  .s-guide{font-size:11.5px;color:var(--gray);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:10px 13px;margin-bottom:12px;line-height:1.65;}
 
   .s-pk{background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:11px;}
   .s-pk.pick{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
@@ -342,11 +341,11 @@
       </div>
     </div>
     <div class="phone" id="phoneFrame">
-      <div class="phone-head"><div class="ph-tab">학습설계 제안</div></div>
+      <div class="phone-head"><div class="ph-tab">원클릭 제안</div></div>
       <div class="phone-body" id="phoneBody"></div>
     </div>
     <div class="stu-pc" id="stuPc">
-      <div class="stu-pc-head"><div class="stu-pc-tab">학습설계 제안</div></div>
+      <div class="stu-pc-head"><div class="stu-pc-tab">원클릭 제안</div></div>
       <div class="stu-pc-body" id="stuPcBody"></div>
     </div>
   </div>
@@ -784,12 +783,11 @@ function renderStudent(){
   const app = sent.app;
   const head = `
     <div class="s-hero">
-      <div class="sh-t"><b>${app.nm}</b>님께 맞는<br>학습 구성 <b>${sent.picks.length}가지</b>를 준비했습니다</div>
-      <div class="sh-d">${app.edu} · ${CLS[app.cls].nm} 기준 - 원하는 구성을 골라 바로 신청 가능</div>
+      <div class="sh-t"><b>${app.nm}</b>님께 맞는<br>구성을 제안드립니다</div>
+      <div class="sh-d">${app.edu} · ${CLS[app.cls].nm} 기준</div>
       <div class="s-dday">⏱ ${ddayText(sent.exp)}</div>
     </div>
-    ${sent.cmt ? `<div class="s-comment"><b>담당자 코멘트</b>${sent.cmt}</div>` : ""}
-    <div class="s-guide">구성마다 <b>과목 목록과 개강일</b>이 다름 - 과목을 먼저 확인하고 고르면 됨. 수강료는 신청 화면에서 안내</div>`;
+    ${sent.cmt ? `<div class="s-comment"><b>담당자 코멘트</b>${sent.cmt}</div>` : ""}`;
   const foot = `<div class="s-ask"><b>어떤 구성이 맞을지 모르겠다면</b>담당자에게 문의 - 평일 09:00 ~ 18:00<br>1544-0000</div>`;
 
   mo.innerHTML = head + stuCards(false) + foot;
