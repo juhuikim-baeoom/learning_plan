@@ -90,6 +90,9 @@
   .apps-scroll{overflow-x:auto;}
   .apps{min-width:900px;}
   .apps td.c,.apps th.c{text-align:center;}
+  .chk{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;}
+  .chk input{width:14px;height:14px;accent-color:var(--main);cursor:pointer;}
+  .chk:hover{color:var(--main);}
   .owner-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:20px;padding:5px 12px;}
   .owner-tag b{color:var(--ink);}
 
@@ -228,8 +231,9 @@
         <ul>
           <li><b>학습설계 툴</b>(설계) - 기이수 인정부터 학기 배치까지 담당자가 <b>쌓아 올리는</b> 화면. 보유학점·자격증 케이스용</li>
           <li><b>원클릭 제안</b>(제안) - 규칙이 만든 결과를 담당자가 <b>승인만 하는</b> 화면. 보유학점 없는 일반 케이스용</li>
-          <li>접수 건의 대다수가 후자이므로, 두 화면을 나누면 담당자 시간이 맞춤 설계에만 쓰임</li>
-          <li>진입점은 <b>학습자 관리 목록</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움</li>
+          <li><b>대상은 학습설계를 신청하지 않은 학습자</b> - 학습설계 신청은 학습자가 직접 하는 일이고, 신청이 들어온 건은 학습설계 툴에서 맞춤 설계로 간다. 이 화면은 <b>신청하지 않는 사람에게 먼저 제안을 보내는</b> 쪽이다</li>
+          <li>그래서 목록에 <b>신청구분·실명인증은 두지 않는다</b> - 아직 신청 자체가 없으므로 채워질 값이 아님</li>
+          <li>진입점은 <b>학습자 관리 목록</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
         </ul>
       </div>
@@ -297,8 +301,9 @@
     <div class="panel">
       <div class="panel-head">
         <h3>학습자 관리</h3>
-        <span class="ph-sub">본인 담당 학습자 - 제안하기 · 상태 · 열람 · 결제를 한 줄에서 확인</span>
+        <span class="ph-sub">본인 담당 학습자 - 학습설계를 신청하지 않은 건에 제안을 보내고, 상태 · 열람 · 결제까지 한 줄에서 확인</span>
         <div class="right">
+          <label class="chk"><input type="checkbox" id="fNew" onchange="onlyNew=this.checked; renderApps();"> 미제안만</label>
           <div class="vw-toggle">
             <button id="owMine" class="active" onclick="switchOwner('mine')">내 담당</button>
             <button id="owTeam" onclick="switchOwner('team')">팀 전체</button>
@@ -407,6 +412,7 @@ const APPS = [
 let curApp = null;      // 선택된 접수 건
 let picks = [];         // 제안안 카드 [{no, pkgId, open, on}]
 let scopeOwn = "mine";  // 목록 범위 - mine 내 담당(기본) / team 팀 전체
+let onlyNew = false;    // 미제안(아직 제안을 보내지 않은) 건만
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
 let roCmt = "";         // 발송본 코멘트
 let view = "admin";
@@ -516,7 +522,10 @@ function stateCell(a){
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
-function scopeApps(){ return APPS.filter(a => scopeOwn==="mine" ? a.mgr===ME : true); }
+function scopeApps(){
+  return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true))
+             .filter(a => !onlyNew || a.st==="new");
+}
 function switchOwner(o){
   scopeOwn = o;
   document.getElementById("owMine").classList.toggle("active", o==="mine");
@@ -526,9 +535,10 @@ function switchOwner(o){
 
 function renderApps(){
   const list = scopeApps();
-  document.getElementById("owMeta").innerHTML = scopeOwn==="mine"
+  const scopeTxt = scopeOwn==="mine"
     ? `담당 <b>${ME}</b> · ${list.length}명`
     : `팀 전체 · ${list.length}명 <b>(타담당 ${list.filter(a=>a.mgr!==ME).length}명 포함)</b>`;
+  document.getElementById("owMeta").innerHTML = onlyNew ? `${scopeTxt} <b>· 미제안</b>` : scopeTxt;
   const rows = list.map(a => {
     const on = curApp && curApp.id===a.id;
     const btn = (a.st==="new")
