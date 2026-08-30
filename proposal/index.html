@@ -69,7 +69,6 @@
   .apps tr.sel td{background:var(--soft);}
   .apps .nm{font-weight:800;white-space:nowrap;}
   .apps .uid{font-weight:700;color:var(--gray-light);margin-left:3px;}
-  .apps .prev{display:inline-block;font-size:9.5px;font-weight:700;color:var(--gray-light);margin-left:5px;}
   .apps tr.prev-row td{background:#fcfcfd;}
   .apps .seq{display:inline-block;font-size:9.5px;font-weight:800;color:var(--violet);background:var(--violet-soft);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:1px;}
   .tel-ic{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:6px;font-size:11px;line-height:1;padding:3px 5px;margin-left:6px;cursor:pointer;font-family:inherit;vertical-align:middle;}
@@ -258,7 +257,7 @@
           <li>그래서 목록에 <b>신청구분·실명인증은 두지 않는다</b> - 아직 신청 자체가 없으므로 채워질 값이 아님</li>
           <li>진입점은 <b>제안 목록 관리</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
-          <li>목록 행은 <b>제안 건 단위</b> - 재제안하면 이전 건을 덮지 않고 새 줄이 쌓인다. 같은 학습자가 여러 줄이 되고 회차마다 열람·결제가 따로 남는다 (지난 건은 흐리게 · 이름 옆 <b>N차</b>)</li>
+          <li>목록 행은 <b>제안 건 단위</b> - 재제안하면 이전 건을 덮지 않고 새 줄이 쌓인다. 같은 학습자가 여러 줄이 되고 회차마다 열람·결제가 따로 남는다 (지난 건은 흐리게 · 이름 옆 <b>N차</b> 배지)</li>
           <li>문구는 두 갈래 - <b>담당자 코멘트</b>는 학습자 화면에 그대로 나가고, <b>내부 메모</b>는 담당자만 본다. 재제안 사유·통화 내용은 내부 메모에 남긴다</li>
         </ul>
       </div>
@@ -581,7 +580,7 @@ function seqBadge(x){
 function stateCell(x){
   if(x.seq==null) return `<span class="st-pill wait">미제안</span>`;
   if(x.latest && x.a.expired) return `<span class="st-pill expired">제안만료</span>`;
-  return `<span class="st-pill sent">${x.r.sentDt} 발송</span>${x.latest ? "" : `<span class="prev">지난 발송</span>`}`;
+  return `<span class="st-pill sent">${x.r.sentDt} 발송</span>`;
 }
 
 /* 담당 범위 - 내 담당이 기본값 */
