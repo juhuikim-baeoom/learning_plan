@@ -310,7 +310,6 @@
   <div class="page-head">
     <div>
       <h1>원클릭 제안 <span style="font-size:12px;color:var(--gray-light);font-weight:600">1단계 시연</span></h1>
-      <div class="sub">제안 목록 관리에서 제안 · 수강료 미표시 · 모바일 우선 · 개강일 기준 자동 만료</div>
     </div>
     <div class="toggles">
       <div class="vw-toggle">
@@ -636,7 +635,7 @@ function renderApps(){
       <td>${a.edu}</td>
       <td>${CLS[a.cls].nm}</td>
       <td class="c">${btn}</td>
-      <td>${stateCell(x)}</td>
+      <td class="c">${stateCell(x)}</td>
       <td class="c">${viewCell(x)}</td>
       <td class="c">${payCell(x)}</td>
     </tr>`;
@@ -645,7 +644,7 @@ function renderApps(){
     `<colgroup><col class="c-no"><col class="c-mgr"><col class="c-nm"><col class="c-tel"><col class="c-edu"><col class="c-goal">
       <col class="c-prop"><col class="c-st"><col class="c-view"><col class="c-pay"></colgroup>
      <tr><th>No</th><th>담당</th><th>이름(ID)</th><th>연락처</th><th>최종학력</th><th>목표과정</th>
-      <th class="c">제안하기</th><th>상태</th><th class="c">열람 여부</th><th class="c">결제 여부</th></tr>${rows}`;
+      <th class="c">제안하기</th><th class="c">상태</th><th class="c">열람 여부</th><th class="c">결제 여부</th></tr>${rows}`;
 }
 
 function expireOf(){
