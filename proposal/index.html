@@ -73,8 +73,10 @@
   .sc input.dt{min-width:92px;font-variant-numeric:tabular-nums;}
   .sc .tilde{color:var(--gray-light);font-weight:700;}
   .sc .sc-sp{flex:1;}
-  .btn-sc{border:none;background:var(--navy);color:#fff;font-family:inherit;font-size:12px;font-weight:800;border-radius:8px;padding:7px 18px;cursor:pointer;}
+  .btn-sc{border:1px solid var(--navy);background:var(--navy);color:#fff;font-family:inherit;font-size:12px;font-weight:800;border-radius:8px;padding:6px 18px;cursor:pointer;line-height:1.5;}
   .btn-sc:hover{filter:brightness(1.1);}
+  .btn-sc.ghost{background:#fff;border-color:var(--line);color:var(--gray);}
+  .btn-sc.ghost:hover{filter:none;border-color:var(--mid);color:var(--main);}
 
   /* 접수 목록 */
   .apps{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;}
@@ -418,8 +420,8 @@
           <span class="tilde">~</span>
           <input type="text" id="fTo" class="dt" placeholder="26.08.31" onkeydown="if(event.key==='Enter')applyFilters()">
           <span class="sc-sp"></span>
-          <button class="btn-ghost" onclick="resetFilters()">초기화</button>
           <button class="btn-sc" onclick="applyFilters()">검색</button>
+          <button class="btn-sc ghost" onclick="resetFilters()">초기화</button>
         </div>
       </div>
     </div>
