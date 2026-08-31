@@ -109,9 +109,11 @@
   .apps{min-width:900px;}
   /* 내용에 따라 열 너비가 흔들리지 않도록 고정 (table-layout:fixed) */
   .apps col.c-no{width:6%;}   .apps col.c-mgr{width:7%;}  .apps col.c-nm{width:17%;} .apps col.c-tel{width:8%;}
-  .apps col.c-edu{width:10%;} .apps col.c-goal{width:12%;} .apps col.c-prop{width:9%;}
-  .apps col.c-st{width:14%;}  .apps col.c-view{width:9%;} .apps col.c-pay{width:8%;}
+  .apps col.c-edu{width:10%;} .apps col.c-goal{width:12%;} .apps col.c-prop{width:11%;}
+  .apps col.c-st{width:13%;}  .apps col.c-view{width:8%;} .apps col.c-pay{width:8%;}
   .apps td, .apps th{overflow:hidden;text-overflow:ellipsis;}
+  /* 버튼·뱃지 칸은 잘려도 말줄임표를 찍지 않는다 (점처럼 보임) */
+  .apps td.c, .apps th.c{text-overflow:clip;}
   .apps td.c,.apps th.c{text-align:center;}
   .chk{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer;white-space:nowrap;}
   .chk input{width:14px;height:14px;accent-color:var(--main);cursor:pointer;}
