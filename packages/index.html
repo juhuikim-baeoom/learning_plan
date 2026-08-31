@@ -289,6 +289,27 @@
   .single-box th{background:#fff;font-size:11px;color:var(--gray);font-weight:700;}
   .single-box td.win{background:var(--ok-soft);color:var(--ok);font-weight:800;}
 
+  /* ══ 과정 분류 네비 (관리자 패키지관리 '분류' 13종) ══ */
+  .cat-nav{border:1px solid var(--line);border-radius:10px;margin-bottom:18px;overflow:hidden;}
+  .cat-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;background:var(--panel);border-bottom:1px solid var(--line);padding:9px 14px;}
+  .cat-head b{font-size:12.5px;font-weight:800;}
+  .cat-head span{font-size:11px;color:var(--gray-light);}
+  .cat-grp{display:flex;gap:12px;padding:10px 14px;border-bottom:1px solid #f0f0f0;}
+  .cat-grp:last-of-type{border-bottom:none;}
+  .cat-lab{flex:0 0 118px;padding-top:3px;}
+  .cat-lab b{display:block;font-size:11.5px;font-weight:800;}
+  .cat-lab i{font-style:normal;display:block;font-size:10px;color:var(--gray-light);margin-top:2px;line-height:1.4;}
+  .cat-chips{flex:1;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start;}
+  .cat-chips button{border:1px solid var(--line);background:#fff;border-radius:14px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--gray);padding:5px 12px;cursor:pointer;}
+  .cat-chips button:hover{border-color:var(--line-dark);color:var(--ink);}
+  .cat-chips button.act{background:var(--main);border-color:var(--main);color:#fff;}
+  .cat-chips button.off{color:var(--gray-light);background:#fafbfc;cursor:default;}
+  .cat-note{background:#fffdf4;border-top:1px solid #f2e0ac;padding:9px 14px;font-size:11px;line-height:1.65;color:#8d7d5b;}
+  .cat-note b{color:#8a6212;font-weight:800;}
+  #stage.mo .cat-grp{flex-direction:column;gap:6px;}
+  #stage.mo .cat-lab{flex:none;padding-top:0;}
+  #stage.mo .cat-lab i{margin-top:1px;}
+
   .foot-note{font-size:11px;color:var(--gray-light);line-height:1.75;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);}
   .foot-note b{color:var(--gray);}
 </style>
@@ -340,6 +361,8 @@
   </div>
 
   <div id="stage">
+
+    <div class="cat-nav" id="catNav"></div>
 
     <!-- ══════════ 현행 재현 ══════════ -->
     <div id="shellCur">
@@ -976,8 +999,46 @@ function renderC(){
   document.getElementById("cPick").innerHTML = roundInCard("cfg");
 }
 
+/* ══════════ 과정 분류 네비 ══════════ */
+/* 관리자 '패키지관리 > 분류' 드롭다운 실제 13종을 성격별 3그룹으로 묶은 것.
+   분류는 화면 안의 선택 축이 아니라 랜딩 화면의 단위(1분류 = 1페이지)로만 쓴다. */
+const CATS = [
+  {g:"국가자격증", gs:"요건 과목·학점 채우기<br>시안 템플릿 그대로 적용",
+   items:[{t:"사회복지사 2급", on:1},{t:"보육교사"},{t:"장애영유아보육교사"},
+          {t:"청소년지도사 2급"},{t:"청소년지도사 3급"},{t:"평생교육사"}]},
+  {g:"학위·전공", gs:"학위 학점 채우기<br>요건 게이지가 다름",
+   items:[{t:"심리학"},{t:"경영학"},{t:"컴퓨터공학"},{t:"한국어"},{t:"정보통신공학"},{t:"미용학"}]},
+  {g:"시험", gs:"과목 이수 구조 아님<br>별도 화면",
+   items:[{t:"CPA"}]},
+];
+function renderCatNav(){
+  const el = document.getElementById("catNav");
+  /* 현행 재현에는 이런 네비가 없다 — 현행을 왜곡하지 않기 위해 감춘다 */
+  if(layout==="cur"){ el.style.display="none"; return; }
+  el.style.display="block";
+  const grps = CATS.map(c=>`
+    <div class="cat-grp">
+      <div class="cat-lab"><b>${c.g}</b><i>${c.gs}</i></div>
+      <div class="cat-chips">${c.items.map(i=>
+        i.on ? `<button class="act">${i.t}</button>`
+             : `<button class="off" title="같은 분류 체계 · 이 시안에서는 미구현">${i.t}</button>`
+      ).join("")}</div>
+    </div>`).join("");
+  el.innerHTML = `
+    <div class="cat-head"><b>과정 분류</b>
+      <span>관리자 [패키지관리 &gt; 분류] 13종 · 회색은 이 시안에서 미구현</span></div>
+    ${grps}
+    <div class="cat-note">
+      <b>분류를 화면 축이 아니라 화면 단위로 쓰는 이유</b> —
+      ① 현행 <b>전문학사·건강가정사 패키지</b>는 사회복지사와의 교차 상품인데 두 값 모두 분류 목록에 없음(패키지:과정 N:M으로 처리).
+      ② 청소년지도사만 급수로 나뉘고 사회복지사·보육교사는 분류값에 급수가 없음 — 랜딩 제목 '사회복지사 <b>2급</b>'과 어긋남.
+      ③ 학력·목표·실습 같은 화면 안 선택 축은 분류 하위 축이라 분류로 표현되지 않음.
+    </div>`;
+}
+
 /* ══════════ 공통 ══════════ */
 function renderAll(){
+  renderCatNav();
   if(layout==="cur") renderCur();
   if(layout==="a")   renderA();
   if(layout==="b")   renderB();
