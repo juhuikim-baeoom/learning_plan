@@ -161,34 +161,39 @@
   .pl-rg{display:inline-block;font-size:10px;font-weight:800;background:#fff;border:1px solid var(--mid);color:var(--navy);border-radius:7px;padding:2px 7px;margin-left:4px;}
   .auto-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:9px;padding:3px 9px;white-space:nowrap;}
 
-  .pk{border:1.5px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden;background:#fff;}
-  .pk.on{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
-  .pk.on .pk-nm{color:var(--navy);}
-  .pk.closed{background:#fafbfc;}
-  .pk-head{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;cursor:pointer;}
-  .pk-chk{width:20px;height:20px;border:2px solid #cfd6e2;border-radius:6px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:800;background:#fff;transition:background .12s,border-color .12s;}
-  .pk-head:hover .pk-chk{border-color:var(--mid);}
-  .pk.on .pk-chk{background:var(--main);border-color:var(--main);}
-  .pk-main{flex:1;min-width:0;}
-  .pk-nm-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .mt.dead{background:var(--red-soft);color:var(--red);border-color:#f3b8c0;}
-  .pk-no{display:inline-block;min-width:18px;text-align:center;font-size:10px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-right:6px;vertical-align:2px;font-variant-numeric:tabular-nums;}
-  .pk-nm{font-size:13.5px;font-weight:800;letter-spacing:-.2px;}
-  .pk-compo{font-size:11.5px;color:var(--gray);margin-top:4px;}
-  .pk-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
-  .mt{font-size:10.5px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:7px;padding:2px 7px;}
-  .mt.ok{background:var(--green-soft);color:var(--green);border-color:#bfe4d5;}
-  .mt.no{background:var(--red-soft);color:var(--red);border-color:#f5cdd2;}
-  .mt.id{font-variant-numeric:tabular-nums;color:var(--gray-light);}
-  .pk-sub{border-top:1px solid var(--line);background:var(--bg-soft);padding:11px 14px;}
-  .pk-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--gray);}
-  .pk-row+.pk-row{margin-top:8px;}
-  .pk-row label{font-weight:800;color:var(--ink);font-size:11px;}
-  .pk-sel{font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 9px;background:#fff;}
+  /* 제안 구성 표 - 담당자 팝업 전용 (학습자 화면은 카드 유지) */
+  .pk-tbl-head{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;color:var(--ink);margin:2px 0 7px;}
+  .pk-cnt{margin-left:auto;font-size:11px;font-weight:700;color:var(--gray);}
+  .pk-cnt b{color:var(--main);}
+  .pk-tbl{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+  .pk-tbl th{background:var(--bg-soft);color:var(--gray);font-size:10.5px;font-weight:800;padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
+  .pk-tbl th.c, .pk-tbl td.c{text-align:center;}
+  .pk-tbl td{padding:9px 8px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:middle;}
+  .pk-r{cursor:pointer;}
+  .pk-r:hover td{background:#fbfcfe;}
+  .pk-r.on td{background:var(--soft);}
+  .pk-r.on td:first-child{box-shadow:inset 3px 0 0 var(--main);}
+  .pk-r.dead td{color:var(--gray-light);}
+  .pk-r .pk-nm{font-weight:700;letter-spacing:-.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pk-r.on .pk-nm{color:var(--navy);}
+  .pk-r .num{font-weight:800;color:var(--gray);font-variant-numeric:tabular-nums;}
+  .pk-chk{display:inline-flex;width:18px;height:18px;border:2px solid #cfd6e2;border-radius:5px;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;background:#fff;vertical-align:middle;}
+  .pk-r.on .pk-chk, .pk-chk.all.on{background:var(--main);border-color:var(--main);}
+  .pk-chk.all{cursor:pointer;}
+  .pk-no{display:inline-block;min-width:18px;text-align:center;font-size:10px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 4px;font-variant-numeric:tabular-nums;}
+  .mt{display:inline-block;font-size:10px;font-weight:700;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap;}
+  .mt.id{color:var(--gray-light);font-variant-numeric:tabular-nums;}
+  .mt.dead{background:var(--red-soft);color:var(--red);border-color:#f3b8c0;margin-left:6px;}
+  .pk-sel{border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);padding:5px 7px;background:#fff;width:100%;}
+  .pk-sel:disabled{background:var(--bg-soft);color:var(--gray);}
+  .ex{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:7px;font-size:11px;line-height:1;padding:4px 7px;cursor:pointer;font-family:inherit;}
+  .ex:hover{border-color:var(--mid);color:var(--main);}
+  .pk-x td{padding:0;border-bottom:0;}
   .subj-tog{border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:var(--gray);border-radius:8px;padding:5px 10px;cursor:pointer;}
   .subj-tog:hover{border-color:var(--main);color:var(--main);}
-  .subj-list{display:none;margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;}
+  .subj-list{display:none;background:#fbfcfe;border-top:1px solid var(--line);padding:10px 14px;}
   .subj-list.open{display:block;}
+  .s-pk .subj-list{background:#fff;border:1px solid var(--line);border-top:1px solid var(--line);border-radius:9px;margin-top:9px;padding:10px 12px;}
   .sl-grp{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:9px 0 5px;}
   .sl-open{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border:1px solid var(--mid);border-radius:7px;padding:2px 8px;}
   .sl-open.plain{color:var(--navy);background:var(--bg-soft);border-color:var(--line);}
@@ -650,6 +655,7 @@ function addSlot(no){
 }
 
 function togPick(i){ picks[i].on = !picks[i].on; renderProp(); }
+function togAll(){ const all = picks.every(p => p.on); picks.forEach(p => p.on = !all); renderProp(); }
 
 /* 구성 보기의 학기 묶음 라벨 - 개강반이 주 라벨, 과목 구성은 보조.
    개강반이 없으면(학기 수보다 개강반이 적으면) 원래 학기 라벨로 대신한다 */
@@ -848,7 +854,9 @@ function renderProp(){
   const wantNos = resolveRegion(cls, (RULE[cls] ? RULE[cls].slots : Object.keys(SLOTS[cls]).map(Number)).slice(), regionOf(curApp.addr));
   const gapNos = propRO ? [] : wantNos.filter(n => !usedNos.includes(n) && !optNos.includes(n));
 
-  const cards = picks.map((p, i) => {
+  /* 구성이 반복되는 목록이라 카드보다 표가 비교에 낫다 -
+     선택 · id · 번호 · 이름 · 과목수 · 차수 · 펼침이 열로 정렬된다 */
+  const rowsHtml = picks.map((p, i) => {
     const s = SLOTS[cls][p.no];
     const pkg = PKGS.find(x => x.id===p.pkgId);
     const grps = SUBJ[s.key] || [];
@@ -857,26 +865,33 @@ function renderProp(){
     ).join("");
     const bOpts = batchOpts(cls, p.no).map(b =>
       `<option value="${b.id}" ${b.id===p.pkgId?"selected":""}>${b.batch} · ${openDate(b.opens[0])} 개강</option>`).join("");
-    return `<div class="pk ${p.on?"on":"off"}">
-      <div class="pk-head"${propRO?"":` onclick="togPick(${i})"`}>
-        <div class="pk-chk">${p.on?"✓":""}</div>
-        <div class="pk-main">
-          <div class="pk-nm-row"><span class="mt id">id ${pkg.id}</span><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span>${pkg.status!=="모집중" ? `<span class="mt dead">${pkg.status}</span>` : ""}</div>
-        </div>
+    const dead = pkg.status !== "모집중";
+    return `<tr class="pk-r ${p.on?"on":""} ${dead?"dead":""}"${propRO?"":` onclick="if(!event.target.closest('select,button'))togPick(${i})"`}>
+      <td class="c"><span class="pk-chk">${p.on?"✓":""}</span></td>
+      <td class="c"><span class="mt id">${pkg.id}</span></td>
+      <td class="c"><span class="pk-no">${p.no}</span></td>
+      <td class="pk-nm">${s.nm}${dead?`<span class="mt dead">${pkg.status}</span>`:""}</td>
+      <td class="c num">${s.n}</td>
+      <td><select class="pk-sel" onchange="setBatch(${i}, this.value)"${propRO?" disabled":""}>${bOpts}</select></td>
+      <td class="c"><button class="ex" onclick="togSubj(${i})" title="일정·구성 보기">▾</button></td>
+    </tr>
+    <tr class="pk-x"><td colspan="7">
+      <div class="subj-list" id="sl${i}">${subj}
+        ${s.nDetail && s.nDetail!==s.n ? `<div class="no-price" style="color:var(--amber);">관리자 목록 ${s.n}과목 · 상세 구성 확인 ${s.nDetail}과목 - 수집 시점 차이, 확인 대기</div>` : ""}
+        <div class="no-price">수강료는 이 화면에 표시하지 않음 - 학습자가 패키지를 고른 뒤 수강신청 단계에서 안내</div>
       </div>
-      <div class="pk-sub">
-        <div class="pk-row">
-          <label>차수</label>
-          <select class="pk-sel" onchange="setBatch(${i}, this.value)"${propRO?" disabled":""}>${bOpts}</select>
-          <button class="subj-tog" onclick="togSubj(${i})">일정·구성 보기 (${s.n}과목)</button>
-        </div>
-        <div class="subj-list" id="sl${i}">${subj}
-          ${s.nDetail && s.nDetail!==s.n ? `<div class="no-price" style="color:var(--amber);">관리자 목록 ${s.n}과목 · 상세 구성 확인 ${s.nDetail}과목 - 수집 시점 차이, 확인 대기</div>` : ""}
-          <div class="no-price">수강료는 이 화면에 표시하지 않음 - 학습자가 패키지를 고른 뒤 수강신청 단계에서 안내</div>
-        </div>
-      </div>
-    </div>`;
+    </td></tr>`;
   }).join("");
+
+  const cards = `<div class="pk-tbl-head">제안 구성<span class="pk-cnt">${picks.length}개 중 <b>${picks.filter(x=>x.on).length}개</b> 선택</span></div>
+    <table class="pk-tbl">
+      <colgroup><col style="width:38px"><col style="width:58px"><col style="width:34px"><col><col style="width:48px"><col style="width:172px"><col style="width:36px"></colgroup>
+      <tr>
+        <th class="c">${propRO?"":`<span class="pk-chk all ${picks.length&&picks.every(x=>x.on)?"on":""}" onclick="togAll()">${picks.length&&picks.every(x=>x.on)?"✓":""}</span>`}</th>
+        <th class="c">id</th><th class="c">No</th><th>패키지명</th><th class="c">과목</th><th>차수 (개강)</th><th class="c">일정</th>
+      </tr>
+      ${rowsHtml}
+    </table>`;
 
   const gapHtml = gapNos.length ? `<div class="excl">
     <div class="et">모집중 차수가 없어 빠진 구성 - 다음 차수가 등록되면 자동으로 나타남</div>
