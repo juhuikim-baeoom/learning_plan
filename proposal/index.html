@@ -885,10 +885,10 @@ function renderProp(){
 
   const cards = `<div class="pk-tbl-head">제안 구성<span class="pk-cnt">${picks.length}개 중 <b>${picks.filter(x=>x.on).length}개</b> 선택</span></div>
     <table class="pk-tbl">
-      <colgroup><col style="width:38px"><col style="width:58px"><col style="width:34px"><col><col style="width:48px"><col style="width:172px"><col style="width:36px"></colgroup>
+      <colgroup><col style="width:38px"><col style="width:58px"><col style="width:34px"><col><col style="width:48px"><col style="width:164px"><col style="width:62px"></colgroup>
       <tr>
         <th class="c">${propRO?"":`<span class="pk-chk all ${picks.length&&picks.every(x=>x.on)?"on":""}" onclick="togAll()">${picks.length&&picks.every(x=>x.on)?"✓":""}</span>`}</th>
-        <th class="c">id</th><th class="c">No</th><th>패키지명</th><th class="c">과목</th><th>차수 (개강)</th><th class="c">일정</th>
+        <th class="c">id</th><th class="c">No</th><th>패키지명</th><th class="c">과목</th><th>차수 (개강)</th><th class="c">일정/구성</th>
       </tr>
       ${rowsHtml}
     </table>`;
