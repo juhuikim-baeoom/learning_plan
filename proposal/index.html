@@ -186,6 +186,7 @@
   .subj-tog:hover{border-color:var(--main);color:var(--main);}
   .subj-list{display:none;margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;}
   .subj-list.open{display:block;}
+  .sl-open{float:right;font-size:10px;font-weight:700;color:var(--main);background:var(--soft);border-radius:6px;padding:1px 7px;}
   .sl-grp{font-size:10.5px;font-weight:800;color:var(--navy);margin:8px 0 5px;}
   .sl-grp:first-child{margin-top:0;}
   .sl-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;}
@@ -643,7 +644,23 @@ function addSlot(no){
 }
 
 function togPick(i){ picks[i].on = !picks[i].on; renderProp(); }
-function setOpen(i, v){ picks[i].open = v; renderProp(); }
+
+/* 개강반 문자열에서 날짜만 - "2026년 2학기 9/17개강반" → "9/17" */
+function openDate(o){ const m = (o||"").match(/\d+\/\d+/); return m ? m[0] : o; }
+
+/* 그 슬롯의 모집중 차수 - 차수를 바꾸면 학기 일정이 통째로 바뀐다.
+   개강반은 고르는 값이 아니라 그 차수가 지나갈 학기 일정이므로 구성 안에 표시한다 */
+function batchOpts(cls, no){
+  return PKGS.filter(x => x.cls===cls && x.no===no && x.status==="모집중")
+             .sort((a,b) => a.batch.localeCompare(b.batch));
+}
+function setBatch(i, pkgId){
+  const pkg = PKGS.find(x => x.id === +pkgId);
+  if(!pkg) return;
+  picks[i].pkgId = pkg.id;
+  picks[i].open  = pkg.opens[0];
+  renderProp();
+}
 function togSubj(i){ document.getElementById("sl"+i).classList.toggle("open"); }
 
 /* ══════════════════════════════════════════════════════════
@@ -818,10 +835,12 @@ function renderProp(){
   const cards = picks.map((p, i) => {
     const s = SLOTS[cls][p.no];
     const pkg = PKGS.find(x => x.id===p.pkgId);
-    const opts = pkg.opens.map(o => `<option value="${o}" ${o===p.open?"selected":""}>${o}</option>`).join("");
-    const subj = (SUBJ[s.key]||[]).map(g =>
-      `<div class="sl-grp">${g.t}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+    const grps = SUBJ[s.key] || [];
+    const subj = grps.map((g, gi) =>
+      `<div class="sl-grp">${g.t}${pkg.opens[gi] ? `<span class="sl-open">${pkg.opens[gi]}</span>` : ""}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
     ).join("");
+    const bOpts = batchOpts(cls, p.no).map(b =>
+      `<option value="${b.id}" ${b.id===p.pkgId?"selected":""}>${b.batch} · ${openDate(b.opens[0])} 개강</option>`).join("");
     return `<div class="pk ${p.on?"on":"off"}">
       <div class="pk-head"${propRO?"":` onclick="togPick(${i})"`}>
         <div class="pk-chk">${p.on?"✓":""}</div>
@@ -830,17 +849,17 @@ function renderProp(){
           <div class="pk-compo">${s.compo} · 총 ${s.n}과목</div>
           <div class="pk-meta">
             <span class="mt id">id ${pkg.id}</span>
-            <span class="mt">${pkg.batch}</span>
             <span class="mt ok">${pkg.status}</span>
             <span class="mt">모집 ${pkg.apply[0]} ~ ${pkg.apply[1]}</span>
+            <span class="mt">${grps.length}학기 · ${openDate(pkg.opens[0])} 개강</span>
           </div>
         </div>
       </div>
       <div class="pk-sub">
         <div class="pk-row">
-          <label>개강반</label>
-          <select class="pk-sel" onchange="setOpen(${i}, this.value)"${propRO?" disabled":""}>${opts}</select>
-          <button class="subj-tog" onclick="togSubj(${i})">과목 ${s.n}개 보기</button>
+          <label>차수</label>
+          <select class="pk-sel" onchange="setBatch(${i}, this.value)"${propRO?" disabled":""}>${bOpts}</select>
+          <button class="subj-tog" onclick="togSubj(${i})">구성·일정 보기 (${s.n}과목)</button>
         </div>
         <div class="subj-list" id="sl${i}">${subj}
           ${s.nDetail && s.nDetail!==s.n ? `<div class="no-price" style="color:var(--amber);">관리자 목록 ${s.n}과목 · 상세 구성 확인 ${s.nDetail}과목 - 수집 시점 차이, 확인 대기</div>` : ""}
@@ -1041,18 +1060,19 @@ function stuCards(pcMode){
     const pkg = PKGS.find(x => x.id===p.pkgId);
     const dead = pkg.status === "마감";
     const pick = stuPick === i;
-    const subj = (SUBJ[s.key]||[]).map(g =>
-      `<div class="sl-grp">${g.t}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+    const grps = SUBJ[s.key] || [];
+    const subj = grps.map((g, gi) =>
+      `<div class="sl-grp">${g.t}${pkg.opens[gi] ? `<span class="sl-open">${pkg.opens[gi]}</span>` : ""}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
     ).join("");
     return `<div class="s-pk ${dead?"dead":""} ${pick?"pick":""}">
       <span class="sp-badge">${dead?"이번 차수 마감":(i===0?"추천":"선택 가능")}</span>
       <div class="sp-nm">${s.nm}</div>
       <div class="sp-compo">${s.compo} · 총 ${s.n}과목</div>
       <div class="sp-when">
-        개강 <b>${p.open}</b><br>
+        개강 <b>${openDate(pkg.opens[0])}</b> ${pkg.opens[0].replace(/\s*\d+\/\d+개강반$/,"")}${pkg.opens.length>1 && grps.length>1 ? ` · 이후 ${pkg.opens.slice(1, grps.length).map(openDate).join(" · ")}` : ""}<br>
         신청 마감 <b>20${pkg.apply[1]}</b>
       </div>
-      <button class="subj-tog" style="margin-top:10px;width:100%;padding:9px;" onclick="stuTog(${i})">과목 ${s.n}개 ${pcMode?"":"자세히 "}보기</button>
+      <button class="subj-tog" style="margin-top:10px;width:100%;padding:9px;" onclick="stuTog(${i})">구성·일정 ${pcMode?"":"자세히 "}보기 (${s.n}과목)</button>
       <div class="subj-list" id="ssl${pcMode?"p":"m"}${i}">${subj}</div>
       ${dead
         ? `<button class="s-cta dead">마감 - 다음 개강 문의</button><div class="s-note">이 구성은 다음 차수 등록 후 다시 신청 가능</div>`
