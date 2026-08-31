@@ -186,8 +186,10 @@
   .subj-tog:hover{border-color:var(--main);color:var(--main);}
   .subj-list{display:none;margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;}
   .subj-list.open{display:block;}
-  .sl-open{float:right;font-size:10px;font-weight:700;color:var(--main);background:var(--soft);border-radius:6px;padding:1px 7px;}
-  .sl-grp{font-size:10.5px;font-weight:800;color:var(--navy);margin:8px 0 5px;}
+  .sl-grp{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:9px 0 5px;}
+  .sl-open{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border:1px solid var(--mid);border-radius:7px;padding:2px 8px;}
+  .sl-open.plain{color:var(--navy);background:var(--bg-soft);border-color:var(--line);}
+  .sl-sub{font-size:10.5px;font-weight:700;color:var(--gray-light);}
   .sl-grp:first-child{margin-top:0;}
   .sl-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;}
   .sl-items span{font-size:11.5px;color:var(--ink);padding-left:10px;position:relative;line-height:1.6;}
@@ -645,6 +647,16 @@ function addSlot(no){
 
 function togPick(i){ picks[i].on = !picks[i].on; renderProp(); }
 
+/* 구성 보기의 학기 묶음 라벨 - 개강반이 주 라벨, 과목 구성은 보조.
+   개강반이 없으면(학기 수보다 개강반이 적으면) 원래 학기 라벨로 대신한다 */
+function grpHead(g, gi, pkg){
+  const op = pkg.opens[gi];
+  const sub = g.t.replace(/^\s*\d+학기\s*·\s*/, "");
+  return op
+    ? `<div class="sl-grp"><span class="sl-open">${op}</span><span class="sl-sub">${sub}</span></div>`
+    : `<div class="sl-grp"><span class="sl-open plain">${g.t}</span></div>`;
+}
+
 /* 개강반 문자열에서 날짜만 - "2026년 2학기 9/17개강반" → "9/17" */
 function openDate(o){ const m = (o||"").match(/\d+\/\d+/); return m ? m[0] : o; }
 
@@ -837,7 +849,7 @@ function renderProp(){
     const pkg = PKGS.find(x => x.id===p.pkgId);
     const grps = SUBJ[s.key] || [];
     const subj = grps.map((g, gi) =>
-      `<div class="sl-grp">${g.t}${pkg.opens[gi] ? `<span class="sl-open">${pkg.opens[gi]}</span>` : ""}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+      `${grpHead(g, gi, pkg)}<div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
     ).join("");
     const bOpts = batchOpts(cls, p.no).map(b =>
       `<option value="${b.id}" ${b.id===p.pkgId?"selected":""}>${b.batch} · ${openDate(b.opens[0])} 개강</option>`).join("");
@@ -859,7 +871,7 @@ function renderProp(){
         <div class="pk-row">
           <label>차수</label>
           <select class="pk-sel" onchange="setBatch(${i}, this.value)"${propRO?" disabled":""}>${bOpts}</select>
-          <button class="subj-tog" onclick="togSubj(${i})">구성·일정 보기 (${s.n}과목)</button>
+          <button class="subj-tog" onclick="togSubj(${i})">일정·구성 보기 (${s.n}과목)</button>
         </div>
         <div class="subj-list" id="sl${i}">${subj}
           ${s.nDetail && s.nDetail!==s.n ? `<div class="no-price" style="color:var(--amber);">관리자 목록 ${s.n}과목 · 상세 구성 확인 ${s.nDetail}과목 - 수집 시점 차이, 확인 대기</div>` : ""}
@@ -1062,7 +1074,7 @@ function stuCards(pcMode){
     const pick = stuPick === i;
     const grps = SUBJ[s.key] || [];
     const subj = grps.map((g, gi) =>
-      `<div class="sl-grp">${g.t}${pkg.opens[gi] ? `<span class="sl-open">${pkg.opens[gi]}</span>` : ""}</div><div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
+      `${grpHead(g, gi, pkg)}<div class="sl-items">${g.s.map(x=>`<span>${x}</span>`).join("")}</div>`
     ).join("");
     return `<div class="s-pk ${dead?"dead":""} ${pick?"pick":""}">
       <span class="sp-badge">${dead?"이번 차수 마감":(i===0?"추천":"선택 가능")}</span>
@@ -1072,7 +1084,7 @@ function stuCards(pcMode){
         개강 <b>${openDate(pkg.opens[0])}</b> ${pkg.opens[0].replace(/\s*\d+\/\d+개강반$/,"")}${pkg.opens.length>1 && grps.length>1 ? ` · 이후 ${pkg.opens.slice(1, grps.length).map(openDate).join(" · ")}` : ""}<br>
         신청 마감 <b>20${pkg.apply[1]}</b>
       </div>
-      <button class="subj-tog" style="margin-top:10px;width:100%;padding:9px;" onclick="stuTog(${i})">구성·일정 ${pcMode?"":"자세히 "}보기 (${s.n}과목)</button>
+      <button class="subj-tog" style="margin-top:10px;width:100%;padding:9px;" onclick="stuTog(${i})">일정·구성 ${pcMode?"":"자세히 "}보기 (${s.n}과목)</button>
       <div class="subj-list" id="ssl${pcMode?"p":"m"}${i}">${subj}</div>
       ${dead
         ? `<button class="s-cta dead">마감 - 다음 개강 문의</button><div class="s-note">이 구성은 다음 차수 등록 후 다시 신청 가능</div>`
