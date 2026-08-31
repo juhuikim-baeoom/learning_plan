@@ -207,7 +207,6 @@
   .excl .et{font-size:11px;font-weight:800;color:var(--gray);margin-bottom:7px;}
   .excl-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--gray);padding:5px 0;}
   .excl-item b{color:var(--ink);font-weight:700;}
-  .gap-why{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--gray-light);white-space:nowrap;}
   .btn-add{margin-left:auto;border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:var(--main);border-radius:8px;padding:4px 10px;cursor:pointer;white-space:nowrap;}
   .btn-add:hover{border-color:var(--main);}
 
@@ -848,10 +847,6 @@ function renderProp(){
   const cls = curApp.cls;
   const usedNos = picks.map(p => p.no);
   const optNos = (RULE.optional[cls]||[]).filter(n => !usedNos.includes(n));
-  /* 이 과정에서 제안 대상인 슬롯인데 모집중 차수가 없어 빠진 것 -
-     조용히 사라지면 담당자가 "왜 이것밖에 안 나오지"가 되므로 사유를 적어 둔다 */
-  const wantNos = resolveRegion(cls, (RULE[cls] ? RULE[cls].slots : Object.keys(SLOTS[cls]).map(Number)).slice(), regionOf(curApp.addr));
-  const gapNos = propRO ? [] : wantNos.filter(n => !usedNos.includes(n) && !optNos.includes(n));
 
   /* 구성이 반복되는 목록이라 카드보다 표가 비교에 낫다 -
      선택 · id · 번호 · 이름 · 과목수 · 차수 · 펼침이 열로 정렬된다 */
@@ -892,14 +887,6 @@ function renderProp(){
       ${rowsHtml}
     </table>`;
 
-  const gapHtml = gapNos.length ? `<div class="excl">
-    <div class="et">모집중 차수가 없어 빠진 구성 - 다음 차수가 등록되면 자동으로 나타남</div>
-    ${gapNos.map(n => `<div class="excl-item">
-      <span class="pk-no">${n}</span><b>${SLOTS[cls][n].nm}</b>
-      <span class="gap-why">모집중 차수 없음</span>
-    </div>`).join("")}
-  </div>` : "";
-
   const exclHtml = (optNos.length && !propRO) ? `<div class="excl">
     <div class="et">규칙에서 제외된 슬롯 - 필요 시 담당자가 추가</div>
     ${optNos.map(n => `<div class="excl-item">
@@ -935,7 +922,6 @@ function renderProp(){
       </div>
 
       ${cards || `<div class="empty">모집중인 패키지 없음</div>`}
-      ${gapHtml}
       ${exclHtml}
 
       <div class="fld-lab">담당자 코멘트 <span class="lab-out">학습자 화면에 노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "발송본에 고정" : "선택 - 비워도 발송 가능"}</span></div>
