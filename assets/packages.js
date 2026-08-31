@@ -4,6 +4,7 @@
    두 화면이 이 파일 하나만 본다.
    - proposal/index.html   일정 축 - 노출번호(슬롯) · 차수 · 모집기간 · 진행상태 · 개강반 · 구성과목
    - enrollment/index.html 가격 축 - 분류 · 패키지명 · 과목수 · 판매가
+   - packages/index.html   분류 축 - 랜딩 화면의 단위(1분류 = 1페이지)
 
    수집
    - 2026.08.20  사회복지사·한국어교원의 차수/모집기간/진행상태/개강반/구성과목 (LMS 상세)
@@ -24,6 +25,41 @@ const PKG_CLS = {
   sw: {pcat:"pc-sw",  nm:"사회복지사 2급", cnt:451},
   ko: {pcat:"pc-kor", nm:"한국어교원 2급", cnt:0},
 };
+
+/* 관리자 '패키지관리 > 분류' 13종 - 목록 순서 그대로가 정본이다.
+   grp  분류의 성격. 요구 구조가 달라서 화면 템플릿이 갈린다
+        cert 요건 과목·학점 채우기 / deg 학위 학점 채우기 / exam 과목 이수 구조 아님
+   courses 이 분류의 패키지가 걸린 과정 (대표 과정이 개강 차수·단과 표의 기준)
+   tag     인정 과정 태그 - 과정 목록에 없는 분류도 표·차수를 맞출 수 있게
+
+   분류는 화면 안의 선택 축이 아니라 랜딩 화면의 단위(1분류 = 1페이지)다.
+   축으로 쓸 수 없는 이유 세 가지 -
+   (1) 교차 상품이 분류값에 없다. '전문학사 패키지' '건강가정사 패키지'는
+       사회복지사와의 교차인데 전문학사도 건강가정사도 이 목록에 없다 (PKG_SEED.cross로 처리)
+   (2) 급수 입도가 다르다. 청소년지도사만 2·3급으로 갈리고 사회복지사·보육교사는
+       분류값에 급수가 없다 - 랜딩 제목 '사회복지사 2급'과 어긋난다
+   (3) 학력·목표·실습 같은 화면 안 선택 축은 분류 하위 축이라 분류로 표현되지 않는다 */
+const PKG_CAT_GRPS = [
+  {id:"cert", nm:"국가자격증", sub:"요건 과목·학점 채우기",  note:"시안 템플릿 그대로 적용"},
+  {id:"deg",  nm:"학위·전공",  sub:"학위 학점 채우기",        note:"요건 게이지가 다름"},
+  {id:"exam", nm:"시험",       sub:"과목 이수 구조 아님",      note:"별도 화면"},
+];
+const PKG_CATS = [
+  {id:"pc-sw",     grp:"cert", n:"사회복지사",         tag:"사회복지사",   courses:["sw","as-sw","ba-sw"]},
+  {id:"pc-cc",     grp:"cert", n:"보육교사",           tag:"보육교사",     courses:["cc"]},
+  {id:"pc-di",     grp:"cert", n:"장애영유아보육교사", tag:"장애영유아",   courses:["di"]},
+  {id:"pc-yt2",    grp:"cert", n:"청소년지도사 2급",   tag:"청소년지도사", courses:["yt"]},
+  {id:"pc-yt3",    grp:"cert", n:"청소년지도사 3급",   tag:"청소년지도사", courses:[]},
+  {id:"pc-le",     grp:"cert", n:"평생교육사",         tag:"평생교육사",   courses:["le"]},
+  {id:"pc-psy",    grp:"deg",  n:"심리학",             tag:"심리학",       courses:["ba-psy","ba-couns"]},
+  {id:"pc-biz",    grp:"deg",  n:"경영학",             tag:"경영학",       courses:["ba-biz","as-biz"]},
+  {id:"pc-cs",     grp:"deg",  n:"컴퓨터공학",         tag:"컴퓨터공학",   courses:["ba-cs","as-ip","as-net","as-sec"]},
+  {id:"pc-kor",    grp:"deg",  n:"한국어",             tag:"한국어",       courses:["kr","ba-kor"]},
+  {id:"pc-cpa",    grp:"exam", n:"CPA",                tag:"KICPA",        courses:[]},
+  {id:"pc-ict",    grp:"deg",  n:"정보통신공학",       tag:"컴퓨터공학",   courses:["ba-ict","as-ict"]},
+  {id:"pc-beauty", grp:"deg",  n:"미용학",             tag:"미용",         courses:["as-beauty"]},
+];
+function pkgCatsOf(grp){ return PKG_CATS.filter(c=>c.grp===grp); }
 
 /* 개강반 묶음 - 차수마다 반복되는 값이라 따로 뺀다 */
 const PKG_OPENS = {
