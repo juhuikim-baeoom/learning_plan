@@ -197,13 +197,13 @@
   .excl .et{font-size:11px;font-weight:800;color:var(--gray);margin-bottom:7px;}
   .excl-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--gray);padding:5px 0;}
   .excl-item b{color:var(--ink);font-weight:700;}
+  .gap-why{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--gray-light);white-space:nowrap;}
   .btn-add{margin-left:auto;border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:var(--main);border-radius:8px;padding:4px 10px;cursor:pointer;white-space:nowrap;}
   .btn-add:hover{border-color:var(--main);}
 
   textarea{width:100%;min-height:64px;font-family:inherit;font-size:12.5px;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical;line-height:1.6;}
   textarea:focus{outline:none;border-color:var(--main);}
   .fld-lab{font-size:11px;font-weight:800;color:var(--gray);margin:14px 0 6px;}
-  .expire{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--amber-soft);border:1px solid #edd9a8;border-radius:10px;padding:10px 13px;font-size:11.5px;color:#6f5a1e;line-height:1.6;margin-top:14px;}
   .expire b{font-weight:800;color:var(--amber);}
   .send-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
   .btn-send{flex:1;min-width:180px;border:none;background:var(--main);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;border-radius:11px;padding:13px 18px;cursor:pointer;}
@@ -810,6 +810,10 @@ function renderProp(){
   const cls = curApp.cls;
   const usedNos = picks.map(p => p.no);
   const optNos = (RULE.optional[cls]||[]).filter(n => !usedNos.includes(n));
+  /* 이 과정에서 제안 대상인 슬롯인데 모집중 차수가 없어 빠진 것 -
+     조용히 사라지면 담당자가 "왜 이것밖에 안 나오지"가 되므로 사유를 적어 둔다 */
+  const wantNos = resolveRegion(cls, (RULE[cls] ? RULE[cls].slots : Object.keys(SLOTS[cls]).map(Number)).slice(), regionOf(curApp.addr));
+  const gapNos = propRO ? [] : wantNos.filter(n => !usedNos.includes(n) && !optNos.includes(n));
 
   const cards = picks.map((p, i) => {
     const s = SLOTS[cls][p.no];
@@ -846,6 +850,14 @@ function renderProp(){
     </div>`;
   }).join("");
 
+  const gapHtml = gapNos.length ? `<div class="excl">
+    <div class="et">모집중 차수가 없어 빠진 구성 - 다음 차수가 등록되면 자동으로 나타남</div>
+    ${gapNos.map(n => `<div class="excl-item">
+      <span class="pk-no">노출 ${n}</span><b>${SLOTS[cls][n].nm}</b>
+      <span class="gap-why">모집중 차수 없음</span>
+    </div>`).join("")}
+  </div>` : "";
+
   const exclHtml = (optNos.length && !propRO) ? `<div class="excl">
     <div class="et">규칙에서 제외된 슬롯 - 필요 시 담당자가 추가</div>
     ${optNos.map(n => `<div class="excl-item">
@@ -854,7 +866,6 @@ function renderProp(){
     </div>`).join("")}
   </div>` : "";
 
-  const exp = expireOf();
   const onCnt = picks.filter(p => p.on).length;
 
   box.innerHTML = `<div class="panel">
@@ -882,6 +893,7 @@ function renderProp(){
       </div>
 
       ${cards || `<div class="empty">모집중인 패키지 없음</div>`}
+      ${gapHtml}
       ${exclHtml}
 
       <div class="fld-lab">담당자 코멘트 <span class="lab-out">학습자 화면에 노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "발송본에 고정" : "선택 - 비워도 발송 가능"}</span></div>
@@ -889,11 +901,6 @@ function renderProp(){
 
       <div class="fld-lab">내부 메모 <span class="lab-in">학습자 비노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "이 회차를 보낸 이유 - 담당자만 봄" : "왜 다시 보내는지 · 통화 내용 등 - 담당자만 봄"}</span></div>
       <textarea id="memo" class="memo" ${propRO && !revokeMode ?"readonly":""} placeholder="예) 1차 미열람 · 유선 3회 부재 → 개강 일정만 갱신해 재발송">${propRO ? (rounds(curApp)[curSeq].memo||"") : ""}</textarea>
-
-      <div class="expire">
-        <b>유효기간 자동</b>
-        ${exp ? `선택한 개강반의 모집 마감일 <b>20${exp.replace(/\./g,".")}</b> 기준 자동 만료 - 담당자가 날짜를 입력하지 않음` : "선택된 패키지 없음"}
-      </div>
 
       <div class="send-row">
         ${revokeMode
