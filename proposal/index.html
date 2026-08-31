@@ -163,12 +163,14 @@
 
   .pk{border:1.5px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden;background:#fff;}
   .pk.on{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
-  .pk.off{opacity:.55;}
+  .pk.off{opacity:.82;}
   .pk.closed{background:#fafbfc;}
   .pk-head{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;cursor:pointer;}
   .pk-chk{width:19px;height:19px;border:2px solid var(--line);border-radius:6px;flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;}
   .pk.on .pk-chk{background:var(--main);border-color:var(--main);}
   .pk-main{flex:1;min-width:0;}
+  .pk-nm-row .mt{margin-right:6px;}
+  .mt.dead{background:var(--red-soft);color:var(--red);border-color:#f3b8c0;}
   .pk-no{display:inline-block;min-width:18px;text-align:center;font-size:10px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-right:6px;vertical-align:2px;font-variant-numeric:tabular-nums;}
   .pk-nm{font-size:13.5px;font-weight:800;letter-spacing:-.2px;}
   .pk-compo{font-size:11.5px;color:var(--gray);margin-top:4px;}
@@ -610,7 +612,8 @@ function autoPicks(app){
   slots = resolveRegion(app.cls, slots, regionOf(app.addr));
   return slots.map(no => {
     const pkg = pickPkg(app.cls, no);
-    return pkg ? {no, pkgId:pkg.id, open:pkg.opens[0], on:true} : null;
+    /* 기본은 선택 해제 - 담당자가 고른 구성만 나간다 */
+    return pkg ? {no, pkgId:pkg.id, open:pkg.opens[0], on:false} : null;
   }).filter(Boolean);
 }
 
@@ -857,13 +860,11 @@ function renderProp(){
       <div class="pk-head"${propRO?"":` onclick="togPick(${i})"`}>
         <div class="pk-chk">${p.on?"✓":""}</div>
         <div class="pk-main">
-          <div><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span></div>
-          <div class="pk-compo">${s.compo} · 총 ${s.n}과목</div>
+          <div class="pk-nm-row"><span class="mt id">id ${pkg.id}</span><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span></div>
           <div class="pk-meta">
-            <span class="mt id">id ${pkg.id}</span>
-            <span class="mt ok">${pkg.status}</span>
+            ${pkg.status!=="모집중" ? `<span class="mt dead">${pkg.status}</span>` : ""}
             <span class="mt">모집 ${pkg.apply[0]} ~ ${pkg.apply[1]}</span>
-            <span class="mt">${grps.length}학기 · ${openDate(pkg.opens[0])} 개강</span>
+            <span class="mt">${grps.length}학기</span>
           </div>
         </div>
       </div>
