@@ -61,6 +61,21 @@
   .panel-head .right{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
   .panel-body{padding:14px 16px 16px;}
 
+  /* 검색조건 */
+  .sc-panel .panel-body{padding:12px 16px 14px;background:#fbfcfe;}
+  .sc-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px;}
+  .sc-row:last-child{margin-bottom:0;}
+  .sc label{font-size:11.5px;font-weight:800;color:var(--gray);margin-left:6px;}
+  .sc-row:first-child label:first-child, .sc-row label:first-child{margin-left:0;}
+  .sc select, .sc input[type=text]{border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:12px;color:var(--ink);padding:6px 9px;background:#fff;}
+  .sc select:focus, .sc input:focus{border-color:var(--main);outline:none;}
+  .sc input[type=text]{min-width:150px;}
+  .sc input.dt{min-width:92px;font-variant-numeric:tabular-nums;}
+  .sc .tilde{color:var(--gray-light);font-weight:700;}
+  .sc .sc-sp{flex:1;}
+  .btn-sc{border:none;background:var(--navy);color:#fff;font-family:inherit;font-size:12px;font-weight:800;border-radius:8px;padding:7px 18px;cursor:pointer;}
+  .btn-sc:hover{filter:brightness(1.1);}
+
   /* 접수 목록 */
   .apps{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;}
   .apps th{background:var(--bg-soft);color:var(--gray);font-size:11px;font-weight:800;text-align:center;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
@@ -288,20 +303,17 @@
         </ul>
       </div>
       <div class="ln-sec">
-        <h4>학력 매핑 <span class="h4-sub">이 화면이 처음 명문화하는 규칙</span></h4>
-        <table class="ln-map">
-          <tr><th>최종학력</th><th>제안 슬롯</th><th>근거</th></tr>
-          <tr><td>고등학교 졸업</td><td><b>4</b> 전문학사 20과목 · <b>6</b> 이론 8과목</td><td>2급 요건이 전문학사 이상이라 학위가 선행</td></tr>
-          <tr><td>전문대학 졸업 이상</td><td><b>1 또는 2</b> 취득 완성 · <b>3</b> 이론 16과목 · <b>6</b> 이론 8과목</td><td>실습 포함이 기본, 실습 외부 수강이면 3번</td></tr>
-          <tr><td>공통 옵션</td><td><b>5</b> 건강가정사 병행</td><td>병행 의사 확인 시 담당자가 추가</td></tr>
-        </table>
-        <ul style="margin-top:8px;">
-          <li><b>1 vs 2</b>(수도권·전국반)는 접수 건의 <b>주소지</b>로 자동 결정 - 서울·경기·인천이면 수도권반, 그 밖은 전국반. 담당자 판단 사항 아님</li>
-          <li>학력 매핑만 <b>근거 문서가 없는 부분</b> - 상담사 경험으로만 돌아가던 규칙이라 상담팀 확인 필요</li>
+        <h4>제안 슬롯 매핑 <span class="h4-sub">지금은 과정 단위 · 학력 분기는 보류</span></h4>
+        <ul>
+          <li>패키지가 <b>과정 단위로만</b> 나뉘어 있어, 그 과정의 <b>판매 중인 구성 전부</b>를 카드로 올린다 (사회복지사 5장 · 한국어교원 2장). 담당자가 필요 없는 구성을 끄고 보낸다</li>
+          <li><b>1 vs 2</b>(수도권·전국반)는 <b>회원가입 주소지</b>로 자동 결정 - 서울·경기·인천이면 수도권반, 그 밖은 전국반. 담당자 판단 사항 아님</li>
+          <li><b>학력 매핑은 보류</b> - 근거 문서가 없고 상담사 경험으로만 돌던 규칙이라, 지금 확정하지 않고 과정 기준으로 운영한다. 규칙이 서면 상수 <code>RULE</code>에 학력 분기만 넣으면 된다</li>
+          <li>다만 고졸 학습자에게는 <b>전문학사 병행 구성(노출 4)</b>이 사실상 필수다 - 2급 요건이 전문학사 이상이므로, 담당자가 카드를 고를 때 이 점만 확인한다</li>
         </ul>
       </div>
       <div class="ln-foot">
-        <b>미확정</b> - 학력 매핑 값(상담팀 확인 대기, 상수 <code>RULE</code> 하나만 교체). 패키지타입 필터의 의미. 희망과정 선택지에 없는 전공(심리학 등) 안내 방식. 한국어교원의 <b>목록 과목수(16·15)와 상세 구성 과목수(14·13) 불일치</b> - 수집 시점 차이인지 세는 방식 차이인지 확인 대기.
+        <b>확정</b> - 지역 판정은 회원가입 <b>주소지</b> · 유효기간은 개강반 <b>모집 마감일</b> · 발송은 <b>알림톡, 실패 시 문자</b>이며 발송 내역은 <b>상담메모에 자동 기록</b> · 수강신청에는 <b>패키지 id만</b> 넘기고 금액은 결제 화면에서 안내.<br>
+        <b>미확정</b> - 학력 매핑(보류, 과정 기준으로 운영). 한국어교원의 <b>목록 과목수(16·15)와 상세 구성 과목수(14·13) 불일치</b>. 제안 회수 조건.
       </div>
     </div>
   </div>
@@ -321,15 +333,85 @@
   <!-- ══════════ 담당자 화면 ══════════ -->
   <div id="adminView">
 
+    <!-- 검색조건 - 현행 학습설계관리 검색 영역과 같은 자리 -->
+    <div class="panel sc-panel">
+      <div class="panel-head">
+        <h3>검색조건</h3>
+        <span class="ph-sub">담당 · 상태 · 열람 · 결제로 좁히고, 이름 · 회원ID · 연락처로 찾는다</span>
+      </div>
+      <div class="panel-body sc">
+        <div class="sc-row">
+          <label>담당자</label>
+          <select id="fMgr" onchange="applyFilters()">
+            <option value="mine">내 담당</option>
+            <option value="all">팀 전체</option>
+            <option value="박OO">박OO</option>
+            <option value="이OO">이OO</option>
+          </select>
+          <label>목표과정</label>
+          <select id="fCls" onchange="applyFilters()">
+            <option value="">전체</option>
+            <option value="sw">사회복지사 2급</option>
+            <option value="ko">한국어교원 2급</option>
+          </select>
+          <label>최종학력</label>
+          <select id="fEdu" onchange="applyFilters()">
+            <option value="">전체</option>
+            <option>고등학교 졸업</option>
+            <option>전문대학 졸업</option>
+            <option>대학교 졸업</option>
+          </select>
+        </div>
+        <div class="sc-row">
+          <label>상태</label>
+          <select id="fSt" onchange="applyFilters()">
+            <option value="">전체</option>
+            <option value="new">미제안</option>
+            <option value="sent">발송</option>
+            <option value="expired">제안만료</option>
+          </select>
+          <label>열람</label>
+          <select id="fView" onchange="applyFilters()">
+            <option value="">전체</option>
+            <option value="no">미열람</option>
+            <option value="yes">열람</option>
+          </select>
+          <label>결제</label>
+          <select id="fPay" onchange="applyFilters()">
+            <option value="">전체</option>
+            <option value="no">미결제</option>
+            <option value="yes">결제완료</option>
+          </select>
+          <label>정렬</label>
+          <select id="fSort" onchange="applyFilters()">
+            <option value="new">최신순</option>
+            <option value="old">오래된순</option>
+            <option value="todo">미제안 먼저</option>
+          </select>
+        </div>
+        <div class="sc-row">
+          <label>검색어</label>
+          <select id="fKeyType" onchange="applyFilters()">
+            <option value="nm">이름</option>
+            <option value="uid">회원ID</option>
+            <option value="tel">연락처</option>
+          </select>
+          <input type="text" id="fKey" placeholder="검색어 입력" onkeydown="if(event.key==='Enter')applyFilters()">
+          <label>발송일</label>
+          <input type="text" id="fFrom" class="dt" placeholder="26.08.01" onkeydown="if(event.key==='Enter')applyFilters()">
+          <span class="tilde">~</span>
+          <input type="text" id="fTo" class="dt" placeholder="26.08.31" onkeydown="if(event.key==='Enter')applyFilters()">
+          <span class="sc-sp"></span>
+          <button class="btn-ghost" onclick="resetFilters()">초기화</button>
+          <button class="btn-sc" onclick="applyFilters()">검색</button>
+        </div>
+      </div>
+    </div>
+
     <div class="panel">
       <div class="panel-head">
         <h3>제안 목록 관리</h3>
         <div class="right">
-          <label class="chk"><input type="checkbox" id="fNew" onchange="onlyNew=this.checked; page=1; renderApps();"> 미제안만</label>
-          <div class="vw-toggle">
-            <button id="owMine" class="active" onclick="switchOwner('mine')">내 담당</button>
-            <button id="owTeam" onclick="switchOwner('team')">팀 전체</button>
-          </div>
           <span class="list-sum">총 <b id="lsTotal">0</b>개 <b id="lsPage">1/1</b> 페이지 <span class="sep">◈</span> 한 화면에
             <select id="lsPer" onchange="perPage=+this.value; page=1; renderApps();">
               <option value="20">20</option><option value="50">50</option><option value="100" selected>100</option>
@@ -389,22 +471,16 @@ const SLOTS = pkgSlots();   // {cls: {번호: {nm, compo, n, key, region, nDetai
 const PKGS  = pkgRounds();  // [{id, cls, no, batch, apply, status, opens}]
 const SUBJ  = PKG_COMPO;     // {구성과목 키: [{t, s:[과목명]}]}
 
-/* ── 학력 → 추천 슬롯 매핑 ───────────────────────────
-   ★ 근거 문서 없음 - 상담팀 확인 대기. 이 상수만 교체하면 규칙이 바뀐다. */
+/* ── 과정 → 제안 슬롯 매핑 ───────────────────────────
+   학력 매핑은 근거 문서가 없어 보류. 패키지가 과정 단위로만 나뉘어 있으므로
+   지금은 그 과정의 판매 중인 구성을 전부 제시하고, 지역 슬롯만 주소지로 가른다.
+   학력 규칙이 서면 이 상수에 학력 분기를 넣으면 된다. */
 const RULE = {
-  sw: {
-    /* 지역 슬롯(1 수도권 / 2 전국반)은 쌍으로 넣고 resolveRegion이 하나만 남긴다.
-       한쪽만 적으면 반대 지역 신청자가 취득 완성 패키지를 못 받는다. */
-    "고등학교 졸업":     {slots:[4,6],     why:"2급 요건이 전문학사 이상이라 학위가 선행"},
-    "전문대학 졸업":     {slots:[1,2,3,6], why:"학위 요건 충족 - 실습 포함 취득 완성이 기본"},
-    "대학교 졸업":       {slots:[1,2,3,6], why:"학위 요건 충족 - 실습 포함 취득 완성이 기본"},
-  },
-  ko: {
-    "대학교 졸업":       {slots:[1,2], why:"이론 + 실습 완성과 이론 단독을 함께 제시"},
-    "전문대학 졸업":     {slots:[1,2], why:"이론 + 실습 완성과 이론 단독을 함께 제시"},
-  },
-  /* 병행 옵션 - 자동 제안에서는 빠지고 담당자가 추가 */
-  optional: {sw:[5], ko:[]},
+  /* 지역 슬롯(1 수도권 / 2 전국반)은 쌍으로 넣고 resolveRegion이 하나만 남긴다 */
+  sw: {slots:[1,2,3,4,5,6], why:"학력 분기 보류 - 사회복지사 2급의 판매 중인 구성 전부"},
+  ko: {slots:[1,2],         why:"학력 분기 보류 - 한국어교원 2급의 판매 중인 구성 전부"},
+  /* 규칙에서 빼 두는 슬롯 - 지금은 없다 (과정 전체를 제시하므로) */
+  optional: {sw:[], ko:[]},
 };
 
 /* ── 담당 학습자 (LMS 학습설계 목록의 회원ID·성명·전화번호·전공 + 관리 컬럼) ───
@@ -466,8 +542,8 @@ function roundPicks(a, i){
    ══════════════════════════════════════════════════════════ */
 let curApp = null;      // 선택된 접수 건
 let picks = [];         // 제안안 카드 [{no, pkgId, open, on}]
-let scopeOwn = "mine";  // 목록 범위 - mine 내 담당(기본) / team 팀 전체
-let onlyNew = false;    // 미제안(아직 제안을 보내지 않은) 건만
+/* 검색조건 - 담당은 내 담당이 기본값 */
+let F = {mgr:"mine", cls:"", edu:"", st:"", view:"", pay:"", keyType:"nm", key:"", from:"", to:"", sort:"new"};
 let perPage = 100, page = 1;   // 목록 페이지 - 현행 목록과 같은 "총 N개 · 한 화면에" 방식
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
 let curSeq = null;      // 읽기 전용으로 열어 둔 회차 (0-base), 새 초안이면 null
@@ -505,7 +581,7 @@ function resolveRegion(cls, slots, region){
 
 /* 학력 규칙 + 대표지역으로 제안 카드를 만든다 (원클릭의 본체) */
 function autoPicks(app){
-  const rule = (RULE[app.cls]||{})[app.edu];
+  const rule = RULE[app.cls];
   let slots = rule ? rule.slots.slice() : Object.keys(SLOTS[app.cls]).map(Number);
   slots = resolveRegion(app.cls, slots, regionOf(app.addr));
   return slots.map(no => {
@@ -583,9 +659,36 @@ function stateCell(x){
   return `<span class="st-pill sent">${x.r.sentDt} 발송</span>`;
 }
 
-/* 담당 범위 - 내 담당이 기본값 */
+/* 담당 범위 - 내 담당이 기본값, 특정 담당자도 고를 수 있다 */
 function scopeApps(){
-  return APPS.filter(a => (scopeOwn==="mine" ? a.mgr===ME : true));
+  return APPS.filter(a => F.mgr==="all" ? true : (F.mgr==="mine" ? a.mgr===ME : a.mgr===F.mgr));
+}
+
+/* 행의 기준일 - 발송 건은 발송일, 미제안은 등록일 (정렬·기간 검색의 축) */
+function rowDate(x){ return x.r ? x.r.sentDt : x.a.dt; }
+
+function matchRow(x){
+  const a = x.a;
+  if(F.cls && a.cls !== F.cls) return false;
+  if(F.edu && a.edu !== F.edu) return false;
+  if(F.st === "new"     && x.seq!=null) return false;
+  if(F.st === "sent"    && (x.seq==null || (x.latest && a.expired))) return false;
+  if(F.st === "expired" && !(x.latest && a.expired)) return false;
+  if(F.view === "no"  && !(x.r && x.r.view==="미열람")) return false;
+  if(F.view === "yes" && !(x.r && x.r.view!=="미열람")) return false;
+  if(F.pay === "no"   && !(x.r && x.r.pay==="미결제")) return false;
+  if(F.pay === "yes"  && !(x.r && x.r.pay!=="미결제")) return false;
+  if(F.key){
+    const v = F.keyType==="nm" ? a.nm : F.keyType==="uid" ? a.uid : a.tel;
+    if(!v.includes(F.key)) return false;
+  }
+  /* 기간은 발송 건에만 적용 - 미제안은 발송일이 없다 */
+  if((F.from || F.to)){
+    if(!x.r) return false;
+    if(F.from && rowDate(x) < F.from) return false;
+    if(F.to   && rowDate(x) > F.to)   return false;
+  }
+  return true;
 }
 
 /* 목록 행 = 제안 건. 재제안하면 이전 건은 그대로 두고 새 행이 쌓인다.
@@ -597,16 +700,38 @@ function listRows(){
     if(!rs.length){ rows.push({a, seq:null, r:null, latest:true}); return; }
     for(let i = rs.length-1; i >= 0; i--) rows.push({a, seq:i, r:rs[i], latest:i===rs.length-1});
   });
-  return rows.filter(x => !onlyNew || x.seq===null);
+  const out = rows.filter(matchRow);
+  const byDate = (p,q) => rowDate(q).localeCompare(rowDate(p));
+  if(F.sort==="old")  out.sort((p,q) => rowDate(p).localeCompare(rowDate(q)));
+  else if(F.sort==="todo") out.sort((p,q) => (p.seq==null?0:1) - (q.seq==null?0:1) || byDate(p,q));
+  else out.sort(byDate);
+  return out;
 }
-function movePage(d){ page += d; renderApps(); }
 
-function switchOwner(o){
-  scopeOwn = o; page = 1;
-  document.getElementById("owMine").classList.toggle("active", o==="mine");
-  document.getElementById("owTeam").classList.toggle("active", o==="team");
+function applyFilters(){
+  F.mgr  = document.getElementById("fMgr").value;
+  F.cls  = document.getElementById("fCls").value;
+  F.edu  = document.getElementById("fEdu").value;
+  F.st   = document.getElementById("fSt").value;
+  F.view = document.getElementById("fView").value;
+  F.pay  = document.getElementById("fPay").value;
+  F.keyType = document.getElementById("fKeyType").value;
+  F.key  = (document.getElementById("fKey").value||"").trim();
+  F.from = (document.getElementById("fFrom").value||"").trim();
+  F.to   = (document.getElementById("fTo").value||"").trim();
+  F.sort = document.getElementById("fSort").value;
+  page = 1;
   renderApps();
 }
+function resetFilters(){
+  ["fCls","fEdu","fSt","fView","fPay"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("fMgr").value = "mine";
+  document.getElementById("fKeyType").value = "nm";
+  document.getElementById("fSort").value = "new";
+  ["fKey","fFrom","fTo"].forEach(id => document.getElementById(id).value = "");
+  applyFilters();
+}
+function movePage(d){ page += d; renderApps(); }
 
 function renderApps(){
   const list = listRows();
@@ -771,7 +896,7 @@ function send(){
   const seq = rounds(curApp).length;
   closeProp();
   renderApps();
-  alert(`${seq>1?seq+"차 ":""}제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이전 회차는 이력으로 남고 학습자에게는 최신 발송본만 노출\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 학습자에게 알림톡 발송`);
+  alert(`${seq>1?seq+"차 ":""}제안 발송 (시연)\n· 발송 시점 패키지 구성으로 스냅샷 고정\n· 이전 회차는 이력으로 남고 학습자에게는 최신 발송본만 노출\n· 실제 수강신청 시에는 최신 패키지 기준 적용\n· 알림톡 발송 (실패 시 문자)\n· 발송 내역은 상담메모에 자동 기록`);
   switchView("student");
 }
 
