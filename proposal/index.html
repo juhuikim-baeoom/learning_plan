@@ -163,13 +163,14 @@
 
   .pk{border:1.5px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden;background:#fff;}
   .pk.on{border-color:var(--main);box-shadow:0 0 0 3px var(--soft);}
-  .pk.off{opacity:.82;}
+  .pk.on .pk-nm{color:var(--navy);}
   .pk.closed{background:#fafbfc;}
   .pk-head{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;cursor:pointer;}
-  .pk-chk{width:19px;height:19px;border:2px solid var(--line);border-radius:6px;flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;}
+  .pk-chk{width:20px;height:20px;border:2px solid #cfd6e2;border-radius:6px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:800;background:#fff;transition:background .12s,border-color .12s;}
+  .pk-head:hover .pk-chk{border-color:var(--mid);}
   .pk.on .pk-chk{background:var(--main);border-color:var(--main);}
   .pk-main{flex:1;min-width:0;}
-  .pk-nm-row .mt{margin-right:6px;}
+  .pk-nm-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
   .mt.dead{background:var(--red-soft);color:var(--red);border-color:#f3b8c0;}
   .pk-no{display:inline-block;min-width:18px;text-align:center;font-size:10px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-right:6px;vertical-align:2px;font-variant-numeric:tabular-nums;}
   .pk-nm{font-size:13.5px;font-weight:800;letter-spacing:-.2px;}
@@ -860,12 +861,7 @@ function renderProp(){
       <div class="pk-head"${propRO?"":` onclick="togPick(${i})"`}>
         <div class="pk-chk">${p.on?"✓":""}</div>
         <div class="pk-main">
-          <div class="pk-nm-row"><span class="mt id">id ${pkg.id}</span><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span></div>
-          <div class="pk-meta">
-            ${pkg.status!=="모집중" ? `<span class="mt dead">${pkg.status}</span>` : ""}
-            <span class="mt">모집 ${pkg.apply[0]} ~ ${pkg.apply[1]}</span>
-            <span class="mt">${grps.length}학기</span>
-          </div>
+          <div class="pk-nm-row"><span class="mt id">id ${pkg.id}</span><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span>${pkg.status!=="모집중" ? `<span class="mt dead">${pkg.status}</span>` : ""}</div>
         </div>
       </div>
       <div class="pk-sub">
