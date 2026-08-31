@@ -135,6 +135,10 @@
   .ro-bar{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:12px;line-height:1.6;}
   .ro-bar b{color:var(--ink);}
   .lab-out{display:inline-block;font-size:9.5px;font-weight:800;color:var(--main);background:var(--soft);border-radius:6px;padding:2px 6px;}
+  .btn-revoke{border:none;background:var(--red);color:#fff;font-family:inherit;font-size:13px;font-weight:800;border-radius:10px;padding:11px 22px;cursor:pointer;}
+  .btn-revoke:hover{filter:brightness(1.07);}
+  .btn-ghost.danger{color:var(--red);border-color:#f3b8c0;}
+  .btn-ghost.danger:hover{background:var(--red-soft);}
   .lab-in{display:inline-block;font-size:9.5px;font-weight:800;color:var(--gray);background:#f0f1f4;border-radius:6px;padding:2px 6px;}
   textarea.memo{background:#fbfcfe;}
   .diff-bar{background:#fff8e2;border:1px solid #f0dba8;border-radius:10px;padding:9px 12px;font-size:11.5px;font-weight:700;color:#8a6212;margin-bottom:12px;line-height:1.7;}
@@ -272,6 +276,7 @@
           <li>그래서 목록에 <b>신청구분·실명인증은 두지 않는다</b> - 아직 신청 자체가 없으므로 채워질 값이 아님</li>
           <li>진입점은 <b>제안 목록 관리</b> - 본인 담당 학습자를 이름(회원ID)·연락처·최종학력·목표과정과 함께 한 줄로 보고, <b>제안하기</b> 열에서 바로 제안안 팝업을 띄움. <b>미제안만</b> 체크로 아직 안 보낸 건만 추림</li>
           <li>목록의 <b>상태 · 열람 여부 · 결제 여부</b>로 발송 이후까지 같은 화면에서 추적 - 미열람 건이 팔로업 콜 대상</li>
+          <li><b>제안 회수</b> - 최신 건이면서 <b>미결제</b>일 때만 가능하고, 결제가 끝난 건은 환불 절차로 넘어간다. 회수 사유는 <b>내부 메모 필수</b>. 회수하면 학습자 화면에서 즉시 내려가고 열람한 학습자에게는 안내가 나가며, 건은 <b>회수 상태로 목록에 남는다</b> (재제안은 새 건)</li>
           <li>목록 행은 <b>제안 건 단위</b> - 재제안하면 이전 건을 덮지 않고 새 줄이 쌓인다. 같은 학습자가 여러 줄이 되고 회차마다 열람·결제가 따로 남는다 (지난 건은 흐리게 · 이름 옆 <b>N차</b> 배지)</li>
           <li>문구는 두 갈래 - <b>담당자 코멘트</b>는 학습자 화면에 그대로 나가고, <b>내부 메모</b>는 담당자만 본다. 재제안 사유·통화 내용은 내부 메모에 남긴다</li>
         </ul>
@@ -313,7 +318,7 @@
       </div>
       <div class="ln-foot">
         <b>확정</b> - 지역 판정은 회원가입 <b>주소지</b> · 유효기간은 개강반 <b>모집 마감일</b> · 발송은 <b>알림톡, 실패 시 문자</b>이며 발송 내역은 <b>상담메모에 자동 기록</b> · 수강신청에는 <b>패키지 id만</b> 넘기고 금액은 결제 화면에서 안내.<br>
-        <b>미확정</b> - 학력 매핑(보류, 과정 기준으로 운영). 한국어교원의 <b>목록 과목수(16·15)와 상세 구성 과목수(14·13) 불일치</b>. 제안 회수 조건.
+        <b>미확정</b> - 학력 매핑(보류, 과정 기준으로 운영). 한국어교원의 <b>목록 과목수(16·15)와 상세 구성 과목수(14·13) 불일치</b>.
       </div>
     </div>
   </div>
@@ -369,6 +374,7 @@
             <option value="new">미제안</option>
             <option value="sent">발송</option>
             <option value="expired">제안만료</option>
+            <option value="revoked">회수</option>
           </select>
           <label>열람</label>
           <select id="fView" onchange="applyFilters()">
@@ -530,7 +536,20 @@ function nextPno(){
   return APPS.reduce((mx,a) => rounds(a).reduce((m,r) => Math.max(m, r.pno||0), mx), 2600) + 1;
 }
 function lastRound(a){ const r = rounds(a); return r.length ? r[r.length-1] : null; }
-function stOf(a){ return !rounds(a).length ? "new" : (a.expired ? "expired" : "sent"); }
+function stOf(a){
+  const r = lastRound(a);
+  if(!r) return "new";
+  if(r.revoked) return "revoked";
+  return a.expired ? "expired" : "sent";
+}
+/* 회수 가능 조건 - 최신 건 · 미결제 · 아직 회수하지 않음.
+   결제가 끝난 건은 거래가 발생했으므로 환불 절차로 넘어간다 */
+function canRevoke(a, seq){
+  const rs = rounds(a);
+  if(seq == null || seq !== rs.length-1) return false;
+  const r = rs[seq];
+  return !r.revoked && r.pay === "미결제";
+}
 function roundPicks(a, i){
   const r = rounds(a)[i];
   return ((r && r.picks && r.picks.length) ? r.picks : autoPicks(a))
@@ -547,6 +566,7 @@ let F = {mgr:"mine", cls:"", edu:"", st:"", view:"", pay:"", keyType:"nm", key:"
 let perPage = 100, page = 1;   // 목록 페이지 - 현행 목록과 같은 "총 N개 · 한 화면에" 방식
 let propRO = false;     // 팝업이 발송본(읽기 전용)인지
 let curSeq = null;      // 읽기 전용으로 열어 둔 회차 (0-base), 새 초안이면 null
+let revokeMode = false; // 회수 사유 입력 중
 let roCmt = "";         // 발송본 코멘트
 let view = "admin";
 let device = "mo";
@@ -595,6 +615,7 @@ function oneClick(appId){
   if(!app) return;
   curApp = app;
   propRO = false;
+  revokeMode = false;
   curSeq = null;
   roCmt = "";
   picks = autoPicks(app);
@@ -655,6 +676,7 @@ function seqBadge(x){
 }
 function stateCell(x){
   if(x.seq==null) return `<span class="st-pill wait">미제안</span>`;
+  if(x.r.revoked) return `<span class="st-pill expired">${x.r.revoked} 회수</span>`;
   if(x.latest && x.a.expired) return `<span class="st-pill expired">제안만료</span>`;
   return `<span class="st-pill sent">${x.r.sentDt} 발송</span>`;
 }
@@ -672,8 +694,9 @@ function matchRow(x){
   if(F.cls && a.cls !== F.cls) return false;
   if(F.edu && a.edu !== F.edu) return false;
   if(F.st === "new"     && x.seq!=null) return false;
-  if(F.st === "sent"    && (x.seq==null || (x.latest && a.expired))) return false;
-  if(F.st === "expired" && !(x.latest && a.expired)) return false;
+  if(F.st === "sent"    && (x.seq==null || (x.r && x.r.revoked) || (x.latest && a.expired))) return false;
+  if(F.st === "expired" && !(x.latest && a.expired && !x.r.revoked)) return false;
+  if(F.st === "revoked" && !(x.r && x.r.revoked)) return false;
   if(F.view === "no"  && !(x.r && x.r.view==="미열람")) return false;
   if(F.view === "yes" && !(x.r && x.r.view!=="미열람")) return false;
   if(F.pay === "no"   && !(x.r && x.r.pay==="미결제")) return false;
@@ -747,10 +770,10 @@ function renderApps(){
     /* 지난 회차 행은 그 회차 발송본만 열고, 새 제안은 최신 행에서 */
     const btn = x.seq==null
       ? `<button class="btn-one" onclick="oneClick('${a.id}')">제안</button>`
-      : (x.latest && a.expired)
+      : (x.latest && (a.expired || x.r.revoked))
         ? `<button class="btn-one" onclick="newRound('${a.id}')">재제안</button>`
         : `<button class="btn-one done" style="cursor:pointer" onclick="viewSent('${a.id}',${x.seq})">제안 보기</button>`;
-    const dim = (x.seq!=null && !x.latest) || (x.latest && a.expired);
+    const dim = x.seq!=null && (!x.latest || a.expired || x.r.revoked);
     return `<tr class="${on?"sel":""}${x.seq!=null && !x.latest ? " prev-row":""}"${dim?' style="opacity:.62"':""}>
       <td class="pno">${x.r ? x.r.pno : dash}</td>
       <td class="mgr${a.mgr===ME?" me":""}">${a.mgr}</td>
@@ -846,7 +869,9 @@ function renderProp(){
       ${rounds(curApp).length ? `<div class="seq-tabs">${rounds(curApp).map((r,i) =>
           `<button class="seq-tab ${propRO && i===curSeq ? "on":""}" onclick="viewSent('${curApp.id}',${i})">${i+1}차 ${r.sentDt}</button>`).join("")}
         ${propRO ? "" : `<span class="seq-tab now">${rounds(curApp).length+1}차 작성 중</span>`}</div>` : ""}
-      ${propRO ? `<div class="ro-bar"><b>${rounds(curApp)[curSeq].sentDt} 발송</b>한 ${curSeq+1}차 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 수정할 수 없습니다. 구성을 바꾸려면 <b>새 제안</b>을 발송합니다.</div>` : ""}
+      ${propRO && rounds(curApp)[curSeq].revoked ? `<div class="ro-bar"><b>${rounds(curApp)[curSeq].revoked} 회수</b>한 건입니다 - 학습자 화면에서는 내려갔고, 이력으로만 남아 있습니다. 다시 보내려면 <b>재제안</b>으로 새 건을 만듭니다.</div>` : ""}
+      ${revokeMode ? `<div class="diff-bar"><b>제안을 회수합니다</b> · 회수 사유를 아래 <b>내부 메모</b>에 남겨 주세요 (필수)<br>확정하면 학습자 화면에서 즉시 내려가고, 이미 열람한 학습자에게는 회수 안내가 나갑니다. 건은 회수 상태로 목록에 남습니다</div>` : ""}
+      ${propRO && !revokeMode && !rounds(curApp)[curSeq].revoked ? `<div class="ro-bar"><b>${rounds(curApp)[curSeq].sentDt} 발송</b>한 ${curSeq+1}차 제안안입니다 - 발송 시점 패키지 구성으로 스냅샷이 고정되어 수정할 수 없습니다. 구성을 바꾸려면 <b>새 제안</b>을 발송합니다.</div>` : ""}
       ${!propRO && rounds(curApp).length ? `<div class="diff-bar">${diffLine(curApp)}</div>` : ""}
       <div class="prop-lead">
         <div class="pl-main">
@@ -862,7 +887,7 @@ function renderProp(){
       <textarea id="cmt" ${propRO?"readonly":""} placeholder="예) 실습을 타 기관에서 수강하실 예정이면 두 번째 구성이 적합">${propRO ? roCmt : (curApp.edu==="고등학교 졸업" ? "전문학사 학위와 자격증을 함께 취득하는 구성으로 제안드림 - 학위 없이는 2급 신청이 불가한 점 참고 부탁" : "")}</textarea>
 
       <div class="fld-lab">내부 메모 <span class="lab-in">학습자 비노출</span> <span style="font-weight:600;color:var(--gray-light);">${propRO ? "이 회차를 보낸 이유 - 담당자만 봄" : "왜 다시 보내는지 · 통화 내용 등 - 담당자만 봄"}</span></div>
-      <textarea id="memo" class="memo" ${propRO?"readonly":""} placeholder="예) 1차 미열람 · 유선 3회 부재 → 개강 일정만 갱신해 재발송">${propRO ? (rounds(curApp)[curSeq].memo||"") : ""}</textarea>
+      <textarea id="memo" class="memo" ${propRO && !revokeMode ?"readonly":""} placeholder="예) 1차 미열람 · 유선 3회 부재 → 개강 일정만 갱신해 재발송">${propRO ? (rounds(curApp)[curSeq].memo||"") : ""}</textarea>
 
       <div class="expire">
         <b>유효기간 자동</b>
@@ -870,9 +895,13 @@ function renderProp(){
       </div>
 
       <div class="send-row">
-        ${propRO
+        ${revokeMode
+          ? `<button class="btn-revoke" onclick="doRevoke()">회수 확정</button>
+             <button class="btn-ghost" onclick="cancelRevoke()">취소</button>`
+          : propRO
           ? `<button class="btn-send" onclick="newRound('${curApp.id}')">새 제안 만들기</button>
              <button class="btn-ghost" onclick="goStudentFromRO()">학습자 화면으로 보기</button>
+             ${canRevoke(curApp, curSeq) ? `<button class="btn-ghost danger" onclick="askRevoke()">제안 회수</button>` : ""}
              <button class="btn-ghost" onclick="closeProp()">닫기</button>`
           : `<button class="btn-send" onclick="send()">${rounds(curApp).length ? (rounds(curApp).length+1)+"차 " : ""}제안 발송 (${onCnt}개 구성)</button>
              <button class="btn-ghost" onclick="cancelProp()">취소</button>`}
@@ -908,6 +937,7 @@ function viewSent(appId, seq){
   if(!app || !rounds(app).length) return;
   curApp = app;
   propRO = true;
+  revokeMode = false;
   curSeq = (seq==null) ? rounds(app).length-1 : seq;
   roCmt = rounds(app)[curSeq].cmt || "";
   picks = roundPicks(app, curSeq);
@@ -923,6 +953,7 @@ function newRound(appId){
   if(!app) return;
   curApp = app;
   propRO = false;
+  revokeMode = false;
   curSeq = null;
   roCmt = "";
   picks = autoPicks(app);
@@ -948,6 +979,32 @@ function diffLine(app){
     }).filter(Boolean));
   return `<b>${rounds(app).length+1}차 제안</b> · 이전 발송 ${prev.sentDt}` +
          (bits.length ? `<br>${bits.join(" · ")}` : `<br>이전 발송본과 구성·개강반이 같음`);
+}
+
+/* 제안 회수 - 두 단계. 먼저 사유(내부 메모)를 받고, 확정하면 학습자 화면에서 내려간다.
+   건은 지우지 않고 회수 상태로 남긴다 - 이력이 목적이므로 */
+function askRevoke(){
+  if(!canRevoke(curApp, curSeq)){
+    alert("회수할 수 없는 건입니다 (시연)\n· 결제가 끝난 건은 환불 절차로 처리\n· 지난 회차는 이미 최신 발송본으로 대체됨");
+    return;
+  }
+  revokeMode = true;
+  renderProp();
+  const m = document.getElementById("memo");
+  if(m){ m.focus(); }
+}
+function cancelRevoke(){ revokeMode = false; renderProp(); }
+function doRevoke(){
+  const memo = (document.getElementById("memo")||{}).value.trim();
+  if(!memo){ alert("회수 사유를 내부 메모에 남겨 주세요 (필수)"); return; }
+  const r = rounds(curApp)[curSeq];
+  r.revoked = "26.08.31";
+  r.memo = memo;
+  if(sent && sent.app && sent.app.id===curApp.id){ sent = null; stuPick = null; }
+  revokeMode = false;
+  closeProp();
+  renderApps();
+  alert("제안 회수 (시연)\n· 학습자 화면에서 즉시 내려감\n· 이미 열람한 학습자에게는 회수 안내 발송\n· 건은 회수 상태로 목록에 남고, 재제안은 새 건으로 쌓임");
 }
 
 /* 발송본 팝업에서 학습자가 받은 화면 그대로 확인 */
