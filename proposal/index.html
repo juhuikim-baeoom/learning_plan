@@ -169,7 +169,7 @@
   .pk-chk{width:19px;height:19px;border:2px solid var(--line);border-radius:6px;flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;}
   .pk.on .pk-chk{background:var(--main);border-color:var(--main);}
   .pk-main{flex:1;min-width:0;}
-  .pk-no{display:inline-block;font-size:9.5px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px;}
+  .pk-no{display:inline-block;min-width:18px;text-align:center;font-size:10px;font-weight:800;color:var(--gray);background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-right:6px;vertical-align:2px;font-variant-numeric:tabular-nums;}
   .pk-nm{font-size:13.5px;font-weight:800;letter-spacing:-.2px;}
   .pk-compo{font-size:11.5px;color:var(--gray);margin-top:4px;}
   .pk-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
@@ -315,7 +315,7 @@
           <li>패키지가 <b>과정 단위로만</b> 나뉘어 있어, 그 과정의 <b>판매 중인 구성 전부</b>를 카드로 올린다 (사회복지사 5장 · 한국어교원 2장). 담당자가 필요 없는 구성을 끄고 보낸다</li>
           <li><b>1 vs 2</b>(수도권·전국반)는 <b>회원가입 주소지</b>로 자동 결정 - 서울·경기·인천이면 수도권반, 그 밖은 전국반. 담당자 판단 사항 아님</li>
           <li><b>학력 매핑은 보류</b> - 근거 문서가 없고 상담사 경험으로만 돌던 규칙이라, 지금 확정하지 않고 과정 기준으로 운영한다. 규칙이 서면 상수 <code>RULE</code>에 학력 분기만 넣으면 된다</li>
-          <li>다만 고졸 학습자에게는 <b>전문학사 병행 구성(노출 4)</b>이 사실상 필수다 - 2급 요건이 전문학사 이상이므로, 담당자가 카드를 고를 때 이 점만 확인한다</li>
+          <li>다만 고졸 학습자에게는 <b>전문학사 병행 구성(4번)</b>이 사실상 필수다 - 2급 요건이 전문학사 이상이므로, 담당자가 카드를 고를 때 이 점만 확인한다</li>
         </ul>
       </div>
       <div class="ln-foot">
@@ -826,7 +826,7 @@ function renderProp(){
       <div class="pk-head"${propRO?"":` onclick="togPick(${i})"`}>
         <div class="pk-chk">${p.on?"✓":""}</div>
         <div class="pk-main">
-          <div><span class="pk-no">노출 ${p.no}</span><span class="pk-nm">${s.nm}</span></div>
+          <div><span class="pk-no">${p.no}</span><span class="pk-nm">${s.nm}</span></div>
           <div class="pk-compo">${s.compo} · 총 ${s.n}과목</div>
           <div class="pk-meta">
             <span class="mt id">id ${pkg.id}</span>
@@ -853,7 +853,7 @@ function renderProp(){
   const gapHtml = gapNos.length ? `<div class="excl">
     <div class="et">모집중 차수가 없어 빠진 구성 - 다음 차수가 등록되면 자동으로 나타남</div>
     ${gapNos.map(n => `<div class="excl-item">
-      <span class="pk-no">노출 ${n}</span><b>${SLOTS[cls][n].nm}</b>
+      <span class="pk-no">${n}</span><b>${SLOTS[cls][n].nm}</b>
       <span class="gap-why">모집중 차수 없음</span>
     </div>`).join("")}
   </div>` : "";
@@ -861,7 +861,7 @@ function renderProp(){
   const exclHtml = (optNos.length && !propRO) ? `<div class="excl">
     <div class="et">규칙에서 제외된 슬롯 - 필요 시 담당자가 추가</div>
     ${optNos.map(n => `<div class="excl-item">
-      <span class="pk-no">노출 ${n}</span><b>${SLOTS[cls][n].nm}</b>
+      <span class="pk-no">${n}</span><b>${SLOTS[cls][n].nm}</b>
       <button class="btn-add" onclick="addSlot(${n})">＋ 제안에 추가</button>
     </div>`).join("")}
   </div>` : "";
