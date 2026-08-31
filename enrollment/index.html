@@ -1270,26 +1270,7 @@ const SIDE_GROUPS=[
   {cat:"deg", label:"2년제 전문학사", sub:"80학점 · 최단 2학기", pick:()=>COURSES2.deg.filter(c=>c.level==="as")},
   {cat:"free", label:"교양 · 단과", sub:"과정 없이 과목만 신청", pick:()=>COURSES2.free}
 ];
-/* C안 패키지 탭의 좌측바 = 관리자 '패키지관리 › 분류' 목록 그대로.
-   패키지는 과정과 다른 축으로 묶여 있다 - 관리자에는 청소년지도사가 2급/3급으로 갈려 있고
-   CPA처럼 과정 목록에 없는 분류도 있다. 그래서 C에서는 수강방식에 따라 좌측바 목록 자체가 바뀐다.
-   courses = 이 분류의 패키지가 걸린 과정(대표 과정이 개강 차수·단과 표의 기준),
-   tag = 인정 과정 태그 (과정 목록에 없는 분류도 표·차수를 맞출 수 있게) */
-const PKG_CATS=[
-  {id:"pc-sw",     n:"사회복지사",         tag:"사회복지사",   courses:["sw","as-sw","ba-sw"]},
-  {id:"pc-cc",     n:"보육교사",           tag:"보육교사",     courses:["cc"]},
-  {id:"pc-di",     n:"장애영유아보육교사", tag:"장애영유아",   courses:["di"]},
-  {id:"pc-yt2",    n:"청소년지도사 2급",   tag:"청소년지도사", courses:["yt"]},
-  {id:"pc-yt3",    n:"청소년지도사 3급",   tag:"청소년지도사", courses:[]},
-  {id:"pc-le",     n:"평생교육사",         tag:"평생교육사",   courses:["le"]},
-  {id:"pc-psy",    n:"심리학",             tag:"심리학",       courses:["ba-psy","ba-couns"]},
-  {id:"pc-biz",    n:"경영학",             tag:"경영학",       courses:["ba-biz","as-biz"]},
-  {id:"pc-cs",     n:"컴퓨터공학",         tag:"컴퓨터공학",   courses:["ba-cs","as-ip","as-net","as-sec"]},
-  {id:"pc-kor",    n:"한국어",             tag:"한국어",       courses:["kr","ba-kor"]},
-  {id:"pc-cpa",    n:"CPA",                tag:"KICPA",        courses:[]},
-  {id:"pc-ict",    n:"정보통신공학",       tag:"컴퓨터공학",   courses:["ba-ict","as-ict"]},
-  {id:"pc-beauty", n:"미용학",             tag:"미용",         courses:["as-beauty"]}
-];
+/* 분류 13종은 assets/packages.js 의 PKG_CATS (SSOT). 여기서 다시 세지 않는다 */
 let pkgCatSel="pc-sw";
 function curPkgCat(){ return PKG_CATS.find(x=>x.id===pkgCatSel); }
 
@@ -1338,15 +1319,14 @@ function scopeName(){ const c=inPkgCatMode()&&curPkgCat(); return c ? c.n : (cur
    패키지가 아직 없는 분류도 숨기지 않고 남긴다 - A·B와 같은 원칙(사라지면 원래 없었는지
    없어졌는지 알 수 없다). 관리자에 분류는 있는데 상품이 없는 상태 그 자체를 보여 주는 편이 낫다 */
 function pkgNavHTML(){
+  /* 그룹은 PKG_CAT_GRPS - 자리(slice)가 아니라 분류의 grp 값으로 나눈다.
+     CPA는 학위·전공이 아니라 '시험'이라 셋째 묶음으로 떨어진다 */
   return `<div class="sn-title">패키지 분류</div>
-    <div class="sn-group">
-      <div class="sn-head">자격증<small>과정 이수로 자격증 취득</small></div>
-      ${PKG_CATS.slice(0,6).map(pkgNavItem).join("")}
-    </div>
-    <div class="sn-group">
-      <div class="sn-head">학위 · 전공<small>학사 · 전문학사</small></div>
-      ${PKG_CATS.slice(6).map(pkgNavItem).join("")}
-    </div>`;
+    ${PKG_CAT_GRPS.map(g=>`
+      <div class="sn-group">
+        <div class="sn-head">${g.nm}<small>${g.sub}</small></div>
+        ${pkgCatsOf(g.id).map(pkgNavItem).join("")}
+      </div>`).join("")}`;
 }
 /* 종수·'준비 중' 같은 재고 표기는 붙이지 않는다 - 고를 때 필요한 정보가 아니고,
    숫자가 붙으면 분류끼리 많고 적음을 먼저 비교하게 되어 목록이 시끄러워진다.

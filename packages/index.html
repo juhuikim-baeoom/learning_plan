@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>패키지 화면 개선</title>
 <link rel="stylesheet" href="../assets/tokens.css">
+<script src="../assets/packages.js"></script>
 <style>
   :root{
     --main:var(--baeron-main); --mid:var(--baeron-mid); --soft:var(--baeron-soft);
@@ -1000,33 +1001,28 @@ function renderC(){
 }
 
 /* ══════════ 과정 분류 네비 ══════════ */
-/* 관리자 '패키지관리 > 분류' 드롭다운 실제 13종을 성격별 3그룹으로 묶은 것.
-   분류는 화면 안의 선택 축이 아니라 랜딩 화면의 단위(1분류 = 1페이지)로만 쓴다. */
-const CATS = [
-  {g:"국가자격증", gs:"요건 과목·학점 채우기<br>시안 템플릿 그대로 적용",
-   items:[{t:"사회복지사 2급", on:1},{t:"보육교사"},{t:"장애영유아보육교사"},
-          {t:"청소년지도사 2급"},{t:"청소년지도사 3급"},{t:"평생교육사"}]},
-  {g:"학위·전공", gs:"학위 학점 채우기<br>요건 게이지가 다름",
-   items:[{t:"심리학"},{t:"경영학"},{t:"컴퓨터공학"},{t:"한국어"},{t:"정보통신공학"},{t:"미용학"}]},
-  {g:"시험", gs:"과목 이수 구조 아님<br>별도 화면",
-   items:[{t:"CPA"}]},
-];
+/* 분류 13종·그룹 정의는 assets/packages.js (PKG_CATS · PKG_CAT_GRPS)가 정본.
+   이 화면은 그중 사회복지사 하나의 랜딩이고, 나머지 12개는 같은 자리에 놓이는 다른 페이지다. */
+const CAT_ON = "pc-sw";              // 이 시안이 구현한 분류
+const CAT_LABEL = {"pc-sw":"사회복지사 2급"};   // 분류값에 급수가 없어 랜딩 제목이 다른 경우
+function catName(c){ return CAT_LABEL[c.id] || c.n; }
+
 function renderCatNav(){
   const el = document.getElementById("catNav");
-  /* 현행 재현에는 이런 네비가 없다 — 현행을 왜곡하지 않기 위해 감춘다 */
+  /* 현행 재현에는 이런 네비가 없다 - 현행을 왜곡하지 않기 위해 감춘다 */
   if(layout==="cur"){ el.style.display="none"; return; }
   el.style.display="block";
-  const grps = CATS.map(c=>`
+  const grps = PKG_CAT_GRPS.map(g=>`
     <div class="cat-grp">
-      <div class="cat-lab"><b>${c.g}</b><i>${c.gs}</i></div>
-      <div class="cat-chips">${c.items.map(i=>
-        i.on ? `<button class="act">${i.t}</button>`
-             : `<button class="off" title="같은 분류 체계 · 이 시안에서는 미구현">${i.t}</button>`
+      <div class="cat-lab"><b>${g.nm}</b><i>${g.sub}<br>${g.note}</i></div>
+      <div class="cat-chips">${pkgCatsOf(g.id).map(c=>
+        c.id===CAT_ON ? `<button class="act">${catName(c)}</button>`
+                      : `<button class="off" title="같은 분류 체계 · 이 시안에서는 미구현">${catName(c)}</button>`
       ).join("")}</div>
     </div>`).join("");
   el.innerHTML = `
     <div class="cat-head"><b>과정 분류</b>
-      <span>관리자 [패키지관리 &gt; 분류] 13종 · 회색은 이 시안에서 미구현</span></div>
+      <span>관리자 [패키지관리 &gt; 분류] ${PKG_CATS.length}종 · 회색은 이 시안에서 미구현</span></div>
     ${grps}
     <div class="cat-note">
       <b>분류를 화면 축이 아니라 화면 단위로 쓰는 이유</b> —
