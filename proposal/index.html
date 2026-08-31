@@ -916,7 +916,7 @@ function renderProp(){
       <h3>제안안</h3>
       <span class="ph-sub">${propRO ? `발송본 스냅샷 - 수정 불가` : (rounds(curApp).length ? "재제안 - 오늘 기준으로 규칙 재실행" : "규칙이 생성 - 담당자는 확인·발송만")}</span>
       <div class="right">
-        <span class="${propRO?"st-pill sent":"auto-tag"}">${propRO?`${curSeq+1}차 발송본`:(rounds(curApp).length?`${rounds(curApp).length+1}차 초안`:"자동 생성")}</span>
+        <span class="${propRO?"st-pill sent":"auto-tag"}">${propRO?`${curSeq+1}차 발송본`:`${rounds(curApp).length+1}차 초안`}</span>
         <button class="mo-x" onclick="closeProp()" title="닫기">✕</button>
       </div>
     </div>
