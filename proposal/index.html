@@ -197,7 +197,6 @@
   .sl-grp{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:9px 0 5px;}
   .sl-open{font-size:10.5px;font-weight:800;color:var(--main);background:var(--soft);border:1px solid var(--mid);border-radius:7px;padding:2px 8px;}
   .sl-open.plain{color:var(--navy);background:var(--bg-soft);border-color:var(--line);}
-  .sl-sub{font-size:10.5px;font-weight:700;color:var(--gray-light);}
   .sl-grp:first-child{margin-top:0;}
   .sl-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;}
   .sl-items span{font-size:11.5px;color:var(--ink);padding-left:10px;position:relative;line-height:1.6;}
@@ -661,9 +660,9 @@ function togAll(){ const all = picks.every(p => p.on); picks.forEach(p => p.on =
    개강반이 없으면(학기 수보다 개강반이 적으면) 원래 학기 라벨로 대신한다 */
 function grpHead(g, gi, pkg){
   const op = pkg.opens[gi];
-  const sub = g.t.replace(/^\s*\d+학기\s*·\s*/, "");
+  /* 개강반만 라벨로 - 이수구분(필수/선택)은 패키지관리에서 확인되는 값이라 여기서는 뺀다 */
   return op
-    ? `<div class="sl-grp"><span class="sl-open">${op}</span><span class="sl-sub">${sub}</span></div>`
+    ? `<div class="sl-grp"><span class="sl-open">${op}</span></div>`
     : `<div class="sl-grp"><span class="sl-open plain">${g.t}</span></div>`;
 }
 
